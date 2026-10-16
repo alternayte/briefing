@@ -4,6 +4,7 @@ import (
 	"context"
 	"log/slog"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/alternayte/gx"
@@ -35,6 +36,7 @@ func newHandler(web *accounts.Web, feedWeb *feed.Web, sourcesWeb *sources.Web, l
 
 	mux := http.NewServeMux()
 	mux.Handle("GET /healthz", healthz(ping))
+	mux.Handle("GET /llms.txt", llmsTxt(web.BaseURL()))
 	mux.Handle("/api/auth/", web.AuthHandler())
 	mux.Handle("/", web.Middleware(ui))
 	// Datastar evaluates client expressions at run time, so the policy needs
@@ -57,5 +59,37 @@ func healthz(ping func(context.Context) error) http.Handler {
 			return
 		}
 		_, _ = w.Write([]byte("ok\n"))
+	})
+}
+
+// llmsTxt describes Briefing to language models, at the site root.
+func llmsTxt(baseURL string) http.Handler {
+	base := strings.TrimSuffix(baseURL, "/")
+	body := `# Briefing
+
+> Briefing is a learning-first news brief. It reads tech and science sources, drops the noise, merges coverage of one event into one story, and shows each reader a short ranked feed of source-backed summaries. It then helps the reader keep what they read, with explanations at their level, spaced review questions and a record of the concepts they learned. It is in English and French.
+
+## Use it from an AI assistant
+
+- MCP server (streamable HTTP, stateless): ` + base + `/mcp
+- Authentication: a personal access token as a bearer token, ` + "`Authorization: Bearer brf_…`" + `. The reader creates and revokes tokens in Settings: ` + base + `/settings
+- Agent Skill with the workflows (morning brief, digging into a story, review session, tuning interests): https://github.com/alternayte/briefing/tree/main/skills/briefing
+
+## Tools
+
+- feed_today, feed_search, feed_story, feed_explain, feed_feedback
+- learning_review_due, learning_review_answer, learning_learned
+- feed_interests_list, feed_interests_add, feed_interests_remove
+- sources_list, sources_subscribe, sources_add_rss
+- accounts_me
+
+## Source
+
+- https://github.com/alternayte/briefing
+`
+	return http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+		w.Header().Set("Cache-Control", "public, max-age=3600")
+		_, _ = w.Write([]byte(body))
 	})
 }

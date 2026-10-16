@@ -40,6 +40,9 @@ func RequireAccessToken(next http.Handler) http.Handler {
 	})
 }
 
+// BaseURL is the public address of the app.
+func (w *Web) BaseURL() string { return w.cfg.BaseURL.String() }
+
 // AuthHandler serves /api/auth/.
 func (w *Web) AuthHandler() http.Handler { return w.authHTTP }
 

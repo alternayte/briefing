@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"regexp"
 	"strings"
 	"testing"
 	"time"
@@ -125,6 +126,17 @@ func TestMCPNeedsAValidAccessToken(t *testing.T) {
 	if err := json.Unmarshal(raw, &id); err != nil || id.UserID != user.ID || id.DisplayName != "Mcp Tester" {
 		t.Errorf("whoami = %s (err %v, error result %v)", raw, err, res.IsError)
 	}
+	// The public skill must only name tools that exist.
+	skill, err := os.ReadFile("../../skills/briefing/SKILL.md")
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, m := range regexp.MustCompile("`((?:feed|learning|sources|accounts)_[a-z_]+)`").FindAllStringSubmatch(string(skill), -1) {
+		if !names[m[1]] {
+			t.Errorf("SKILL.md names %s, which is not a tool", m[1])
+		}
+	}
+
 	brief, err := session.CallTool(ctx, &mcp.CallToolParams{Name: "feed_today", Arguments: map[string]any{}})
 	if err != nil {
 		t.Fatal(err)
