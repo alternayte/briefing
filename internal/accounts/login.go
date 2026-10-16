@@ -20,7 +20,7 @@ const codeInvalidEmail = "INVALID_EMAIL"
 // LoginPage offers GitHub and, when email is configured, a magic link.
 var LoginPage = gx.Page(func(c *gx.Ctx, in route.Login) (LoginProps, error) {
 	if CurrentProfile(c.R.Context()) != nil {
-		return LoginProps{}, c.Redirect(homeURL{})
+		return LoginProps{}, gx.Redirect(homeURL{})
 	}
 	msg := i18n.For(i18n.FromContext(c.R.Context()))
 	p := SendLink.Props(&route.SendLink{})
@@ -39,7 +39,7 @@ var LoginPage = gx.Page(func(c *gx.Ctx, in route.Login) (LoginProps, error) {
 // scanner that opens the link does not use up the token.
 var VerifyPage = gx.Page(func(c *gx.Ctx, in route.LoginVerify) (VerifyProps, error) {
 	if in.Token == "" {
-		return VerifyProps{}, c.Redirect(route.Login{})
+		return VerifyProps{}, gx.Redirect(route.Login{})
 	}
 	return VerifyProps{
 		Msg:         i18n.For(i18n.FromContext(c.R.Context())),

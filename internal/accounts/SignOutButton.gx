@@ -10,5 +10,5 @@ props {
 }
 
 <form {...p.F.Attrs()}>
-  <button type="submit" class="label text-muted-foreground hover:text-accent">{p.Label}</button>
+  <button type="submit" class="label inline-flex min-h-target items-center text-muted-foreground hover:text-accent">{p.Label}</button>
 </form>

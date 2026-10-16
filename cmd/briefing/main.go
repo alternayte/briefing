@@ -28,12 +28,20 @@ func main() {
 }
 
 func run(args []string) error {
+	// gx dev starts the binary with no arguments and gives it the address.
+	devAddr := os.Getenv("GX_DEV_ADDR")
+	if len(args) == 0 && devAddr != "" {
+		args = []string{"serve"}
+	}
 	if len(args) != 1 {
 		return errors.New(usage)
 	}
 	cfg, err := platform.LoadConfigFromEnv()
 	if err != nil {
 		return err
+	}
+	if devAddr != "" {
+		cfg.Addr = devAddr
 	}
 	if err := platform.DefaultTuning().Validate(); err != nil {
 		return err

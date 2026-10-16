@@ -54,8 +54,8 @@ func Login(p LoginProps) gx.Node {
 //line Login.gx:26:22
 		_b1.Add(_tLogin2.With(
 //line Login.gx:27:5
-			gx.Open("p", gx.Attrs{gx.Attr{Key: "class", Value: gx.Classes("mt-line border-l-2 border-foreground pl-half text-small", gx.When("border-destructive", p.NoticeIsError), gx.When("text-destructive", p.NoticeIsError)), Kind: gx.AttrText}, gx.Attr{Key: "role", Value: "status", Kind: gx.AttrText}}),
-//line Login.gx:27:170
+			gx.Open("p", gx.Attrs{gx.Attr{Key: "class", Value: gx.Classes("mt-line border-l-2 pl-half text-small", gx.When("border-foreground", !p.NoticeIsError), gx.When("border-destructive", p.NoticeIsError), gx.When("text-destructive", p.NoticeIsError)), Kind: gx.AttrText}, gx.Attr{Key: "role", Value: "status", Kind: gx.AttrText}}),
+//line Login.gx:27:195
 			gx.Text(p.Notice),
 		))
 	}

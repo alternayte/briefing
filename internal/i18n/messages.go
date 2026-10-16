@@ -67,25 +67,25 @@ var fr = Messages{
 	AppName:          "Briefing",
 	MagicLinkSubject: "Votre lien de connexion à Briefing",
 	MagicLinkBody: "Ouvrez ce lien pour vous connecter à Briefing :\n\n%[1]s\n\n" +
-		"Le lien ne fonctionne qu'une fois et expire dans %[2]d minutes. Si vous ne l'avez pas demandé, ignorez cet e-mail.\n",
+		"Le lien ne fonctionne qu’une fois et expire dans %[2]d minutes. Si vous ne l’avez pas demandé, ignorez cet e-mail.\n",
 
 	SkipToContent: "Aller au contenu",
 	SignOut:       "Se déconnecter",
 
 	LoginTitle:             "Connexion",
-	LoginIntro:             "Briefing lit l'actualité tech et scientifique, garde l'essentiel et vous aide à le retenir.",
+	LoginIntro:             "Briefing lit l’actualité tech et scientifique, garde l’essentiel et vous aide à le retenir.",
 	LoginGitHub:            "Continuer avec GitHub",
 	LoginOr:                "ou",
 	LoginEmailLabel:        "Adresse e-mail",
 	LoginEmailSend:         "Recevoir un lien de connexion",
 	LoginLinkSent:          "Consultez votre boîte de réception. Si cette adresse peut se connecter, un lien arrive.",
-	LoginErrorNotAllowed:   "Cette adresse ne figure pas sur la liste d'invitations de ce Briefing.",
+	LoginErrorNotAllowed:   "Cette adresse ne figure pas sur la liste d’invitations de ce Briefing.",
 	LoginErrorExpired:      "Ce lien de connexion a expiré ou a déjà servi. Demandez-en un nouveau.",
 	LoginErrorRateLimited:  "Trop de tentatives. Patientez quelques minutes, puis réessayez.",
 	LoginErrorInvalidEmail: "Saisissez une adresse e-mail valide.",
 	LoginErrorGeneric:      "La connexion a échoué. Réessayez.",
 
 	VerifyTitle:  "Confirmer la connexion",
-	VerifyBody:   "Sélectionnez le bouton pour terminer la connexion. Si vous n'avez pas demandé ce lien, fermez cette page.",
+	VerifyBody:   "Sélectionnez le bouton pour terminer la connexion. Si vous n’avez pas demandé ce lien, fermez cette page.",
 	VerifyButton: "Se connecter",
 }

@@ -24,7 +24,7 @@ props {
   <p class="mt-half text-deck leading-tight text-muted-foreground italic">{p.Msg.LoginIntro}</p>
 
   if p.Notice != "" {
-    <p role="status" class="mt-line border-l-2 border-foreground pl-half text-small" class:border-destructive={p.NoticeIsError} class:text-destructive={p.NoticeIsError}>{p.Notice}</p>
+    <p role="status" class="mt-line border-l-2 pl-half text-small" class:border-foreground={!p.NoticeIsError} class:border-destructive={p.NoticeIsError} class:text-destructive={p.NoticeIsError}>{p.Notice}</p>
   }
 
   <div class="mt-line border-t border-border pt-line">

@@ -25,7 +25,7 @@ func Verify(p VerifyProps) gx.Node {
 //line Verify.gx:14:1
 	return _tVerify0.With(
 //line Verify.gx:14:1
-		gx.Head(gx.HeadProps{Title: p.Msg.VerifyTitle + " · " + p.Msg.AppName, Meta: []gx.Meta{{Name: "referrer", Content: "no-referrer"}}, Links: nil, Lang: "", HtmlClass: "", BodyClass: ""}),
+		gx.Head(gx.HeadProps{Title: p.Msg.VerifyTitle + " · " + p.Msg.AppName, Meta: []gx.Meta{{Name: "referrer", Content: "same-origin"}}, Links: nil, Lang: "", HtmlClass: "", BodyClass: ""}),
 //line Verify.gx:16:3
 		gx.Open("h1", gx.Attrs{gx.Attr{Key: "class", Value: "text-headline leading-tight font-semibold", Kind: gx.AttrText}, gx.Attr{Key: "id", Value: "verify-title", Kind: gx.AttrText}}),
 //line Verify.gx:16:75

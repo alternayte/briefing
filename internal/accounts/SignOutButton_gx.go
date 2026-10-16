@@ -29,13 +29,13 @@ func SignOutButton(p SignOutButtonProps) gx.Node {
 	return _tSignOutButton0.With(
 //line SignOutButton.gx:12:1
 		gx.Open("form", p.F.Attrs()),
-//line SignOutButton.gx:13:79
+//line SignOutButton.gx:13:117
 		gx.Text(p.Label),
 	)
 }
 
 var _tSignOutButton0 = gx.NewTemplate(
-	[]string{"<form", ">\n  <button class=\"label text-muted-foreground hover:text-accent\" type=\"submit\">", "</button>\n</form>\n"},
+	[]string{"<form", ">\n  <button class=\"label inline-flex min-h-target items-center text-muted-foreground hover:text-accent\" type=\"submit\">", "</button>\n</form>\n"},
 	[]int{0, 2},
 	[]gx.TemplateEl{{Slot: 0, Start: 0, EndStatic: 2, End: 17}},
 	[]gx.TemplateRoot{{El: 0, Slot: -1}, {El: -1, Slot: -1}},

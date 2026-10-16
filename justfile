@@ -32,6 +32,10 @@ test: db
 db:
     docker compose up -d --wait postgres
 
+# Run the app with live reload on http://127.0.0.1:3333, env from .env.
+dev: db
+    go run ./cmd/gx dev
+
 # Run the server with the env from .env.
 run:
     go run ./cmd/briefing serve

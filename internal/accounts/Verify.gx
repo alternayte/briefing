@@ -11,7 +11,7 @@ props {
   CallbackURL string
 }
 
-<gx.Head title={p.Msg.VerifyTitle + " · " + p.Msg.AppName} meta={[]gx.Meta{{Name: "referrer", Content: "no-referrer"}}} />
+<gx.Head title={p.Msg.VerifyTitle + " · " + p.Msg.AppName} meta={[]gx.Meta{{Name: "referrer", Content: "same-origin"}}} />
 <section class="mx-auto max-w-column pt-line" aria-labelledby="verify-title">
   <h1 id="verify-title" class="text-headline leading-tight font-semibold">{p.Msg.VerifyTitle}</h1>
   <p class="mt-half">{p.Msg.VerifyBody}</p>
