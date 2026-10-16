@@ -28,9 +28,10 @@ Optional:
 - A [Resend](https://resend.com) API key, for sign-in links by email.
 - A Cloudflare account ID and API token with the Browser Run permission, to read pages that need JavaScript.
 
-Start it with Docker:
+Build the image from this repository and start it with Docker:
 
 ```sh
+docker build -t briefing .
 docker run -p 8080:8080 \
   -e DATABASE_URL='postgres://briefing:secret@db:5432/briefing' \
   -e BASE_URL='https://briefing.example.com' \
@@ -39,7 +40,7 @@ docker run -p 8080:8080 \
   -e GITHUB_CLIENT_SECRET='...' \
   -e OPENROUTER_API_KEY='...' \
   -e ALLOWED_EMAILS='you@example.com' \
-  ghcr.io/alternayte/briefing:latest
+  briefing
 ```
 
 At start, the container creates the database tables, loads the source catalog, serves the app on port 8080, and runs the background jobs. Each step is safe to repeat. A new deployment shows sign-in at `/login`, and the first stories arrive within about half an hour.
@@ -53,7 +54,7 @@ https://briefing.example.com/api/auth/oauth/github/callback
 ### Deploy on Coolify
 
 1. Create a PostgreSQL database. Set its image to `pgvector/pgvector:pg17`.
-2. Create an application from this repository, with the Dockerfile build pack. Or use the image `ghcr.io/alternayte/briefing:latest`.
+2. Create an application from this repository, with the Dockerfile build pack.
 3. Set the port to 8080 and the health check path to `/healthz`.
 4. Add the environment variables from the table below. Use the internal URL of the database for `DATABASE_URL`.
 5. Set the domain of the application, and use the same address for `BASE_URL`.
