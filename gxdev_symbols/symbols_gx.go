@@ -822,11 +822,13 @@ func Packages() []gx.DevPackage {
 				"MigrateApp":         reflect.ValueOf(p23.MigrateApp),
 				"MigrateRiver":       reflect.ValueOf(p23.MigrateRiver),
 				"NewPublicClient":    reflect.ValueOf(p23.NewPublicClient),
+				"NewRiver":           reflect.ValueOf(p23.NewRiver),
 				"NewVector":          reflect.ValueOf(p23.NewVector),
 				"OpenPool":           reflect.ValueOf(p23.OpenPool),
 			},
 			Consts: map[string]constant.Value{
 				"CategoryOther": gx.DevString("other"),
+				"QueuePoll":     gx.DevString("poll"),
 			},
 			Types: map[string]reflect.Type{
 				"ClusterTuning":  reflect.TypeFor[p23.ClusterTuning](),

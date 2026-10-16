@@ -50,19 +50,24 @@ type Result struct {
 	NotModified bool
 }
 
-// connectors fetches each source kind over one HTTP client.
-type connectors struct {
+// Connectors fetches each source kind over one HTTP client.
+type Connectors struct {
 	client     *http.Client
 	tuning     platform.PollTuning
 	userAgent  string
 	blueskyAPI string
 }
 
-func newConnectors(client *http.Client, t platform.Tuning, userAgent, blueskyBase string) connectors {
-	return connectors{client: client, tuning: t.Poll, userAgent: userAgent, blueskyAPI: blueskyBase}
+// NewConnectors builds the connectors. An empty blueskyBase means the public
+// Bluesky AppView.
+func NewConnectors(client *http.Client, t platform.Tuning, userAgent, blueskyBase string) Connectors {
+	if blueskyBase == "" {
+		blueskyBase = blueskyAPI
+	}
+	return Connectors{client: client, tuning: t.Poll, userAgent: userAgent, blueskyAPI: blueskyBase}
 }
 
-func (c connectors) fetch(ctx context.Context, src *sources.Source) (Result, error) {
+func (c Connectors) fetch(ctx context.Context, src *sources.Source) (Result, error) {
 	switch src.Kind {
 	case sources.KindRSS:
 		return c.rss(ctx, src)
@@ -74,7 +79,7 @@ func (c connectors) fetch(ctx context.Context, src *sources.Source) (Result, err
 	return Result{}, fmt.Errorf("no connector for kind %q", src.Kind)
 }
 
-func (c connectors) get(ctx context.Context, rawURL string, header http.Header) (*http.Response, []byte, error) {
+func (c Connectors) get(ctx context.Context, rawURL string, header http.Header) (*http.Response, []byte, error) {
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, rawURL, nil)
 	if err != nil {
 		return nil, nil, err
@@ -104,7 +109,7 @@ func (c connectors) get(ctx context.Context, rawURL string, header http.Header) 
 	return resp, body, nil
 }
 
-func (c connectors) rss(ctx context.Context, src *sources.Source) (Result, error) {
+func (c Connectors) rss(ctx context.Context, src *sources.Source) (Result, error) {
 	h := http.Header{"Accept": {"application/rss+xml, application/atom+xml, application/xml;q=0.9, */*;q=0.5"}}
 	if src.ETag != "" {
 		h.Set("If-None-Match", src.ETag)
@@ -165,7 +170,7 @@ type hnSearch struct {
 	} `json:"hits"`
 }
 
-func (c connectors) hackerNews(ctx context.Context, src *sources.Source) (Result, error) {
+func (c Connectors) hackerNews(ctx context.Context, src *sources.Source) (Result, error) {
 	_, body, err := c.get(ctx, src.URL, http.Header{"Accept": {"application/json"}})
 	if err != nil {
 		return Result{}, err
@@ -213,7 +218,7 @@ type authorFeed struct {
 	} `json:"feed"`
 }
 
-func (c connectors) bluesky(ctx context.Context, src *sources.Source) (Result, error) {
+func (c Connectors) bluesky(ctx context.Context, src *sources.Source) (Result, error) {
 	q := url.Values{"actor": {src.URL}, "filter": {"posts_no_replies"}, "limit": {"50"}}
 	_, body, err := c.get(ctx, c.blueskyAPI+"/xrpc/app.bsky.feed.getAuthorFeed?"+q.Encode(), http.Header{"Accept": {"application/json"}})
 	if err != nil {

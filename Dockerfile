@@ -9,4 +9,4 @@ FROM gcr.io/distroless/static-debian12:nonroot
 COPY --from=build /out/briefing /briefing
 EXPOSE 8080
 ENTRYPOINT ["/briefing"]
-CMD ["serve"]
+CMD ["all"]

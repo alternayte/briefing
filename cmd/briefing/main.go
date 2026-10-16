@@ -18,7 +18,7 @@ import (
 	"github.com/alternayte/briefing/internal/platform"
 )
 
-const usage = "usage: briefing serve|migrate|seed"
+const usage = "usage: briefing all|serve|work|migrate|seed"
 
 func main() {
 	if err := run(os.Args[1:]); err != nil {
@@ -56,6 +56,10 @@ func run(args []string) error {
 		return migrate(ctx, cfg)
 	case "seed":
 		return seed(ctx, cfg)
+	case "work":
+		return work(ctx, cfg)
+	case "all":
+		return all(ctx, cfg)
 	default:
 		return fmt.Errorf("unknown command %q; %s", args[0], usage)
 	}
@@ -98,4 +102,26 @@ func serve(ctx context.Context, cfg platform.Config) error {
 		return fmt.Errorf("shutdown: %w", err)
 	}
 	return nil
+}
+
+// all migrates, loads the catalog, then runs the server and the workers in
+// one process. When one stops, the other stops too.
+func all(ctx context.Context, cfg platform.Config) error {
+	if err := migrate(ctx, cfg); err != nil {
+		return err
+	}
+	if err := seed(ctx, cfg); err != nil {
+		return err
+	}
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+	errc := make(chan error, 2)
+	go func() { errc <- serve(ctx, cfg) }()
+	go func() { errc <- work(ctx, cfg) }()
+	first := <-errc
+	cancel()
+	if second := <-errc; first == nil {
+		first = second
+	}
+	return first
 }

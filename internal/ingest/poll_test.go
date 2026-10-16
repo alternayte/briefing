@@ -107,7 +107,7 @@ func TestDisabledSourceIsNotFetched(t *testing.T) {
 	e := pgtest.Engine(t)
 	var hits int
 	srv := serveFixture(t, "testdata/hn.json", "application/json", func(w http.ResponseWriter, r *http.Request) bool { hits++; return false })
-	p := NewPoller(e, newConnectors(srv.Client(), platform.DefaultTuning(), "t", srv.URL), time.Now)
+	p := NewPoller(e, NewConnectors(srv.Client(), platform.DefaultTuning(), "t", srv.URL), time.Now)
 	dreltest.WithRollback(t, e, func(ctx context.Context) {
 		src := seedSource(t, ctx, e, sources.KindHN, srv.URL+"/hn?poll-test=off")
 		if _, err := drel.MustFromContext(ctx).Exec(ctx, `UPDATE sources SET enabled = false WHERE id = $1`, src); err != nil {

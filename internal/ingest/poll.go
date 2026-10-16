@@ -15,11 +15,11 @@ import (
 // Poller polls one source and stores what it links to.
 type Poller struct {
 	engine *drel.Engine
-	conn   connectors
+	conn   Connectors
 	now    func() time.Time
 }
 
-func NewPoller(engine *drel.Engine, conn connectors, now func() time.Time) *Poller {
+func NewPoller(engine *drel.Engine, conn Connectors, now func() time.Time) *Poller {
 	return &Poller{engine: engine, conn: conn, now: now}
 }
 

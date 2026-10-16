@@ -29,8 +29,8 @@ func serveFixture(t *testing.T, path, contentType string, handle func(w http.Res
 	return srv
 }
 
-func testConnectors(srv *httptest.Server) connectors {
-	return newConnectors(srv.Client(), platform.DefaultTuning(), "Briefing-test", srv.URL)
+func testConnectors(srv *httptest.Server) Connectors {
+	return NewConnectors(srv.Client(), platform.DefaultTuning(), "Briefing-test", srv.URL)
 }
 
 func TestRSSAndAtomFeedsYieldEntries(t *testing.T) {
