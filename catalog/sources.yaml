@@ -1,0 +1,63 @@
+# The source catalog that `briefing seed` loads. Re-running the seed updates
+# title, tier and language by (kind, url) and leaves everything else alone.
+#
+# kind: rss | hn | bluesky
+# url: the feed URL; for hn the API endpoint; for bluesky the author handle
+# tier: 1 = primary or specialist source, 2 = general news, 3 = user-added
+# language: en | fr (default en)
+# poll_minutes: optional; the default depends on the kind
+
+# Research and science
+- {kind: rss, tier: 1, title: Quanta Magazine, url: "https://www.quantamagazine.org/feed/"}
+- {kind: rss, tier: 1, title: Nature, url: "https://www.nature.com/nature.rss"}
+- {kind: rss, tier: 1, title: Science News, url: "https://www.science.org/rss/news_current.xml"}
+- {kind: rss, tier: 1, title: IEEE Spectrum, url: "https://spectrum.ieee.org/feeds/feed.rss"}
+- {kind: rss, tier: 1, title: NASA News Releases, url: "https://www.nasa.gov/news-release/feed/"}
+- {kind: rss, tier: 1, title: ESA Space News, url: "https://www.esa.int/rssfeed/Our_Activities/Space_News"}
+- {kind: rss, tier: 1, title: Carbon Brief, url: "https://www.carbonbrief.org/feed/"}
+- {kind: rss, tier: 2, title: Phys.org, url: "https://phys.org/rss-feed/"}
+- {kind: rss, tier: 2, title: ScienceDaily, url: "https://www.sciencedaily.com/rss/all.xml"}
+
+# AI
+- {kind: rss, tier: 1, title: Google AI Blog, url: "https://blog.google/technology/ai/rss/"}
+- {kind: rss, tier: 1, title: OpenAI News, url: "https://openai.com/news/rss.xml"}
+- {kind: rss, tier: 1, title: Hugging Face Blog, url: "https://huggingface.co/blog/feed.xml"}
+- {kind: rss, tier: 1, title: Simon Willison, url: "https://simonwillison.net/atom/everything/"}
+
+# Software, languages and the web platform
+- {kind: rss, tier: 1, title: LWN.net, url: "https://lwn.net/headlines/rss"}
+- {kind: rss, tier: 1, title: The Go Blog, url: "https://go.dev/blog/feed.atom"}
+- {kind: rss, tier: 1, title: Rust Blog, url: "https://blog.rust-lang.org/feed.xml"}
+- {kind: rss, tier: 1, title: Python Insider, url: "https://blog.python.org/feeds/posts/default"}
+- {kind: rss, tier: 1, title: Kubernetes Blog, url: "https://kubernetes.io/feed.xml"}
+- {kind: rss, tier: 1, title: The Cloudflare Blog, url: "https://blog.cloudflare.com/rss/"}
+- {kind: rss, tier: 1, title: The GitHub Blog, url: "https://github.blog/feed/"}
+- {kind: rss, tier: 1, title: Mozilla Hacks, url: "https://hacks.mozilla.org/feed/"}
+- {kind: rss, tier: 1, title: WebKit, url: "https://webkit.org/feed/"}
+- {kind: rss, tier: 1, title: V8, url: "https://v8.dev/blog.atom"}
+
+# Security and policy
+- {kind: rss, tier: 1, title: Krebs on Security, url: "https://krebsonsecurity.com/feed/"}
+- {kind: rss, tier: 1, title: Schneier on Security, url: "https://www.schneier.com/feed/atom/"}
+- {kind: rss, tier: 1, title: EFF Updates, url: "https://www.eff.org/rss/updates.xml"}
+- {kind: rss, tier: 2, title: BleepingComputer, url: "https://www.bleepingcomputer.com/feed/"}
+
+# General tech news
+- {kind: rss, tier: 2, title: Ars Technica, url: "https://feeds.arstechnica.com/arstechnica/index"}
+- {kind: rss, tier: 2, title: MIT Technology Review, url: "https://www.technologyreview.com/feed/"}
+- {kind: rss, tier: 2, title: The Register, url: "https://www.theregister.com/headlines.atom"}
+- {kind: rss, tier: 2, title: TechCrunch, url: "https://techcrunch.com/feed/"}
+
+# Discovery: the linked articles become items
+- {kind: hn, tier: 2, title: Hacker News front page, url: "https://hn.algolia.com/api/v1/search?tags=front_page"}
+
+- {kind: bluesky, tier: 2, title: Ars Technica, url: arstechnica.com}
+- {kind: bluesky, tier: 1, title: Nature, url: nature.com}
+- {kind: bluesky, tier: 1, title: Science Magazine, url: science.org}
+- {kind: bluesky, tier: 2, title: The Verge, url: theverge.com}
+- {kind: bluesky, tier: 2, title: WIRED, url: wired.com}
+- {kind: bluesky, tier: 2, title: New Scientist, url: newscientist.com}
+- {kind: bluesky, tier: 2, title: 404 Media, url: 404media.co}
+- {kind: bluesky, tier: 1, title: Electronic Frontier Foundation, url: eff.org}
+- {kind: bluesky, tier: 2, title: The Register, url: theregister.com}
+- {kind: bluesky, tier: 1, title: Simon Willison, url: simonwillison.net}

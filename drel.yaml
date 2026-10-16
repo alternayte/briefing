@@ -1,6 +1,8 @@
 modules:
   - name: accounts
     packages: [./internal/accounts]
+  - name: sources
+    packages: [./internal/sources]
 
 output:
   db: ./internal/db/drel_gen.go

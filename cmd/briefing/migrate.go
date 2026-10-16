@@ -8,6 +8,7 @@ import (
 	accountsmigrations "github.com/alternayte/briefing/internal/accounts/migrations"
 	"github.com/alternayte/briefing/internal/platform"
 	"github.com/alternayte/briefing/internal/platform/migrations"
+	sourcesmigrations "github.com/alternayte/briefing/internal/sources/migrations"
 )
 
 // migrate applies the auth-all, River and app schemas, in that order.
@@ -28,5 +29,5 @@ func migrate(ctx context.Context, cfg platform.Config) error {
 	if err := platform.MigrateRiver(ctx, pool); err != nil {
 		return err
 	}
-	return platform.MigrateApp(ctx, cfg.DatabaseURL, migrations.FS, accountsmigrations.FS)
+	return platform.MigrateApp(ctx, cfg.DatabaseURL, migrations.FS, accountsmigrations.FS, sourcesmigrations.FS)
 }

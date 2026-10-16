@@ -6,12 +6,14 @@ import (
 	"context"
 
 	accounts "github.com/alternayte/briefing/internal/accounts"
+	sources "github.com/alternayte/briefing/internal/sources"
 	"github.com/alternayte/drel"
 )
 
 type DB struct {
 	*drel.Engine
 	Profiles *accounts.ProfileRepository
+	Sources  *sources.SourceRepository
 	Modules  Modules
 }
 
@@ -23,9 +25,13 @@ func Open(dsn string, opts ...drel.Option) (*DB, error) {
 	return &DB{
 		Engine:   engine,
 		Profiles: &accounts.ProfileRepository{Repository: drel.NewRepository(engine, accounts.ProfileMeta)},
+		Sources:  &sources.SourceRepository{Repository: drel.NewRepository(engine, sources.SourceMeta)},
 		Modules: Modules{
 			Accounts: AccountsRepos{
 				Profiles: &accounts.ProfileRepository{Repository: drel.NewRepository(engine, accounts.ProfileMeta)},
+			},
+			Sources: SourcesRepos{
+				Sources: &sources.SourceRepository{Repository: drel.NewRepository(engine, sources.SourceMeta)},
 			},
 		},
 	}, nil
@@ -35,6 +41,7 @@ func Open(dsn string, opts ...drel.Option) (*DB, error) {
 // the fields, stage with Add and Remove, then let WithTx commit.
 type TxRepos struct {
 	Profiles *accounts.TxProfileRepository
+	Sources  *sources.TxSourceRepository
 	Modules  TxModules
 }
 
@@ -44,9 +51,13 @@ func (db *DB) Tx(ctx context.Context) TxRepos {
 	tx := drel.MustFromContext(ctx)
 	return TxRepos{
 		Profiles: &accounts.TxProfileRepository{TxRepository: drel.NewTxRepository(tx, accounts.ProfileMeta)},
+		Sources:  &sources.TxSourceRepository{TxRepository: drel.NewTxRepository(tx, sources.SourceMeta)},
 		Modules: TxModules{
 			Accounts: AccountsTxRepos{
 				Profiles: &accounts.TxProfileRepository{TxRepository: drel.NewTxRepository(tx, accounts.ProfileMeta)},
+			},
+			Sources: SourcesTxRepos{
+				Sources: &sources.TxSourceRepository{TxRepository: drel.NewTxRepository(tx, sources.SourceMeta)},
 			},
 		},
 	}
@@ -62,16 +73,28 @@ type AccountsTxRepos struct {
 	Profiles *accounts.TxProfileRepository
 }
 
+// SourcesRepos holds the untracked repositories of the "sources" module.
+type SourcesRepos struct {
+	Sources *sources.SourceRepository
+}
+
+// SourcesTxRepos holds the tracked repositories of the "sources" module.
+type SourcesTxRepos struct {
+	Sources *sources.TxSourceRepository
+}
+
 // Modules groups the untracked repositories by feature slice, so a slice
 // reaches only its own models.
 type Modules struct {
 	Accounts AccountsRepos
+	Sources  SourcesRepos
 }
 
 // TxModules groups the tracked repositories by feature slice. Every set is
 // bound to the same transaction.
 type TxModules struct {
 	Accounts AccountsTxRepos
+	Sources  SourcesTxRepos
 }
 
 // WithTx runs fn inside a transaction and puts that transaction in the

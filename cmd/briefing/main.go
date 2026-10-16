@@ -18,7 +18,7 @@ import (
 	"github.com/alternayte/briefing/internal/platform"
 )
 
-const usage = "usage: briefing serve|migrate"
+const usage = "usage: briefing serve|migrate|seed"
 
 func main() {
 	if err := run(os.Args[1:]); err != nil {
@@ -54,6 +54,8 @@ func run(args []string) error {
 		return serve(ctx, cfg)
 	case "migrate":
 		return migrate(ctx, cfg)
+	case "seed":
+		return seed(ctx, cfg)
 	default:
 		return fmt.Errorf("unknown command %q; %s", args[0], usage)
 	}

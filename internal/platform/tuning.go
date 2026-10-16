@@ -14,6 +14,7 @@ const CategoryOther = "other"
 // Tuning holds every threshold, weight, window and limit of the pipeline,
 // ranking and learning. Changing a value is a code change with a test.
 type Tuning struct {
+	Poll     PollTuning
 	Filter   FilterTuning
 	Triage   TriageTuning
 	Cluster  ClusterTuning
@@ -29,6 +30,14 @@ type Tuning struct {
 	Taxonomy []string
 	// TextRetention is how long extracted article text is kept.
 	TextRetention time.Duration
+}
+
+// PollTuning is the default poll interval of each source kind; a catalog
+// entry can override it.
+type PollTuning struct {
+	RSS     time.Duration
+	HN      time.Duration
+	Bluesky time.Duration
 }
 
 type FilterTuning struct {
@@ -119,6 +128,7 @@ type LearningTuning struct {
 // DefaultTuning returns the tuning the app runs with.
 func DefaultTuning() Tuning {
 	return Tuning{
+		Poll:   PollTuning{RSS: 30 * time.Minute, HN: 10 * time.Minute, Bluesky: 15 * time.Minute},
 		Filter: FilterTuning{MaxItemAge: 72 * time.Hour},
 		Triage: TriageTuning{WorthMin: 0.5, MaxStateChars: 6000},
 		Cluster: ClusterTuning{
@@ -211,6 +221,9 @@ func (t Tuning) Validate() error {
 	}
 	if !(w.SummaryMinWords < w.SummaryMaxWords && w.SummaryMaxWords <= w.SummaryRejectWords) {
 		fail("summary words must satisfy min < max <= reject")
+	}
+	if min(t.Poll.RSS, t.Poll.HN, t.Poll.Bluesky) < time.Minute {
+		fail("poll intervals must be at least one minute, got %+v", t.Poll)
 	}
 	if len(errs) > 0 {
 		return fmt.Errorf("tuning: %w", errors.Join(errs...))

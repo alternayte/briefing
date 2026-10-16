@@ -1,0 +1,113 @@
+{
+  "tables": [
+    {
+      "name": "sources",
+      "columns": [
+        {
+          "name": "id",
+          "type": "BIGSERIAL PRIMARY KEY",
+          "notNull": true,
+          "pk": true
+        },
+        {
+          "name": "kind",
+          "type": "\"sourcekind\"",
+          "notNull": true
+        },
+        {
+          "name": "url",
+          "type": "text",
+          "notNull": true
+        },
+        {
+          "name": "title",
+          "type": "text",
+          "notNull": true
+        },
+        {
+          "name": "tier",
+          "type": "integer",
+          "notNull": true
+        },
+        {
+          "name": "language",
+          "type": "text",
+          "notNull": true
+        },
+        {
+          "name": "enabled",
+          "type": "boolean",
+          "notNull": true,
+          "default": "true"
+        },
+        {
+          "name": "poll_interval_seconds",
+          "type": "integer",
+          "notNull": true
+        },
+        {
+          "name": "etag",
+          "type": "text",
+          "notNull": true,
+          "default": "''"
+        },
+        {
+          "name": "last_modified",
+          "type": "text",
+          "notNull": true,
+          "default": "''"
+        },
+        {
+          "name": "cursor",
+          "type": "text",
+          "notNull": true,
+          "default": "''"
+        },
+        {
+          "name": "last_ok_at",
+          "type": "timestamptz",
+          "notNull": false
+        },
+        {
+          "name": "last_error",
+          "type": "text",
+          "notNull": true,
+          "default": "''"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamptz",
+          "notNull": true,
+          "default": "NOW()"
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "notNull": true,
+          "default": "NOW()"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "uq_sources_kind_url",
+          "columns": [
+            "kind",
+            "url"
+          ],
+          "unique": true
+        }
+      ]
+    }
+  ],
+  "enums": [
+    {
+      "name": "sourcekind",
+      "values": [
+        "rss",
+        "hn",
+        "bluesky"
+      ],
+      "baseType": "string"
+    }
+  ]
+}
