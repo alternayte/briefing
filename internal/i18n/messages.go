@@ -55,6 +55,39 @@ type Messages struct {
 	AdminCap          string
 	AdminCapReached   string
 	AdminNoSpendToday string
+
+	OnboardingTitle         string
+	OnboardingIntro         string
+	OnboardingLanguage      string
+	OnboardingInterests     string
+	OnboardingInterestsHint string
+	OnboardingAvoid         string
+	OnboardingAvoidHint     string
+	OnboardingContinue      string
+	OnboardingNeedInterest  string
+	OnboardingTooMany       string
+
+	CalibrateTitle     string
+	CalibrateIntro     string
+	CalibrateUseful    string
+	CalibrateKnew      string
+	CalibrateNotForMe  string
+	CalibrateRated     string
+	CalibrateFinish    string
+	CalibrateNoStories string
+
+	FeedTitle        string
+	FeedEmpty        string
+	FeedMore         string
+	FeedNewStories   string
+	FeedShow         string
+	FeedPublishers   string
+	FeedConfidence   string
+	ConfidenceHigh   string
+	ConfidenceMedium string
+	ConfidenceLow    string
+	FeedLinkCard     string
+	FeedBecause      string
 }
 
 func (m Messages) MagicLinkText(link string, minutes int) string {
@@ -87,30 +120,62 @@ var en = Messages{
 	VerifyBody:   "Select the button to finish signing in. If you did not ask for this link, close this page.",
 	VerifyButton: "Sign in",
 
-	AdminTitle:        "Operations",
-	AdminSources:      "Sources",
-	AdminSource:       "Source",
-	AdminKind:         "Kind",
-	AdminLastSuccess:  "Last success",
-	AdminLastError:    "Last error",
-	AdminNever:        "never",
-	AdminEnable:       "Enable",
-	AdminDisable:      "Disable",
-	AdminDisabled:     "off",
-	AdminJobs:         "Jobs",
-	AdminJobKind:      "Job",
-	AdminJobState:     "State",
-	AdminJobCount:     "Count",
-	AdminFailures:     "Recent failures",
-	AdminNoFailures:   "No recent failures.",
-	AdminSpend:        "Model spend today (UTC)",
-	AdminStage:        "Stage",
-	AdminCalls:        "Calls",
-	AdminCost:         "Cost",
-	AdminTotal:        "Total",
-	AdminCap:          "Daily cap",
-	AdminCapReached:   "The daily cap is reached. Writing, explanations and translations wait until tomorrow; triage and embeddings continue.",
-	AdminNoSpendToday: "No model calls today.",
+	AdminTitle:              "Operations",
+	AdminSources:            "Sources",
+	AdminSource:             "Source",
+	AdminKind:               "Kind",
+	AdminLastSuccess:        "Last success",
+	AdminLastError:          "Last error",
+	AdminNever:              "never",
+	AdminEnable:             "Enable",
+	AdminDisable:            "Disable",
+	AdminDisabled:           "off",
+	AdminJobs:               "Jobs",
+	AdminJobKind:            "Job",
+	AdminJobState:           "State",
+	AdminJobCount:           "Count",
+	AdminFailures:           "Recent failures",
+	AdminNoFailures:         "No recent failures.",
+	AdminSpend:              "Model spend today (UTC)",
+	AdminStage:              "Stage",
+	AdminCalls:              "Calls",
+	AdminCost:               "Cost",
+	AdminTotal:              "Total",
+	AdminCap:                "Daily cap",
+	AdminCapReached:         "The daily cap is reached. Writing, explanations and translations wait until tomorrow; triage and embeddings continue.",
+	AdminNoSpendToday:       "No model calls today.",
+	OnboardingTitle:         "Set up your briefing",
+	OnboardingIntro:         "Tell Briefing what you follow. It reads the sources, keeps what matters to you and leaves out the rest.",
+	OnboardingLanguage:      "Language",
+	OnboardingInterests:     "Topics you follow",
+	OnboardingInterestsHint: "One per line, in your own words: “Rust and systems programming”, “exoplanets”, “AI safety research”.",
+	OnboardingAvoid:         "Topics you do not want",
+	OnboardingAvoidHint:     "Optional. One per line: “crypto prices”, “smartphone launches”.",
+	OnboardingContinue:      "Continue",
+	OnboardingNeedInterest:  "Add at least one topic you follow.",
+	OnboardingTooMany:       "Keep it to 20 topics of at most 80 characters each.",
+
+	CalibrateTitle:     "Calibrate",
+	CalibrateIntro:     "Rate a few recent stories. Your answers tune the ranking and tell Briefing what you already know.",
+	CalibrateUseful:    "Useful",
+	CalibrateKnew:      "I knew this",
+	CalibrateNotForMe:  "Not for me",
+	CalibrateRated:     "Rated",
+	CalibrateFinish:    "Open my briefing",
+	CalibrateNoStories: "No stories to rate yet. You can start now; the ranking learns as you read.",
+
+	FeedTitle:        "Today",
+	FeedEmpty:        "Your briefing is being prepared. New stories appear here as they are ranked.",
+	FeedMore:         "More stories",
+	FeedNewStories:   "New stories are ready.",
+	FeedShow:         "Show",
+	FeedPublishers:   "publishers",
+	FeedConfidence:   "Confidence",
+	ConfidenceHigh:   "high",
+	ConfidenceMedium: "medium",
+	ConfidenceLow:    "low",
+	FeedLinkCard:     "Not enough source text for a summary yet. Read the original:",
+	FeedBecause:      "Because you follow",
 }
 
 var fr = Messages{
@@ -139,28 +204,60 @@ var fr = Messages{
 	VerifyBody:   "Sélectionnez le bouton pour terminer la connexion. Si vous n’avez pas demandé ce lien, fermez cette page.",
 	VerifyButton: "Se connecter",
 
-	AdminTitle:        "Exploitation",
-	AdminSources:      "Sources",
-	AdminSource:       "Source",
-	AdminKind:         "Type",
-	AdminLastSuccess:  "Dernier succès",
-	AdminLastError:    "Dernière erreur",
-	AdminNever:        "jamais",
-	AdminEnable:       "Activer",
-	AdminDisable:      "Désactiver",
-	AdminDisabled:     "désactivée",
-	AdminJobs:         "Tâches",
-	AdminJobKind:      "Tâche",
-	AdminJobState:     "État",
-	AdminJobCount:     "Nombre",
-	AdminFailures:     "Échecs récents",
-	AdminNoFailures:   "Aucun échec récent.",
-	AdminSpend:        "Dépenses de modèles aujourd’hui (UTC)",
-	AdminStage:        "Étape",
-	AdminCalls:        "Appels",
-	AdminCost:         "Coût",
-	AdminTotal:        "Total",
-	AdminCap:          "Plafond quotidien",
-	AdminCapReached:   "Le plafond quotidien est atteint. La rédaction, les explications et les traductions reprennent demain ; le tri et les plongements continuent.",
-	AdminNoSpendToday: "Aucun appel de modèle aujourd’hui.",
+	AdminTitle:              "Exploitation",
+	AdminSources:            "Sources",
+	AdminSource:             "Source",
+	AdminKind:               "Type",
+	AdminLastSuccess:        "Dernier succès",
+	AdminLastError:          "Dernière erreur",
+	AdminNever:              "jamais",
+	AdminEnable:             "Activer",
+	AdminDisable:            "Désactiver",
+	AdminDisabled:           "désactivée",
+	AdminJobs:               "Tâches",
+	AdminJobKind:            "Tâche",
+	AdminJobState:           "État",
+	AdminJobCount:           "Nombre",
+	AdminFailures:           "Échecs récents",
+	AdminNoFailures:         "Aucun échec récent.",
+	AdminSpend:              "Dépenses de modèles aujourd’hui (UTC)",
+	AdminStage:              "Étape",
+	AdminCalls:              "Appels",
+	AdminCost:               "Coût",
+	AdminTotal:              "Total",
+	AdminCap:                "Plafond quotidien",
+	AdminCapReached:         "Le plafond quotidien est atteint. La rédaction, les explications et les traductions reprennent demain ; le tri et les plongements continuent.",
+	AdminNoSpendToday:       "Aucun appel de modèle aujourd’hui.",
+	OnboardingTitle:         "Configurer votre briefing",
+	OnboardingIntro:         "Dites à Briefing ce que vous suivez. Il lit les sources, garde ce qui compte pour vous et laisse le reste.",
+	OnboardingLanguage:      "Langue",
+	OnboardingInterests:     "Sujets suivis",
+	OnboardingInterestsHint: "Un par ligne, avec vos mots : « Rust et programmation système », « exoplanètes », « sûreté de l’IA ».",
+	OnboardingAvoid:         "Sujets à écarter",
+	OnboardingAvoidHint:     "Facultatif. Un par ligne : « cours des cryptomonnaies », « sorties de smartphones ».",
+	OnboardingContinue:      "Continuer",
+	OnboardingNeedInterest:  "Ajoutez au moins un sujet suivi.",
+	OnboardingTooMany:       "Limitez-vous à 20 sujets de 80 caractères au plus.",
+
+	CalibrateTitle:     "Calibrer",
+	CalibrateIntro:     "Notez quelques articles récents. Vos réponses ajustent le classement et indiquent à Briefing ce que vous savez déjà.",
+	CalibrateUseful:    "Utile",
+	CalibrateKnew:      "Je le savais",
+	CalibrateNotForMe:  "Pas pour moi",
+	CalibrateRated:     "Noté",
+	CalibrateFinish:    "Ouvrir mon briefing",
+	CalibrateNoStories: "Aucun article à noter pour l’instant. Vous pouvez commencer ; le classement apprend au fil de vos lectures.",
+
+	FeedTitle:        "Aujourd’hui",
+	FeedEmpty:        "Votre briefing se prépare. Les nouveaux articles apparaissent ici dès qu’ils sont classés.",
+	FeedMore:         "Autres articles",
+	FeedNewStories:   "De nouveaux articles sont prêts.",
+	FeedShow:         "Afficher",
+	FeedPublishers:   "médias",
+	FeedConfidence:   "Fiabilité",
+	ConfidenceHigh:   "élevée",
+	ConfidenceMedium: "moyenne",
+	ConfidenceLow:    "faible",
+	FeedLinkCard:     "Pas encore assez de texte source pour un résumé. Lire l’original :",
+	FeedBecause:      "Parce que vous suivez",
 }

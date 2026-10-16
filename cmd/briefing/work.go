@@ -17,6 +17,7 @@ import (
 	"github.com/alternayte/briefing/internal/embed"
 	"github.com/alternayte/briefing/internal/ingest"
 	"github.com/alternayte/briefing/internal/platform"
+	"github.com/alternayte/briefing/internal/ranking"
 	"github.com/alternayte/briefing/internal/stories"
 	"github.com/alternayte/briefing/internal/write"
 )
@@ -84,10 +85,28 @@ func (p pipeline) workers() (*river.Workers, []*river.PeriodicJob, error) {
 			return err
 		},
 	})
-	river.AddWorker(w, &write.WriteWorker{Writer: write.NewWriter(p.engine, p.openrouter, embed.New(p.openrouter, p.cfg), p.cfg, p.tuning, p.now)})
+	river.AddWorker(w, &write.WriteWorker{
+		Writer: write.NewWriter(p.engine, p.openrouter, embed.New(p.openrouter, p.cfg), p.cfg, p.tuning, p.now),
+		OnWritten: func(ctx context.Context, _ int64) error {
+			_, err := river.ClientFromContext[pgx.Tx](ctx).Insert(ctx, ranking.RankAllArgs{}, nil)
+			return err
+		},
+	})
+	river.AddWorker(w, &ranking.RankWorker{
+		Ranker: ranking.NewRanker(p.engine, decider, p.tuning, p.now),
+		OnRelevant: func(ctx context.Context, ids []int64) error {
+			params := make([]river.InsertManyParams, len(ids))
+			for i, id := range ids {
+				params[i] = river.InsertManyParams{Args: fetchArgs(id)}
+			}
+			_, err := river.ClientFromContext[pgx.Tx](ctx).InsertMany(ctx, params)
+			return err
+		},
+	})
+	river.AddWorker(w, &ranking.RankAllWorker{Engine: p.engine})
 	river.AddWorker(w, &stories.CloseStaleWorker{Clusterer: clusterer})
 	river.AddWorker(w, &stories.SweepWorker{Engine: p.engine, Now: p.now, Tuning: p.tuning.Write, FetchArgs: fetchArgs, WriteArgs: writeArgs})
-	return w, []*river.PeriodicJob{ingest.SweepEveryMinute(), stories.SweepEveryFiveMinutes(), stories.CloseStaleHourly()}, nil
+	return w, []*river.PeriodicJob{ingest.SweepEveryMinute(), stories.SweepEveryFiveMinutes(), stories.CloseStaleHourly(), ranking.RankAllHourly()}, nil
 }
 
 // texts builds the fetch step; rendering is on when Cloudflare is configured.

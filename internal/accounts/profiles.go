@@ -3,6 +3,7 @@ package accounts
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/alternayte/drel"
 	"github.com/google/uuid"
@@ -68,6 +69,23 @@ func (s *ProfileStore) SetLocale(ctx context.Context, userID uuid.UUID, l i18n.L
 	})
 	if err != nil {
 		return fmt.Errorf("set locale of %s: %w", userID, err)
+	}
+	return nil
+}
+
+// MarkOnboarded records that the user finished onboarding.
+func (s *ProfileStore) MarkOnboarded(ctx context.Context, userID uuid.UUID, at time.Time) error {
+	err := s.engine.WithTx(ctx, func(ctx context.Context) error {
+		p, err := txProfiles(ctx).FindByID(ctx, userID)
+		if err != nil {
+			return err
+		}
+		p.OnboardedAt = &at
+		// workaround: alternayte/drel#12
+		return drel.MustFromContext(ctx).SaveChanges(ctx)
+	})
+	if err != nil {
+		return fmt.Errorf("mark %s onboarded: %w", userID, err)
 	}
 	return nil
 }
