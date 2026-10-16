@@ -61,7 +61,9 @@ func Login(p LoginProps) gx.Node {
 	}
 //line Login.gx:28:4
 	_b1.Add(_tLogin3.With(
-//line Login.gx:31:214
+//line Login.gx:31:5
+		gx.Open("a", gx.Attrs{gx.Attr{Key: "class", Value: "label inline-flex min-h-target w-full items-center justify-center bg-primary px-line text-primary-foreground hover:bg-accent hover:text-accent-foreground", Kind: gx.AttrText}, gx.Attr{Key: "href", Value: "/api/auth/oauth/github?redirect_to=/", Kind: gx.AttrURL}, gx.Attr{Key: "data-gx-nav", Value: "off", Kind: gx.AttrText}}),
+//line Login.gx:31:232
 		gx.Text(p.Msg.LoginGitHub),
 	))
 //line Login.gx:34:3
@@ -114,9 +116,9 @@ var _tLogin2 = gx.NewTemplate(
 )
 
 var _tLogin3 = gx.NewTemplate(
-	[]string{"\n\n  <div class=\"mt-line border-t border-border pt-line\">\n    <a class=\"label inline-flex min-h-target w-full items-center justify-center bg-primary px-line text-primary-foreground hover:bg-accent hover:text-accent-foreground\" href=\"/api/auth/oauth/github?redirect_to=/\">", "</a>\n  </div>\n\n  "},
-	[]int{2},
-	nil,
+	[]string{"\n\n  <div class=\"mt-line border-t border-border pt-line\">\n    <a", ">", "</a>\n  </div>\n\n  "},
+	[]int{1, 2},
+	[]gx.TemplateEl{{Slot: 0, Start: 61, EndStatic: 2, End: 4}},
 	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "div"}, {El: -1, Slot: -1}},
 )
 
