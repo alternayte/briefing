@@ -107,8 +107,9 @@ func (r *Ranker) reader(ctx context.Context, userID uuid.UUID) (pos, neg []strin
 	return pos, neg, budget, err
 }
 
-// prefilter returns the recent stories with no entry for the reader whose
-// centroid comes close enough to one of their positive interests.
+// prefilter returns the recent stories, seen by a source the reader
+// subscribes to and with no entry for them yet, whose centroid comes close
+// enough to one of their positive interests.
 func (r *Ranker) prefilter(ctx context.Context, userID uuid.UUID, now time.Time) ([]candidate, error) {
 	var out []candidate
 	err := r.engine.WithTx(ctx, func(ctx context.Context) error {
@@ -120,6 +121,11 @@ func (r *Ranker) prefilter(ctx context.Context, userID uuid.UUID, now time.Time)
 					AND vector_dims(i.embedding) = vector_dims(s.centroid)
 				WHERE s.last_item_at >= $2
 					AND NOT EXISTS (SELECT 1 FROM feed_entries f WHERE f.user_id = $1 AND f.story_id = s.id)
+					AND EXISTS (
+						SELECT 1 FROM story_items si
+						JOIN sightings g ON g.item_id = si.item_id
+						JOIN subscriptions sub ON sub.source_id = g.source_id AND sub.user_id = $1
+						WHERE si.story_id = s.id)
 			), best AS (
 				SELECT DISTINCT ON (id) id, text, sim FROM matches ORDER BY id, sim DESC
 			)

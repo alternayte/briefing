@@ -37,10 +37,21 @@ func relevanceStub(t *testing.T) *httptest.Server {
 }
 
 type fixture struct {
-	t   *testing.T
-	ctx context.Context
-	tx  *drel.Tx
-	now time.Time
+	t      *testing.T
+	ctx    context.Context
+	tx     *drel.Tx
+	now    time.Time
+	source int64
+}
+
+// withSource adds the source that sights every fixture story.
+func (f fixture) withSource() fixture {
+	err := f.tx.QueryRow(f.ctx, `INSERT INTO sources (kind, url, title, tier, language, poll_interval_seconds)
+		VALUES ('rss', 'https://rank.test/feed', 'rank', 1, 'en', 600) RETURNING id`).Scan(&f.source)
+	if err != nil {
+		f.t.Fatal(err)
+	}
+	return f
 }
 
 func (f fixture) reader(email string, budget int, interest []float32, text string) uuid.UUID {
@@ -52,6 +63,9 @@ func (f fixture) reader(email string, budget int, interest []float32, text strin
 	if _, err := f.tx.Exec(f.ctx, `INSERT INTO interests (user_id, text, embedding, embed_model) VALUES ($1, $2, $3::vector, 'test')`, id, text, v); err != nil {
 		f.t.Fatal(err)
 	}
+	if _, err := f.tx.Exec(f.ctx, `INSERT INTO subscriptions (user_id, source_id) VALUES ($1, $2)`, id, f.source); err != nil {
+		f.t.Fatal(err)
+	}
 	return id
 }
 
@@ -61,6 +75,18 @@ func (f fixture) story(headline string, centroid []float32, age time.Duration, s
 	err := f.tx.QueryRow(f.ctx, `INSERT INTO stories (opened_at, last_item_at, category, centroid, significance, learning, publisher_count)
 		VALUES ($1, $1, 'x', $2::vector, $3, 1.5, 2) RETURNING id`, f.now.Add(-age), v, significance).Scan(&id)
 	if err != nil {
+		f.t.Fatal(err)
+	}
+	var item int64
+	if err := f.tx.QueryRow(f.ctx, `INSERT INTO items (canonical_url, title, snippet, status) VALUES ($1, $2, '', 'kept') RETURNING id`,
+		fmt.Sprintf("https://rank.test/%d", id), headline).Scan(&item); err != nil {
+		f.t.Fatal(err)
+	}
+	if _, err := f.tx.Exec(f.ctx, `INSERT INTO story_items (story_id, item_id) VALUES ($1, $2)`, id, item); err != nil {
+		f.t.Fatal(err)
+	}
+	if _, err := f.tx.Exec(f.ctx, `INSERT INTO sightings (source_id, external_id, item_id, engagement, seen_at) VALUES ($1, $2, $3, '{}', now())`,
+		f.source, fmt.Sprint(item), item); err != nil {
 		f.t.Fatal(err)
 	}
 	if _, err := f.tx.Exec(f.ctx, `INSERT INTO summaries (story_id, revision, headline, summary, why_it_matters, what_is_new, claims, confidence, model, prompt_version, publisher_count, text_items)
@@ -94,7 +120,7 @@ func TestRankFillsEachReadersFeedFromTheirInterests(t *testing.T) {
 	d := decide.New(platform.NewOpenRouter(srv.URL, "k", srv.Client(), e, func() time.Time { return now }), platform.Config{DecideAPI: platform.DecideAPIDecisions}, tu)
 	r := NewRanker(e, d, tu, func() time.Time { return now })
 	dreltest.WithRollback(t, e, func(ctx context.Context) {
-		f := fixture{t: t, ctx: ctx, tx: drel.MustFromContext(ctx), now: now}
+		f := fixture{t: t, ctx: ctx, tx: drel.MustFromContext(ctx), now: now}.withSource()
 		// Stories from other tests must not enter these feeds.
 		_, _ = f.tx.Exec(ctx, `UPDATE stories SET last_item_at = '2000-01-01'`)
 		rustReader := f.reader("rust@example.com", 2, []float32{1, 0, 0}, "Rust")
@@ -122,12 +148,18 @@ func TestRankFillsEachReadersFeedFromTheirInterests(t *testing.T) {
 			t.Errorf("bio feed = %v", got)
 		}
 
+		// A story only an unsubscribed source saw stays out of the feed.
+		var other int64
+		_ = f.tx.QueryRow(ctx, `INSERT INTO sources (kind, url, title, tier, language, poll_interval_seconds) VALUES ('rss', 'https://other.test/feed', 'o', 3, 'en', 600) RETURNING id`).Scan(&other)
+		hidden := f.story("Rust in another feed rel=3 exc=0", []float32{1, 0, 0}, time.Hour, 3)
+		_, _ = f.tx.Exec(ctx, `UPDATE sightings SET source_id = $1 WHERE item_id IN (SELECT item_id FROM story_items WHERE story_id = $2)`, other, hidden)
+
 		// A later story waits under More once the budget is spent.
 		late := f.story("Rust 2.1 rel=3 exc=0", []float32{1, 0, 0}, 0, 3)
 		if _, err := r.Rank(ctx, rustReader); err != nil {
 			t.Fatal(err)
 		}
-		if got := f.feed(rustReader, "candidate"); len(got) != 1 || got[0] != late {
+		if got := f.feed(rustReader, "candidate"); len(got) != 1 || got[0] != late || slices.Contains(got, hidden) {
 			t.Errorf("waiting candidates = %v", got)
 		}
 
@@ -148,7 +180,7 @@ func TestKnewLowersSimilarStoriesForThatReaderOnly(t *testing.T) {
 	d := decide.New(platform.NewOpenRouter(srv.URL, "k", srv.Client(), nil, time.Now), platform.Config{DecideAPI: platform.DecideAPIDecisions}, tu)
 	r := NewRanker(e, d, tu, func() time.Time { return now })
 	dreltest.WithRollback(t, e, func(ctx context.Context) {
-		f := fixture{t: t, ctx: ctx, tx: drel.MustFromContext(ctx), now: now}
+		f := fixture{t: t, ctx: ctx, tx: drel.MustFromContext(ctx), now: now}.withSource()
 		_, _ = f.tx.Exec(ctx, `UPDATE stories SET last_item_at = '2000-01-01'`)
 		a := f.reader("a@example.com", 5, []float32{1, 0, 0}, "Rust")
 		b := f.reader("b@example.com", 5, []float32{1, 0, 0}, "Rust")

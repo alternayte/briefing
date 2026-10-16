@@ -24,6 +24,7 @@ type DB struct {
 	Sightings     *ingest.SightingRepository
 	Events        *learning.EventRepository
 	Sources       *sources.SourceRepository
+	Subscriptions *sources.SubscriptionRepository
 	Stories       *model.StoryRepository
 	StoryItems    *model.StoryItemRepository
 	Concepts      *write.ConceptRepository
@@ -49,6 +50,7 @@ func Open(dsn string, opts ...drel.Option) (*DB, error) {
 		Sightings:     &ingest.SightingRepository{Repository: drel.NewRepository(engine, ingest.SightingMeta)},
 		Events:        &learning.EventRepository{Repository: drel.NewRepository(engine, learning.EventMeta)},
 		Sources:       &sources.SourceRepository{Repository: drel.NewRepository(engine, sources.SourceMeta)},
+		Subscriptions: &sources.SubscriptionRepository{Repository: drel.NewRepository(engine, sources.SubscriptionMeta)},
 		Stories:       &model.StoryRepository{Repository: drel.NewRepository(engine, model.StoryMeta)},
 		StoryItems:    &model.StoryItemRepository{Repository: drel.NewRepository(engine, model.StoryItemMeta)},
 		Concepts:      &write.ConceptRepository{Repository: drel.NewRepository(engine, write.ConceptMeta)},
@@ -73,7 +75,8 @@ func Open(dsn string, opts ...drel.Option) (*DB, error) {
 				Events: &learning.EventRepository{Repository: drel.NewRepository(engine, learning.EventMeta)},
 			},
 			Sources: SourcesRepos{
-				Sources: &sources.SourceRepository{Repository: drel.NewRepository(engine, sources.SourceMeta)},
+				Sources:       &sources.SourceRepository{Repository: drel.NewRepository(engine, sources.SourceMeta)},
+				Subscriptions: &sources.SubscriptionRepository{Repository: drel.NewRepository(engine, sources.SubscriptionMeta)},
 			},
 			Stories: StoriesRepos{
 				Stories:    &model.StoryRepository{Repository: drel.NewRepository(engine, model.StoryMeta)},
@@ -101,6 +104,7 @@ type TxRepos struct {
 	Sightings     *ingest.TxSightingRepository
 	Events        *learning.TxEventRepository
 	Sources       *sources.TxSourceRepository
+	Subscriptions *sources.TxSubscriptionRepository
 	Stories       *model.TxStoryRepository
 	StoryItems    *model.TxStoryItemRepository
 	Concepts      *write.TxConceptRepository
@@ -124,6 +128,7 @@ func (db *DB) Tx(ctx context.Context) TxRepos {
 		Sightings:     &ingest.TxSightingRepository{TxRepository: drel.NewTxRepository(tx, ingest.SightingMeta)},
 		Events:        &learning.TxEventRepository{TxRepository: drel.NewTxRepository(tx, learning.EventMeta)},
 		Sources:       &sources.TxSourceRepository{TxRepository: drel.NewTxRepository(tx, sources.SourceMeta)},
+		Subscriptions: &sources.TxSubscriptionRepository{TxRepository: drel.NewTxRepository(tx, sources.SubscriptionMeta)},
 		Stories:       &model.TxStoryRepository{TxRepository: drel.NewTxRepository(tx, model.StoryMeta)},
 		StoryItems:    &model.TxStoryItemRepository{TxRepository: drel.NewTxRepository(tx, model.StoryItemMeta)},
 		Concepts:      &write.TxConceptRepository{TxRepository: drel.NewTxRepository(tx, write.ConceptMeta)},
@@ -148,7 +153,8 @@ func (db *DB) Tx(ctx context.Context) TxRepos {
 				Events: &learning.TxEventRepository{TxRepository: drel.NewTxRepository(tx, learning.EventMeta)},
 			},
 			Sources: SourcesTxRepos{
-				Sources: &sources.TxSourceRepository{TxRepository: drel.NewTxRepository(tx, sources.SourceMeta)},
+				Sources:       &sources.TxSourceRepository{TxRepository: drel.NewTxRepository(tx, sources.SourceMeta)},
+				Subscriptions: &sources.TxSubscriptionRepository{TxRepository: drel.NewTxRepository(tx, sources.SubscriptionMeta)},
 			},
 			Stories: StoriesTxRepos{
 				Stories:    &model.TxStoryRepository{TxRepository: drel.NewTxRepository(tx, model.StoryMeta)},
@@ -212,12 +218,14 @@ type LearningTxRepos struct {
 
 // SourcesRepos holds the untracked repositories of the "sources" module.
 type SourcesRepos struct {
-	Sources *sources.SourceRepository
+	Sources       *sources.SourceRepository
+	Subscriptions *sources.SubscriptionRepository
 }
 
 // SourcesTxRepos holds the tracked repositories of the "sources" module.
 type SourcesTxRepos struct {
-	Sources *sources.TxSourceRepository
+	Sources       *sources.TxSourceRepository
+	Subscriptions *sources.TxSubscriptionRepository
 }
 
 // StoriesRepos holds the untracked repositories of the "stories" module.

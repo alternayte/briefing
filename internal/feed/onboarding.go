@@ -10,6 +10,7 @@ import (
 	"github.com/alternayte/briefing/internal/feed/route"
 	"github.com/alternayte/briefing/internal/i18n"
 	"github.com/alternayte/briefing/internal/ranking"
+	"github.com/alternayte/briefing/internal/sources"
 )
 
 const (
@@ -97,6 +98,9 @@ var Rate = gx.Form(func(c *gx.Ctx, in *route.Rate) error {
 var Finish = gx.Form(func(c *gx.Ctx, _ *route.Finish) error {
 	ctx := c.R.Context()
 	w, profile := webFrom(ctx), accounts.CurrentProfile(ctx)
+	if err := sources.SubscribeDefaults(ctx, w.engine, profile.ID()); err != nil {
+		return err
+	}
 	if err := w.profiles.MarkOnboarded(ctx, profile.ID(), w.now().UTC()); err != nil {
 		return err
 	}
