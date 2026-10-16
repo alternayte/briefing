@@ -1,0 +1,34 @@
+set dotenv-load
+
+test_db := "postgres://briefing:briefing@localhost:55432/briefing_test?sslmode=disable"
+
+# Fast gate: format, vet and tests of the packages changed since upstream.
+check:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    base=$(git merge-base HEAD @{upstream} 2>/dev/null || git rev-parse HEAD)
+    changed=$( { git diff --name-only "$base"; git ls-files --others --exclude-standard; } | sort -u)
+    unformatted=$(gofmt -l $(git ls-files --cached --others --exclude-standard '*.go'))
+    if [ -n "$unformatted" ]; then echo "gofmt: $unformatted"; exit 1; fi
+    if [ -f drel.yaml ] && echo "$changed" | grep -qE '(^drel\.yaml$|models?\.go$)'; then go tool drel generate; fi
+    if [ -f gx.toml ] && echo "$changed" | grep -qE '(\.gx$|/route/|^app/|^gx\.toml$)'; then go run ./cmd/gx check; fi
+    if echo "$changed" | grep -qE '^go\.(mod|sum)$'; then
+        pkgs="./..."
+    else
+        pkgs=$(echo "$changed" | grep -E '\.(go|gx)$' | while read -r f; do [ -e "$f" ] && echo "./$(dirname "$f")"; done | sort -u | tr '\n' ' ')
+    fi
+    if [ -z "${pkgs// }" ]; then echo "check: no Go changes"; exit 0; fi
+    go vet $pkgs
+    go test $pkgs
+
+# Full suite with Postgres and the race detector.
+test: db
+    TEST_DATABASE_URL="{{test_db}}" go test -race -count=1 ./...
+
+# Start the local Postgres with pgvector.
+db:
+    docker compose up -d --wait postgres
+
+# Run the server with the env from .env.
+run:
+    go run ./cmd/briefing serve

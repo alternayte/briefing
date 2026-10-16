@@ -1,0 +1,20 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg17
+    environment:
+      POSTGRES_USER: briefing
+      POSTGRES_PASSWORD: briefing
+      POSTGRES_DB: briefing
+    ports:
+      - "55432:5432"
+    volumes:
+      - ./scripts/initdb:/docker-entrypoint-initdb.d:ro
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U briefing"]
+      interval: 2s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  pgdata:
