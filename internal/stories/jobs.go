@@ -4,6 +4,8 @@ import (
 	"context"
 	"time"
 
+	"github.com/alternayte/drel"
+	"github.com/jackc/pgx/v5"
 	"github.com/riverqueue/river"
 
 	"github.com/alternayte/briefing/internal/platform"
@@ -126,4 +128,49 @@ func (w *EmbedWorker) Work(ctx context.Context, job *river.Job[EmbedArgs]) error
 		return err
 	}
 	return w.OnEmbedded(ctx, done)
+}
+
+// SweepArgs hands stalled items on to their next step.
+type SweepArgs struct{}
+
+func (SweepArgs) Kind() string { return "stories.sweep" }
+
+type SweepWorker struct {
+	river.WorkerDefaults[SweepArgs]
+	Engine *drel.Engine
+	Now    func() time.Time
+}
+
+const (
+	sweepGrace = 5 * time.Minute
+	sweepBatch = 200
+)
+
+func (w *SweepWorker) Work(ctx context.Context, _ *river.Job[SweepArgs]) error {
+	s, err := FindStalled(ctx, w.Engine, w.Now(), sweepGrace, sweepBatch)
+	if err != nil {
+		return err
+	}
+	var params []river.InsertManyParams
+	add := func(ids []int64, args func([]int64) river.JobArgs) {
+		if len(ids) > 0 {
+			params = append(params, river.InsertManyParams{Args: args(ids)})
+		}
+	}
+	add(s.New, func(ids []int64) river.JobArgs { return FilterArgs{ItemIDs: ids} })
+	add(s.Passed, func(ids []int64) river.JobArgs { return TriageArgs{ItemIDs: ids} })
+	add(s.Kept, func(ids []int64) river.JobArgs { return EmbedArgs{ItemIDs: ids} })
+	add(s.Unplaced, func(ids []int64) river.JobArgs { return ClusterArgs{ItemIDs: ids} })
+	if len(params) == 0 {
+		return nil
+	}
+	_, err = river.ClientFromContext[pgx.Tx](ctx).InsertMany(ctx, params)
+	return err
+}
+
+// SweepEveryFiveMinutes is the periodic job of the pipeline sweep.
+func SweepEveryFiveMinutes() *river.PeriodicJob {
+	return river.NewPeriodicJob(river.PeriodicInterval(5*time.Minute),
+		func() (river.JobArgs, *river.InsertOpts) { return SweepArgs{}, nil },
+		&river.PeriodicJobOpts{RunOnStart: true})
 }

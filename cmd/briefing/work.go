@@ -58,7 +58,8 @@ func (p pipeline) workers() (*river.Workers, []*river.PeriodicJob, error) {
 	})
 	river.AddWorker(w, &stories.ClusterWorker{Clusterer: clusterer})
 	river.AddWorker(w, &stories.CloseStaleWorker{Clusterer: clusterer})
-	return w, []*river.PeriodicJob{ingest.SweepEveryMinute(), stories.CloseStaleHourly()}, nil
+	river.AddWorker(w, &stories.SweepWorker{Engine: p.engine, Now: p.now})
+	return w, []*river.PeriodicJob{ingest.SweepEveryMinute(), stories.SweepEveryFiveMinutes(), stories.CloseStaleHourly()}, nil
 }
 
 // enqueue returns a step hook that inserts the next job for the given ids.
