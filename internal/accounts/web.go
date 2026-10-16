@@ -18,13 +18,26 @@ import (
 // package values, so Web travels in the request context.
 type Web struct {
 	cfg      platform.Config
-	auth     *authall.Auth
+	auth     *Auth
 	authHTTP http.Handler
 	profiles *ProfileStore
 }
 
-func NewWeb(cfg platform.Config, auth *authall.Auth, profiles *ProfileStore) *Web {
-	return &Web{cfg: cfg, auth: auth, authHTTP: Handler(auth), profiles: profiles}
+func NewWeb(cfg platform.Config, auth *Auth, profiles *ProfileStore) *Web {
+	return &Web{cfg: cfg, auth: auth, authHTTP: Handler(auth.Auth), profiles: profiles}
+}
+
+// RequireAccessToken lets only requests that carry a personal access token
+// pass. It runs after Middleware.
+func RequireAccessToken(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if p := authall.PrincipalFrom(r.Context()); p == nil || p.Method != authall.MethodAPIKey {
+			w.Header().Set("WWW-Authenticate", `Bearer realm="briefing"`)
+			http.Error(w, "a personal access token is required", http.StatusUnauthorized)
+			return
+		}
+		next.ServeHTTP(w, r)
+	})
 }
 
 // AuthHandler serves /api/auth/.

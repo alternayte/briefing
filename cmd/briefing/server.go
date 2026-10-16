@@ -8,6 +8,7 @@ import (
 
 	"github.com/alternayte/gx"
 	"github.com/alternayte/gx/adapters/datastar"
+	"github.com/alternayte/gx/gxmcp"
 
 	"github.com/alternayte/briefing/app"
 	"github.com/alternayte/briefing/gxstyles"
@@ -22,6 +23,7 @@ func newHandler(web *accounts.Web, ping func(context.Context) error) http.Handle
 	gx.SetRouteStylesheets(gxstyles.Routes())
 	ui := gx.New(gx.Config{Adapter: datastar.Adapter()})
 	ui.Group("/", app.Layout, gx.Nav(gx.MorphNavigation), accounts.Routes)
+	gxmcp.Mount(ui, "/mcp", accounts.RequireAccessToken)
 
 	mux := http.NewServeMux()
 	mux.Handle("GET /healthz", healthz(ping))

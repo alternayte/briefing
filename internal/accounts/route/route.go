@@ -34,3 +34,8 @@ type SignOut struct {
 }
 
 func (in *SignOut) Rules() gx.Rules { return gx.Rules{} }
+
+// Me returns the signed-in user.
+type Me struct {
+	gx.Route `GET /api/me`
+}

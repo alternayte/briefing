@@ -30,8 +30,15 @@ const (
 	RoleAdmin  = "admin"
 )
 
+// Auth is auth-all plus the API key plugin that issues personal access
+// tokens.
+type Auth struct {
+	*authall.Auth
+	Keys *apikeys.Plugin
+}
+
 // NewAuth builds auth-all over the shared pool.
-func NewAuth(cfg platform.Config, pool *pgxpool.Pool) (*authall.Auth, error) {
+func NewAuth(cfg platform.Config, pool *pgxpool.Pool) (*Auth, error) {
 	// No transaction pooler sits in front of Postgres, so cached statements
 	// are safe.
 	st, err := postgres.NewPool(pool, postgres.AllowStatementCache())
@@ -42,10 +49,8 @@ func NewAuth(cfg platform.Config, pool *pgxpool.Pool) (*authall.Auth, error) {
 	if err != nil {
 		return nil, fmt.Errorf("auth rate limiter: %w", err)
 	}
-	plugins := []plugin.Plugin{
-		roles.New(roles.Hierarchy(RoleMember, RoleAdmin)),
-		apikeys.New(apikeys.Prefix(AccessTokenPrefix), apikeys.AdminRole(RoleAdmin)),
-	}
+	keys := apikeys.New(apikeys.Prefix(AccessTokenPrefix), apikeys.AdminRole(RoleAdmin))
+	plugins := []plugin.Plugin{roles.New(roles.Hierarchy(RoleMember, RoleAdmin)), keys}
 	opts := []authall.Option{}
 	if cfg.MagicLinkEnabled() {
 		plugins = append(plugins, magiclink.New(
@@ -70,7 +75,7 @@ func NewAuth(cfg platform.Config, pool *pgxpool.Pool) (*authall.Auth, error) {
 		return nil, fmt.Errorf("auth: %w", err)
 	}
 	applyAllowlist(auth.Hooks(), cfg)
-	return auth, nil
+	return &Auth{Auth: auth, Keys: keys}, nil
 }
 
 // Handler serves the auth-all routes under /api/auth/.

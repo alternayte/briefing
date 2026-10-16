@@ -83,6 +83,34 @@ func (in LoginVerify) URL() string {
 	return gx.BasePath() + b.String()
 }
 
+// Pattern returns the method and pattern of Me.
+func (Me) Pattern() string { return "GET /api/me" }
+
+// Bind fills Me from the request.
+func (in *Me) Bind(r *http.Request) error {
+	return nil
+}
+
+// URL returns the path of Me.
+func (in Me) URL() string {
+	var b strings.Builder
+	b.WriteString("/")
+	b.WriteString("api")
+	b.WriteString("/")
+	b.WriteString("me")
+	return gx.BasePath() + b.String()
+}
+
+// GxTool describes Me as a tool.
+func (Me) GxTool() gx.ToolInfo {
+	return gx.ToolInfo{
+		Name:        "accounts_me",
+		Description: "Returns the Briefing user that this connection acts for: their id, display name, language (en or fr) and daily story budget. Call it first to check the connection works and to learn which language to answer in.",
+		Schema:      "{\"additionalProperties\":false,\"properties\":{},\"type\":\"object\"}",
+		Fields:      []gx.ToolField{},
+	}
+}
+
 // Pattern returns the method and pattern of SendLink.
 func (SendLink) Pattern() string { return "POST /login/link" }
 

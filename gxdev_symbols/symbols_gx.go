@@ -784,6 +784,7 @@ func Packages() []gx.DevPackage {
 			Types: map[string]reflect.Type{
 				"Login":        reflect.TypeFor[p21.Login](),
 				"LoginVerify":  reflect.TypeFor[p21.LoginVerify](),
+				"Me":           reflect.TypeFor[p21.Me](),
 				"SendLink":     reflect.TypeFor[p21.SendLink](),
 				"SendLinkForm": reflect.TypeFor[p21.SendLinkForm](),
 				"SignOut":      reflect.TypeFor[p21.SignOut](),
