@@ -125,7 +125,7 @@ func TestWriteStoresTheEntry(t *testing.T) {
 	w := newTestWriter(e, m, 1, now)
 	dreltest.WithRollback(t, e, func(ctx context.Context) {
 		story := storyWith(t, ctx, 2, 4000, 2000)
-		ok, err := w.Write(ctx, story)
+		ok, err := w.Write(ctx, story, nil)
 		if err != nil || !ok {
 			t.Fatalf("written=%v err=%v", ok, err)
 		}
@@ -141,13 +141,13 @@ func TestWriteStoresTheEntry(t *testing.T) {
 		}
 
 		// Unchanged coverage writes nothing new.
-		again, err := w.Write(ctx, story)
+		again, err := w.Write(ctx, story, nil)
 		if err != nil || again || m.writes.Load() != 1 {
 			t.Errorf("rewrite: %v %v, %d calls", again, err, m.writes.Load())
 		}
 		// Doubled coverage writes revision 2 and reuses the concepts.
 		_, _ = tx.Exec(ctx, `UPDATE stories SET publisher_count = 4 WHERE id = $1`, story)
-		if ok, err := w.Write(ctx, story); err != nil || !ok {
+		if ok, err := w.Write(ctx, story, nil); err != nil || !ok {
 			t.Fatalf("revision 2: %v %v", ok, err)
 		}
 		var conceptRows int
@@ -165,7 +165,7 @@ func TestWriteSkipsBelowTheEvidenceFloor(t *testing.T) {
 	w := newTestWriter(e, m, 1, time.Date(2031, 4, 2, 9, 0, 0, 0, time.UTC))
 	dreltest.WithRollback(t, e, func(ctx context.Context) {
 		story := storyWith(t, ctx, 3, 1499, 800)
-		if ok, err := w.Write(ctx, story); ok || err != nil || m.writes.Load() != 0 {
+		if ok, err := w.Write(ctx, story, nil); ok || err != nil || m.writes.Load() != 0 {
 			t.Errorf("written=%v err=%v calls=%d", ok, err, m.writes.Load())
 		}
 	})
@@ -180,7 +180,7 @@ func TestWriteStopsAtTheSpendCap(t *testing.T) {
 	dreltest.WithRollback(t, e, func(ctx context.Context) {
 		_, _ = drel.MustFromContext(ctx).Exec(ctx, `INSERT INTO llm_usage (day, provider, stage, model, calls, cost_usd) VALUES ('2031-04-03', 'openrouter', 'triage', 'm', 1, 0.0011)`)
 		story := storyWith(t, ctx, 1, 4000)
-		if ok, err := w.Write(ctx, story); ok || err != nil || m.writes.Load() != 0 {
+		if ok, err := w.Write(ctx, story, nil); ok || err != nil || m.writes.Load() != 0 {
 			t.Errorf("written=%v err=%v calls=%d", ok, err, m.writes.Load())
 		}
 	})
@@ -219,13 +219,13 @@ func TestWriteGivesUpAfterTwoInvalidAnswers(t *testing.T) {
 	w := newTestWriter(e, m, 1, time.Date(2031, 4, 4, 9, 0, 0, 0, time.UTC))
 	dreltest.WithRollback(t, e, func(ctx context.Context) {
 		story := storyWith(t, ctx, 1, 4000)
-		if ok, err := w.Write(ctx, story); ok || err != nil || m.writes.Load() != 2 {
+		if ok, err := w.Write(ctx, story, nil); ok || err != nil || m.writes.Load() != 2 {
 			t.Errorf("written=%v err=%v calls=%d", ok, err, m.writes.Load())
 		}
 		// A second run the same day makes one more call, then the daily
 		// attempt limit of 3 stops it.
-		_, _ = w.Write(ctx, story)
-		_, _ = w.Write(ctx, story)
+		_, _ = w.Write(ctx, story, nil)
+		_, _ = w.Write(ctx, story, nil)
 		if m.writes.Load() != 3 {
 			t.Errorf("%d calls, want 3 in one day", m.writes.Load())
 		}

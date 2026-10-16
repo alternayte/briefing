@@ -6,6 +6,8 @@ import (
 
 	"github.com/riverqueue/river"
 	"github.com/riverqueue/river/rivertype"
+
+	"github.com/alternayte/briefing/internal/platform"
 )
 
 // WriteArgs writes the entry of one story when it needs one.
@@ -24,16 +26,15 @@ func (WriteArgs) InsertOpts() river.InsertOpts {
 
 type WriteWorker struct {
 	river.WorkerDefaults[WriteArgs]
-	Writer    *Writer
-	OnWritten func(ctx context.Context, storyID int64) error
+	Writer *Writer
+	// OnWritten gets the story of a new revision, in the transaction that
+	// stores it.
+	OnWritten platform.Next
 }
 
 func (w *WriteWorker) Timeout(*river.Job[WriteArgs]) time.Duration { return 5 * time.Minute }
 
 func (w *WriteWorker) Work(ctx context.Context, job *river.Job[WriteArgs]) error {
-	written, err := w.Writer.Write(ctx, job.Args.StoryID)
-	if err != nil || !written || w.OnWritten == nil {
-		return err
-	}
-	return w.OnWritten(ctx, job.Args.StoryID)
+	_, err := w.Writer.Write(ctx, job.Args.StoryID, w.OnWritten)
+	return err
 }

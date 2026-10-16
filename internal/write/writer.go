@@ -44,8 +44,9 @@ type story struct {
 }
 
 // Write writes a new revision of the story's entry when the story needs one
-// and the rules allow it. It reports whether it wrote.
-func (w *Writer) Write(ctx context.Context, storyID int64) (bool, error) {
+// and the rules allow it. It reports whether it wrote. A new revision goes to
+// next in the same transaction.
+func (w *Writer) Write(ctx context.Context, storyID int64, next platform.Next) (bool, error) {
 	now := w.now().UTC()
 	st, err := w.load(ctx, storyID, now)
 	if err != nil {
@@ -100,7 +101,7 @@ func (w *Writer) Write(ctx context.Context, storyID int64) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	return true, w.store(ctx, storyID, st, out, concepts)
+	return true, w.store(ctx, storyID, st, out, concepts, next)
 }
 
 func (w *Writer) load(ctx context.Context, storyID int64, now time.Time) (story, error) {
@@ -262,9 +263,9 @@ func (w *Writer) matchConcepts(ctx context.Context, cs []OutConcept) ([]conceptR
 	return refs, err
 }
 
-func (w *Writer) store(ctx context.Context, storyID int64, st story, out Output, concepts []conceptRef) error {
+func (w *Writer) store(ctx context.Context, storyID int64, st story, out Output, concepts []conceptRef, next platform.Next) error {
 	revision := st.revision + 1
-	claims := make(Claims, 0, len(out.Claims))
+	claims := make([]Claim, 0, len(out.Claims))
 	for _, c := range out.Claims {
 		ids := make([]int64, 0, len(c.ItemIDs))
 		for _, s := range c.ItemIDs {
@@ -308,8 +309,10 @@ func (w *Writer) store(ctx context.Context, storyID int64, st story, out Output,
 				return err
 			}
 		}
-		_, err := tx.Exec(ctx, `UPDATE stories SET revision = $2, updated_at = now() WHERE id = $1`, storyID, revision)
-		return err
+		if _, err := tx.Exec(ctx, `UPDATE stories SET revision = $2, updated_at = now() WHERE id = $1`, storyID, revision); err != nil || next == nil {
+			return err
+		}
+		return next(ctx, []int64{storyID})
 	})
 	if err != nil {
 		return fmt.Errorf("store entry of story %d: %w", storyID, err)

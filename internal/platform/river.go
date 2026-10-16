@@ -1,9 +1,11 @@
 package platform
 
 import (
+	"context"
 	"fmt"
 	"log/slog"
 
+	"github.com/alternayte/drel"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/riverqueue/river"
@@ -21,6 +23,21 @@ const (
 	// seconds each, so they never take the workers of the model steps.
 	QueueFetch = "fetch"
 )
+
+// Next is the hook a pipeline step calls inside its write transaction with
+// the ids for the following step. A nil Next ends the pipeline there.
+type Next func(ctx context.Context, ids []int64) error
+
+// InsertInTx inserts jobs in the drel transaction of ctx, so they commit or
+// roll back with the writes of the step. ctx must come from a River worker.
+func InsertInTx(ctx context.Context, params ...river.InsertManyParams) error {
+	tx := drel.MustFromContext(ctx)
+	if err := tx.SaveChanges(ctx); err != nil {
+		return err
+	}
+	_, err := river.ClientFromContext[pgx.Tx](ctx).InsertManyTx(ctx, tx.Underlying().(pgx.Tx), params)
+	return err
+}
 
 // NewRiver returns a River client. With nil workers it only inserts jobs.
 func NewRiver(pool *pgxpool.Pool, workers *river.Workers, periodic []*river.PeriodicJob) (*river.Client[pgx.Tx], error) {

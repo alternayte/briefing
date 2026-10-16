@@ -11,7 +11,7 @@ check:
     base=$(git merge-base HEAD @{upstream} 2>/dev/null || git rev-parse HEAD)
     changed=$( { git diff --name-only "$base"; git ls-files --others --exclude-standard; } | sort -u)
     # Deleted files stay in the index until the commit; gofmt skips them.
-    gofiles=$(git ls-files --cached --others --exclude-standard '*.go' ':!:*_gx.go' | while read -r f; do if [ -e "$f" ]; then echo "$f"; fi; done)
+    gofiles=$(git ls-files --cached --others --exclude-standard '*.go' | while read -r f; do if [ -e "$f" ]; then echo "$f"; fi; done)
     unformatted=$(gofmt -l $gofiles)
     if [ -n "$unformatted" ]; then echo "gofmt: $unformatted"; exit 1; fi
     # Generated code depends on Go types anywhere in the module, so both

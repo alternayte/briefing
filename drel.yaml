@@ -13,9 +13,8 @@ modules:
     packages: [./internal/feed]
   - name: translate
     packages: [./internal/translate]
-  # workaround: alternayte/drel#13
   - name: stories
-    packages: [./internal/stories/model]
+    packages: [./internal/stories]
 
 output:
   db: ./internal/db/drel_gen.go

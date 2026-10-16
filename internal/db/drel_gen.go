@@ -10,7 +10,7 @@ import (
 	ingest "github.com/alternayte/briefing/internal/ingest"
 	learning "github.com/alternayte/briefing/internal/learning"
 	sources "github.com/alternayte/briefing/internal/sources"
-	model "github.com/alternayte/briefing/internal/stories/model"
+	stories "github.com/alternayte/briefing/internal/stories"
 	translate "github.com/alternayte/briefing/internal/translate"
 	write "github.com/alternayte/briefing/internal/write"
 	"github.com/alternayte/drel"
@@ -27,8 +27,8 @@ type DB struct {
 	ReviewSchedules *learning.ReviewScheduleRepository
 	Sources         *sources.SourceRepository
 	Subscriptions   *sources.SubscriptionRepository
-	Stories         *model.StoryRepository
-	StoryItems      *model.StoryItemRepository
+	Stories         *stories.StoryRepository
+	StoryItems      *stories.StoryItemRepository
 	Translations    *translate.TranslationRepository
 	Concepts        *write.ConceptRepository
 	Explanations    *write.ExplanationRepository
@@ -55,8 +55,8 @@ func Open(dsn string, opts ...drel.Option) (*DB, error) {
 		ReviewSchedules: &learning.ReviewScheduleRepository{Repository: drel.NewRepository(engine, learning.ReviewScheduleMeta)},
 		Sources:         &sources.SourceRepository{Repository: drel.NewRepository(engine, sources.SourceMeta)},
 		Subscriptions:   &sources.SubscriptionRepository{Repository: drel.NewRepository(engine, sources.SubscriptionMeta)},
-		Stories:         &model.StoryRepository{Repository: drel.NewRepository(engine, model.StoryMeta)},
-		StoryItems:      &model.StoryItemRepository{Repository: drel.NewRepository(engine, model.StoryItemMeta)},
+		Stories:         &stories.StoryRepository{Repository: drel.NewRepository(engine, stories.StoryMeta)},
+		StoryItems:      &stories.StoryItemRepository{Repository: drel.NewRepository(engine, stories.StoryItemMeta)},
 		Translations:    &translate.TranslationRepository{Repository: drel.NewRepository(engine, translate.TranslationMeta)},
 		Concepts:        &write.ConceptRepository{Repository: drel.NewRepository(engine, write.ConceptMeta)},
 		Explanations:    &write.ExplanationRepository{Repository: drel.NewRepository(engine, write.ExplanationMeta)},
@@ -85,8 +85,8 @@ func Open(dsn string, opts ...drel.Option) (*DB, error) {
 				Subscriptions: &sources.SubscriptionRepository{Repository: drel.NewRepository(engine, sources.SubscriptionMeta)},
 			},
 			Stories: StoriesRepos{
-				Stories:    &model.StoryRepository{Repository: drel.NewRepository(engine, model.StoryMeta)},
-				StoryItems: &model.StoryItemRepository{Repository: drel.NewRepository(engine, model.StoryItemMeta)},
+				Stories:    &stories.StoryRepository{Repository: drel.NewRepository(engine, stories.StoryMeta)},
+				StoryItems: &stories.StoryItemRepository{Repository: drel.NewRepository(engine, stories.StoryItemMeta)},
 			},
 			Translate: TranslateRepos{
 				Translations: &translate.TranslationRepository{Repository: drel.NewRepository(engine, translate.TranslationMeta)},
@@ -115,8 +115,8 @@ type TxRepos struct {
 	ReviewSchedules *learning.TxReviewScheduleRepository
 	Sources         *sources.TxSourceRepository
 	Subscriptions   *sources.TxSubscriptionRepository
-	Stories         *model.TxStoryRepository
-	StoryItems      *model.TxStoryItemRepository
+	Stories         *stories.TxStoryRepository
+	StoryItems      *stories.TxStoryItemRepository
 	Translations    *translate.TxTranslationRepository
 	Concepts        *write.TxConceptRepository
 	Explanations    *write.TxExplanationRepository
@@ -141,8 +141,8 @@ func (db *DB) Tx(ctx context.Context) TxRepos {
 		ReviewSchedules: &learning.TxReviewScheduleRepository{TxRepository: drel.NewTxRepository(tx, learning.ReviewScheduleMeta)},
 		Sources:         &sources.TxSourceRepository{TxRepository: drel.NewTxRepository(tx, sources.SourceMeta)},
 		Subscriptions:   &sources.TxSubscriptionRepository{TxRepository: drel.NewTxRepository(tx, sources.SubscriptionMeta)},
-		Stories:         &model.TxStoryRepository{TxRepository: drel.NewTxRepository(tx, model.StoryMeta)},
-		StoryItems:      &model.TxStoryItemRepository{TxRepository: drel.NewTxRepository(tx, model.StoryItemMeta)},
+		Stories:         &stories.TxStoryRepository{TxRepository: drel.NewTxRepository(tx, stories.StoryMeta)},
+		StoryItems:      &stories.TxStoryItemRepository{TxRepository: drel.NewTxRepository(tx, stories.StoryItemMeta)},
 		Translations:    &translate.TxTranslationRepository{TxRepository: drel.NewTxRepository(tx, translate.TranslationMeta)},
 		Concepts:        &write.TxConceptRepository{TxRepository: drel.NewTxRepository(tx, write.ConceptMeta)},
 		Explanations:    &write.TxExplanationRepository{TxRepository: drel.NewTxRepository(tx, write.ExplanationMeta)},
@@ -171,8 +171,8 @@ func (db *DB) Tx(ctx context.Context) TxRepos {
 				Subscriptions: &sources.TxSubscriptionRepository{TxRepository: drel.NewTxRepository(tx, sources.SubscriptionMeta)},
 			},
 			Stories: StoriesTxRepos{
-				Stories:    &model.TxStoryRepository{TxRepository: drel.NewTxRepository(tx, model.StoryMeta)},
-				StoryItems: &model.TxStoryItemRepository{TxRepository: drel.NewTxRepository(tx, model.StoryItemMeta)},
+				Stories:    &stories.TxStoryRepository{TxRepository: drel.NewTxRepository(tx, stories.StoryMeta)},
+				StoryItems: &stories.TxStoryItemRepository{TxRepository: drel.NewTxRepository(tx, stories.StoryItemMeta)},
 			},
 			Translate: TranslateTxRepos{
 				Translations: &translate.TxTranslationRepository{TxRepository: drel.NewTxRepository(tx, translate.TranslationMeta)},
@@ -249,14 +249,14 @@ type SourcesTxRepos struct {
 
 // StoriesRepos holds the untracked repositories of the "stories" module.
 type StoriesRepos struct {
-	Stories    *model.StoryRepository
-	StoryItems *model.StoryItemRepository
+	Stories    *stories.StoryRepository
+	StoryItems *stories.StoryItemRepository
 }
 
 // StoriesTxRepos holds the tracked repositories of the "stories" module.
 type StoriesTxRepos struct {
-	Stories    *model.TxStoryRepository
-	StoryItems *model.TxStoryItemRepository
+	Stories    *stories.TxStoryRepository
+	StoryItems *stories.TxStoryItemRepository
 }
 
 // TranslateRepos holds the untracked repositories of the "translate" module.

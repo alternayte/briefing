@@ -23,11 +23,6 @@ type Claim struct {
 	ItemIDs []int64 `json:"item_ids"`
 }
 
-// Claims is a named type so drel compares it as JSON.
-//
-// workaround: alternayte/drel#14
-type Claims []Claim
-
 // Summary is one revision of a story's entry, in English.
 type Summary struct {
 	drel.Model[int64]
@@ -37,7 +32,7 @@ type Summary struct {
 	Summary        string     `db:"summary"`
 	WhyItMatters   string     `db:"why_it_matters"`
 	WhatIsNew      string     `db:"what_is_new"`
-	Claims         Claims     `db:"claims"`
+	Claims         []Claim    `db:"claims"`
 	Confidence     Confidence `db:"confidence"`
 	WriterModel    string     `db:"model"`
 	PromptVersion  string     `db:"prompt_version"`

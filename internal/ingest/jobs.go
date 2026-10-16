@@ -38,21 +38,18 @@ func (PollArgs) InsertOpts() river.InsertOpts {
 type PollWorker struct {
 	river.WorkerDefaults[PollArgs]
 	Poller  *Poller
-	OnItems func(ctx context.Context, itemIDs []int64) error
+	OnItems platform.Next
 }
 
 func (w *PollWorker) Timeout(*river.Job[PollArgs]) time.Duration { return 2 * time.Minute }
 
 func (w *PollWorker) Work(ctx context.Context, job *river.Job[PollArgs]) error {
-	ids, err := w.Poller.Poll(ctx, job.Args.SourceID)
-	if err != nil || len(ids) == 0 {
-		return err
-	}
-	return w.OnItems(ctx, ids)
+	_, err := w.Poller.Poll(ctx, job.Args.SourceID, w.OnItems)
+	return err
 }
 
 // SweepArgs enqueues a poll for every due source. It runs every minute, so a
-// lost enqueue or a crashed worker delays a poll by a minute at most.
+// crashed worker delays a poll by a minute at most.
 type SweepArgs struct{}
 
 func (SweepArgs) Kind() string { return "ingest.sweep" }

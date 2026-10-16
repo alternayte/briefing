@@ -66,10 +66,11 @@ func NewTriager(engine *drel.Engine, d *decide.Decider, t platform.Tuning, now f
 	return &Triager{engine: engine, decider: d, questions: triageQuestions(t.Taxonomy), worthMin: t.Triage.WorthMin, now: now}
 }
 
-// Triage decides each passed item among ids and returns the ids it kept. Each
-// item is saved on its own, so a failed call leaves the others done and a
-// retry asks only about the rest.
-func (t *Triager) Triage(ctx context.Context, ids []int64) ([]int64, error) {
+// Triage decides each passed item among ids and returns the ids it kept. It
+// saves every decision it got and hands the kept items to next in one
+// transaction, so a failed call leaves the others done and a retry asks only
+// about the rest.
+func (t *Triager) Triage(ctx context.Context, ids []int64, next platform.Next) ([]int64, error) {
 	items, err := t.passed(ctx, ids)
 	if err != nil {
 		return nil, err
@@ -80,29 +81,63 @@ func (t *Triager) Triage(ctx context.Context, ids []int64) ([]int64, error) {
 		limit = 1
 	}
 	var (
-		mu   sync.Mutex
-		kept []int64
-		errs []error
-		wg   sync.WaitGroup
-		sem  = make(chan struct{}, limit)
+		mu      sync.Mutex
+		decided = map[int64]*ingest.Triage{}
+		kept    []int64
+		errs    []error
+		wg      sync.WaitGroup
+		sem     = make(chan struct{}, limit)
 	)
 	for _, it := range items {
 		wg.Add(1)
 		sem <- struct{}{}
 		go func() {
 			defer func() { <-sem; wg.Done() }()
-			keep, err := t.one(ctx, it)
+			tr, err := t.one(ctx, it)
 			mu.Lock()
 			defer mu.Unlock()
 			if err != nil {
 				errs = append(errs, fmt.Errorf("item %d: %w", it.item.ID(), err))
-			} else if keep {
+				return
+			}
+			decided[it.item.ID()] = tr
+			if t.keeps(tr) {
 				kept = append(kept, it.item.ID())
 			}
 		}()
 	}
 	wg.Wait()
+	if len(decided) == 0 {
+		return nil, errors.Join(errs...)
+	}
+	err = t.engine.WithTx(ctx, func(ctx context.Context) error {
+		ids := make([]int64, 0, len(decided))
+		for id := range decided {
+			ids = append(ids, id)
+		}
+		items, err := drel.NewTxRepository(drel.MustFromContext(ctx), ingest.ItemMeta).Where(ingest.Items.ID.In(ids...)).All(ctx)
+		if err != nil {
+			return err
+		}
+		for _, it := range items {
+			it.Triage, it.Status = decided[it.ID()], ingest.ItemRejected
+			if t.keeps(it.Triage) {
+				it.Status = ingest.ItemKept
+			}
+		}
+		if len(kept) == 0 || next == nil {
+			return nil
+		}
+		return next(ctx, kept)
+	})
+	if err != nil {
+		return nil, fmt.Errorf("store triage: %w", err)
+	}
 	return kept, errors.Join(errs...)
+}
+
+func (t *Triager) keeps(tr *ingest.Triage) bool {
+	return tr.Worth >= t.worthMin && tr.Category != platform.CategoryOther
 }
 
 type triageInput struct {
@@ -148,13 +183,13 @@ func sourceTitles(ctx context.Context, tx *drel.Tx, itemID int64) ([]string, err
 	return names, rows.Err()
 }
 
-func (t *Triager) one(ctx context.Context, in triageInput) (bool, error) {
+func (t *Triager) one(ctx context.Context, in triageInput) (*ingest.Triage, error) {
 	state := fmt.Sprintf("Title: %s\nSource: %s\nSnippet: %s", in.item.Title, strings.Join(in.sources, ", "), in.item.Snippet)
 	ans, err := t.decider.Ask(ctx, "triage", state, t.questions)
 	if err != nil {
-		return false, err
+		return nil, err
 	}
-	tr := &ingest.Triage{
+	return &ingest.Triage{
 		Worth:        ans["worth"].Noul,
 		Sensational:  ans["sensational"].Noul,
 		Category:     ans["category"].Choice,
@@ -162,20 +197,5 @@ func (t *Triager) one(ctx context.Context, in triageInput) (bool, error) {
 		Learning:     ans["learning"].Score,
 		Model:        t.decider.Model(),
 		DecidedAt:    t.now().UTC(),
-	}
-	keep := tr.Worth >= t.worthMin && tr.Category != platform.CategoryOther
-	status := ingest.ItemRejected
-	if keep {
-		status = ingest.ItemKept
-	}
-	err = t.engine.WithTx(ctx, func(ctx context.Context) error {
-		it, err := drel.NewTxRepository(drel.MustFromContext(ctx), ingest.ItemMeta).Find(ctx, in.item.ID())
-		if err != nil {
-			return err
-		}
-		it.Triage, it.Status = tr, status
-		// workaround: alternayte/drel#12
-		return drel.MustFromContext(ctx).SaveChanges(ctx)
-	})
-	return keep, err
+	}, nil
 }

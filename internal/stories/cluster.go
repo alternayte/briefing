@@ -11,7 +11,6 @@ import (
 	"github.com/alternayte/briefing/internal/decide"
 	"github.com/alternayte/briefing/internal/ingest"
 	"github.com/alternayte/briefing/internal/platform"
-	"github.com/alternayte/briefing/internal/stories/model"
 )
 
 // Clusterer puts each embedded item into the open story about the same event,
@@ -35,11 +34,12 @@ var sameEvent = decide.Questions{
 
 // Cluster places each item and returns the ids of the stories it touched. It
 // runs the items one by one, so an item can join a story that an earlier item
-// in the same batch opened.
-func (c *Clusterer) Cluster(ctx context.Context, itemIDs []int64) ([]int64, error) {
+// in the same batch opened. Each placement hands its story to next in the
+// same transaction.
+func (c *Clusterer) Cluster(ctx context.Context, itemIDs []int64, next platform.Next) ([]int64, error) {
 	var touched []int64
 	for _, id := range itemIDs {
-		storyID, err := c.place(ctx, id)
+		storyID, err := c.place(ctx, id, next)
 		if err != nil {
 			return touched, fmt.Errorf("cluster item %d: %w", id, err)
 		}
@@ -55,7 +55,7 @@ type candidate struct {
 	similarity float64
 }
 
-func (c *Clusterer) place(ctx context.Context, itemID int64) (int64, error) {
+func (c *Clusterer) place(ctx context.Context, itemID int64, next platform.Next) (int64, error) {
 	it, err := c.unplaced(ctx, itemID)
 	if err != nil || it == nil {
 		return 0, err
@@ -77,8 +77,8 @@ func (c *Clusterer) place(ctx context.Context, itemID int64) (int64, error) {
 		if join {
 			storyID = near.storyID
 		} else {
-			s := &model.Story{OpenedAt: now, LastItemAt: now, Category: it.Triage.Category, Status: model.StoryOpen, Centroid: it.Embedding}
-			drel.NewTxRepository(tx, model.StoryMeta).Add(s)
+			s := &Story{OpenedAt: now, LastItemAt: now, Category: it.Triage.Category, Status: StoryOpen, Centroid: it.Embedding}
+			drel.NewTxRepository(tx, StoryMeta).Add(s)
 			if err := tx.SaveChanges(ctx); err != nil {
 				return err
 			}
@@ -87,7 +87,10 @@ func (c *Clusterer) place(ctx context.Context, itemID int64) (int64, error) {
 		if _, err := tx.Exec(ctx, `INSERT INTO story_items (story_id, item_id) VALUES ($1, $2) ON CONFLICT (item_id) DO NOTHING`, storyID, it.ID()); err != nil {
 			return err
 		}
-		return refresh(ctx, tx, storyID, now)
+		if err := refresh(ctx, tx, storyID, now); err != nil || next == nil {
+			return err
+		}
+		return next(ctx, []int64{storyID})
 	})
 	return storyID, err
 }

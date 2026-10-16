@@ -1,8 +1,4 @@
-// Package model holds the drel models of the stories slice. They sit apart
-// from the slice code, which also uses ingest models.
-//
-// workaround: alternayte/drel#13
-package model
+package stories
 
 import (
 	"time"

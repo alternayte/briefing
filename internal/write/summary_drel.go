@@ -16,7 +16,7 @@ var Summaries = struct {
 	Summary        drel.StringColumn
 	WhyItMatters   drel.StringColumn
 	WhatIsNew      drel.StringColumn
-	Claims         drel.ComparableColumn[Claims]
+	Claims         drel.ComparableColumn[[]Claim]
 	Confidence     drel.ComparableColumn[Confidence]
 	WriterModel    drel.StringColumn
 	PromptVersion  drel.StringColumn
@@ -32,7 +32,7 @@ var Summaries = struct {
 	Summary:        drel.NewStringCol("summary"),
 	WhyItMatters:   drel.NewStringCol("why_it_matters"),
 	WhatIsNew:      drel.NewStringCol("what_is_new"),
-	Claims:         drel.NewComparableCol[Claims]("claims"),
+	Claims:         drel.NewComparableCol[[]Claim]("claims"),
 	Confidence:     drel.NewComparableCol[Confidence]("confidence"),
 	WriterModel:    drel.NewStringCol("model"),
 	PromptVersion:  drel.NewStringCol("prompt_version"),
@@ -58,7 +58,7 @@ func (r Confidence) IsValid() bool {
 func scanSummary(row drel.Row) (*Summary, error) {
 	p := &Summary{}
 	idPtr, createdAtPtr, updatedAtPtr := p.ScanPtrs()
-	err := row.Scan(idPtr, &p.StoryID, &p.Revision, &p.Headline, &p.Summary, &p.WhyItMatters, &p.WhatIsNew, drel.JSON[Claims]{V: &p.Claims}, &p.Confidence, &p.WriterModel, &p.PromptVersion, &p.PublisherCount, &p.TextItems, createdAtPtr, updatedAtPtr)
+	err := row.Scan(idPtr, &p.StoryID, &p.Revision, &p.Headline, &p.Summary, &p.WhyItMatters, &p.WhatIsNew, drel.JSON[[]Claim]{V: &p.Claims}, &p.Confidence, &p.WriterModel, &p.PromptVersion, &p.PublisherCount, &p.TextItems, createdAtPtr, updatedAtPtr)
 	if err != nil {
 		return nil, err
 	}
@@ -72,7 +72,7 @@ type summarySnapshot struct {
 	Summary        string
 	WhyItMatters   string
 	WhatIsNew      string
-	Claims         Claims
+	Claims         []Claim
 	Confidence     Confidence
 	WriterModel    string
 	PromptVersion  string
@@ -106,7 +106,7 @@ func diffSummary(p *Summary, snap any) []drel.FieldChange {
 		changes = append(changes, drel.FieldChange{Column: "what_is_new", Value: p.WhatIsNew})
 	}
 	if !drel.JSONEqual(p.Claims, s.Claims) {
-		changes = append(changes, drel.FieldChange{Column: "claims", Value: drel.JSON[Claims]{V: &p.Claims}})
+		changes = append(changes, drel.FieldChange{Column: "claims", Value: drel.JSON[[]Claim]{V: &p.Claims}})
 	}
 	if p.Confidence != s.Confidence {
 		changes = append(changes, drel.FieldChange{Column: "confidence", Value: p.Confidence})
@@ -147,7 +147,7 @@ func summaryColumnValue(p *Summary, idx int) any {
 	case 6:
 		return p.WhatIsNew
 	case 7:
-		return drel.JSON[Claims]{V: &p.Claims}
+		return drel.JSON[[]Claim]{V: &p.Claims}
 	case 8:
 		return p.Confidence
 	case 9:
@@ -167,7 +167,7 @@ func summaryColumnValue(p *Summary, idx int) any {
 }
 
 func summaryInsertColumns(p *Summary) ([]string, []any) {
-	return []string{"story_id", "revision", "headline", "summary", "why_it_matters", "what_is_new", "claims", "confidence", "model", "prompt_version", "publisher_count", "text_items"}, []any{p.StoryID, p.Revision, p.Headline, p.Summary, p.WhyItMatters, p.WhatIsNew, drel.JSON[Claims]{V: &p.Claims}, p.Confidence, p.WriterModel, p.PromptVersion, p.PublisherCount, p.TextItems}
+	return []string{"story_id", "revision", "headline", "summary", "why_it_matters", "what_is_new", "claims", "confidence", "model", "prompt_version", "publisher_count", "text_items"}, []any{p.StoryID, p.Revision, p.Headline, p.Summary, p.WhyItMatters, p.WhatIsNew, drel.JSON[[]Claim]{V: &p.Claims}, p.Confidence, p.WriterModel, p.PromptVersion, p.PublisherCount, p.TextItems}
 }
 
 func summaryScanReturning(p *Summary, row drel.Row) error {

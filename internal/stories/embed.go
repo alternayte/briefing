@@ -8,6 +8,7 @@ import (
 
 	"github.com/alternayte/briefing/internal/embed"
 	"github.com/alternayte/briefing/internal/ingest"
+	"github.com/alternayte/briefing/internal/platform"
 )
 
 // ItemEmbedder embeds kept items that have no vector yet.
@@ -21,8 +22,8 @@ func NewItemEmbedder(engine *drel.Engine, e *embed.Embedder) *ItemEmbedder {
 }
 
 // Embed embeds the kept items among ids in one batch and returns the ids it
-// embedded.
-func (e *ItemEmbedder) Embed(ctx context.Context, ids []int64) ([]int64, error) {
+// embedded, after it hands them to next in the same transaction.
+func (e *ItemEmbedder) Embed(ctx context.Context, ids []int64, next platform.Next) ([]int64, error) {
 	var items []*ingest.Item
 	err := e.engine.WithTx(ctx, func(ctx context.Context) (err error) {
 		items, err = drel.NewTxRepository(drel.MustFromContext(ctx), ingest.ItemMeta).
@@ -54,7 +55,10 @@ func (e *ItemEmbedder) Embed(ctx context.Context, ids []int64) ([]int64, error) 
 			}
 			done[i] = it.ID()
 		}
-		return nil
+		if next == nil {
+			return nil
+		}
+		return next(ctx, done)
 	})
 	if err != nil {
 		return nil, fmt.Errorf("store embeddings: %w", err)

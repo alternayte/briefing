@@ -65,7 +65,7 @@ func TestFilterMovesNewItemsOnly(t *testing.T) {
 		bad := mk("https://filter.test/bad", "", ingest.ItemNew)
 		kept := mk("https://filter.test/kept", "", ingest.ItemKept)
 
-		passed, err := f.Apply(ctx, []int64{good, bad, kept})
+		passed, err := f.Apply(ctx, []int64{good, bad, kept}, nil)
 		if err != nil {
 			t.Fatal(err)
 		}

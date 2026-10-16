@@ -10,8 +10,8 @@ import (
 )
 
 // Stalled lists items that wait at one pipeline step longer than grace. A
-// step enqueues the next one after its commit, so a crash in between leaves
-// items here until the sweep hands them on.
+// step enqueues the next one in its own transaction, so items stall only when
+// a job runs out of attempts; the sweep hands them on again.
 type Stalled struct {
 	New      []int64
 	Passed   []int64

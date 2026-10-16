@@ -9,6 +9,7 @@ import (
 
 	"github.com/alternayte/drel"
 
+	"github.com/alternayte/briefing/internal/platform"
 	"github.com/alternayte/briefing/internal/sources"
 )
 
@@ -25,8 +26,9 @@ func NewPoller(engine *drel.Engine, conn Connectors, now func() time.Time) *Poll
 
 // Poll fetches a source, stores its items and sightings, and saves the
 // checkpoint in the same transaction, so a crash never skips an item. It
-// returns the ids of the items the poll touched.
-func (p *Poller) Poll(ctx context.Context, sourceID int64) ([]int64, error) {
+// returns the ids of the items the poll touched, and hands them to next in
+// the same transaction.
+func (p *Poller) Poll(ctx context.Context, sourceID int64, next platform.Next) ([]int64, error) {
 	src, err := sources.Find(ctx, p.engine, sourceID)
 	if errors.Is(err, drel.ErrNotFound) {
 		return nil, nil
@@ -46,8 +48,10 @@ func (p *Poller) Poll(ctx context.Context, sourceID int64) ([]int64, error) {
 	}
 	var ids []int64
 	err = p.engine.WithTx(ctx, func(ctx context.Context) error {
-		ids, err = p.store(ctx, src, res)
-		return err
+		if ids, err = p.store(ctx, src, res); err != nil || len(ids) == 0 || next == nil {
+			return err
+		}
+		return next(ctx, ids)
 	})
 	if err != nil {
 		return nil, fmt.Errorf("store poll of source %d: %w", src.ID(), err)

@@ -81,8 +81,7 @@ func (s *ProfileStore) MarkOnboarded(ctx context.Context, userID uuid.UUID, at t
 			return err
 		}
 		p.OnboardedAt = &at
-		// workaround: alternayte/drel#12
-		return drel.MustFromContext(ctx).SaveChanges(ctx)
+		return nil
 	})
 	if err != nil {
 		return fmt.Errorf("mark %s onboarded: %w", userID, err)
@@ -98,8 +97,7 @@ func (s *ProfileStore) SetDailyBudget(ctx context.Context, userID uuid.UUID, bud
 			return err
 		}
 		p.DailyBudget = budget
-		// workaround: alternayte/drel#12
-		return drel.MustFromContext(ctx).SaveChanges(ctx)
+		return nil
 	})
 	if err != nil {
 		return fmt.Errorf("set budget of %s: %w", userID, err)

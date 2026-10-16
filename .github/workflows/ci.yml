@@ -15,7 +15,7 @@ jobs:
           go-version-file: go.mod
           cache: true
       - name: Format
-        run: test -z "$(gofmt -l $(git ls-files '*.go' ':!:*_gx.go'))"
+        run: test -z "$(gofmt -l $(git ls-files '*.go'))"
       - name: Lint
         run: go run ./cmd/gx lint
       - name: Generated code is current

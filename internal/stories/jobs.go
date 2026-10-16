@@ -23,15 +23,12 @@ func (FilterArgs) Kind() string { return "stories.filter" }
 type FilterWorker struct {
 	river.WorkerDefaults[FilterArgs]
 	Filter   *Filter
-	OnPassed func(ctx context.Context, itemIDs []int64) error
+	OnPassed platform.Next
 }
 
 func (w *FilterWorker) Work(ctx context.Context, job *river.Job[FilterArgs]) error {
-	passed, err := w.Filter.Apply(ctx, job.Args.ItemIDs)
-	if err != nil || len(passed) == 0 || w.OnPassed == nil {
-		return err
-	}
-	return w.OnPassed(ctx, passed)
+	_, err := w.Filter.Apply(ctx, job.Args.ItemIDs, w.OnPassed)
+	return err
 }
 
 // ClusterArgs places embedded items into stories. It runs on the one-worker
@@ -49,16 +46,11 @@ func (ClusterArgs) InsertOpts() river.InsertOpts {
 type ClusterWorker struct {
 	river.WorkerDefaults[ClusterArgs]
 	Clusterer   *Clusterer
-	OnClustered func(ctx context.Context, storyIDs []int64) error
+	OnClustered platform.Next
 }
 
 func (w *ClusterWorker) Work(ctx context.Context, job *river.Job[ClusterArgs]) error {
-	stories, err := w.Clusterer.Cluster(ctx, job.Args.ItemIDs)
-	if len(stories) > 0 && w.OnClustered != nil {
-		if nextErr := w.OnClustered(ctx, stories); nextErr != nil {
-			return nextErr
-		}
-	}
+	_, err := w.Clusterer.Cluster(ctx, job.Args.ItemIDs, w.OnClustered)
 	return err
 }
 
@@ -94,18 +86,11 @@ func (TriageArgs) Kind() string { return "stories.triage" }
 type TriageWorker struct {
 	river.WorkerDefaults[TriageArgs]
 	Triager *Triager
-	OnKept  func(ctx context.Context, itemIDs []int64) error
+	OnKept  platform.Next
 }
 
 func (w *TriageWorker) Work(ctx context.Context, job *river.Job[TriageArgs]) error {
-	kept, err := w.Triager.Triage(ctx, job.Args.ItemIDs)
-	// Hand on what was kept even when some calls failed; the retry asks only
-	// about the rest.
-	if len(kept) > 0 && w.OnKept != nil {
-		if nextErr := w.OnKept(ctx, kept); nextErr != nil {
-			return nextErr
-		}
-	}
+	_, err := w.Triager.Triage(ctx, job.Args.ItemIDs, w.OnKept)
 	return err
 }
 
@@ -119,15 +104,12 @@ func (EmbedArgs) Kind() string { return "stories.embed" }
 type EmbedWorker struct {
 	river.WorkerDefaults[EmbedArgs]
 	Embedder   *ItemEmbedder
-	OnEmbedded func(ctx context.Context, itemIDs []int64) error
+	OnEmbedded platform.Next
 }
 
 func (w *EmbedWorker) Work(ctx context.Context, job *river.Job[EmbedArgs]) error {
-	done, err := w.Embedder.Embed(ctx, job.Args.ItemIDs)
-	if err != nil || len(done) == 0 || w.OnEmbedded == nil {
-		return err
-	}
-	return w.OnEmbedded(ctx, done)
+	_, err := w.Embedder.Embed(ctx, job.Args.ItemIDs, w.OnEmbedded)
+	return err
 }
 
 // SweepArgs hands stalled items on to their next step.

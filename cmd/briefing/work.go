@@ -37,7 +37,7 @@ type pipeline struct {
 }
 
 // workers registers every job of the pipeline. Each step enqueues the next one
-// after its own transaction commits.
+// in the transaction that stores its result.
 func (p pipeline) workers() (*river.Workers, []*river.PeriodicJob, error) {
 	filter, err := stories.NewFilter(p.engine, p.tuning, p.now)
 	if err != nil {
@@ -74,8 +74,7 @@ func (p pipeline) workers() (*river.Workers, []*river.PeriodicJob, error) {
 			for i, id := range shortlisted {
 				params[i] = river.InsertManyParams{Args: fetchArgs(id)}
 			}
-			_, err = river.ClientFromContext[pgx.Tx](ctx).InsertMany(ctx, params)
-			return err
+			return platform.InsertInTx(ctx, params...)
 		},
 	})
 	writeArgs := func(storyID int64) river.JobArgs { return write.WriteArgs{StoryID: storyID} }
@@ -88,9 +87,8 @@ func (p pipeline) workers() (*river.Workers, []*river.PeriodicJob, error) {
 	})
 	river.AddWorker(w, &write.WriteWorker{
 		Writer: write.NewWriter(p.engine, p.openrouter, embed.New(p.openrouter, p.cfg), p.cfg, p.tuning, p.now),
-		OnWritten: func(ctx context.Context, _ int64) error {
-			_, err := river.ClientFromContext[pgx.Tx](ctx).Insert(ctx, ranking.RankAllArgs{}, nil)
-			return err
+		OnWritten: func(ctx context.Context, _ []int64) error {
+			return platform.InsertInTx(ctx, river.InsertManyParams{Args: ranking.RankAllArgs{}})
 		},
 	})
 	river.AddWorker(w, &ranking.RankWorker{
@@ -132,10 +130,9 @@ func (p pipeline) texts() *content.Texts {
 }
 
 // enqueue returns a step hook that inserts the next job for the given ids.
-func enqueue(next func(ids []int64) river.JobArgs) func(context.Context, []int64) error {
+func enqueue(next func(ids []int64) river.JobArgs) platform.Next {
 	return func(ctx context.Context, ids []int64) error {
-		_, err := river.ClientFromContext[pgx.Tx](ctx).Insert(ctx, next(ids), nil)
-		return err
+		return platform.InsertInTx(ctx, river.InsertManyParams{Args: next(ids)})
 	}
 }
 

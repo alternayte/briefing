@@ -77,9 +77,9 @@ func NewFilter(engine *drel.Engine, t platform.Tuning, now func() time.Time) (*F
 }
 
 // Apply moves each new item among ids to filtered or passed, and returns the
-// ids that passed. Items in any other state stay as they are, so a re-run
-// changes nothing.
-func (f *Filter) Apply(ctx context.Context, ids []int64) ([]int64, error) {
+// ids that passed, after it hands them to next in the same transaction. Items
+// in any other state stay as they are, so a re-run changes nothing.
+func (f *Filter) Apply(ctx context.Context, ids []int64, next platform.Next) ([]int64, error) {
 	var passed []int64
 	now := f.now()
 	err := f.engine.WithTx(ctx, func(ctx context.Context) error {
@@ -96,8 +96,10 @@ func (f *Filter) Apply(ctx context.Context, ids []int64) ([]int64, error) {
 			it.Status = ingest.ItemPassed
 			passed = append(passed, it.ID())
 		}
-		// workaround: alternayte/drel#12
-		return drel.MustFromContext(ctx).SaveChanges(ctx)
+		if len(passed) == 0 || next == nil {
+			return nil
+		}
+		return next(ctx, passed)
 	})
 	if err != nil {
 		return nil, fmt.Errorf("rule filter: %w", err)

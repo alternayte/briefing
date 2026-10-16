@@ -71,7 +71,7 @@ func TestClusteringJoinsTheSameEventAndCountsPublishers(t *testing.T) {
 		bandYes := keptItem(t, ctx, "https://delta.example/p", "Probe lands, same=0.9", []float32{0.8, 0.1, 0.59}, 1.0, "space")
 		bandNo := keptItem(t, ctx, "https://epsilon.example/q", "Other probe, same=0.2", []float32{0.9, 0, -0.43}, 1.0, "space")
 
-		touched, err := c.Cluster(ctx, []int64{a, b, other, bandYes, bandNo})
+		touched, err := c.Cluster(ctx, []int64{a, b, other, bandYes, bandNo}, nil)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -102,7 +102,7 @@ func TestClusteringJoinsTheSameEventAndCountsPublishers(t *testing.T) {
 			t.Errorf("story = %d publishers, %s, %v", publishers, category, significance)
 		}
 
-		again, err := c.Cluster(ctx, []int64{a, b})
+		again, err := c.Cluster(ctx, []int64{a, b}, nil)
 		if err != nil || len(again) != 0 {
 			t.Errorf("re-cluster placed items again: %v %v", again, err)
 		}

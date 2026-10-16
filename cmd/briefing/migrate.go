@@ -12,7 +12,7 @@ import (
 	"github.com/alternayte/briefing/internal/platform"
 	"github.com/alternayte/briefing/internal/platform/migrations"
 	sourcesmigrations "github.com/alternayte/briefing/internal/sources/migrations"
-	storiesmigrations "github.com/alternayte/briefing/internal/stories/model/migrations"
+	storiesmigrations "github.com/alternayte/briefing/internal/stories/migrations"
 	translatemigrations "github.com/alternayte/briefing/internal/translate/migrations"
 	writemigrations "github.com/alternayte/briefing/internal/write/migrations"
 )

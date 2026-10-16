@@ -44,11 +44,11 @@ func TestRepollCreatesNoDuplicates(t *testing.T) {
 	p := NewPoller(e, testConnectors(srv), time.Now)
 	dreltest.WithRollback(t, e, func(ctx context.Context) {
 		src := seedSource(t, ctx, e, sources.KindHN, srv.URL+"/hn?poll-test=dup")
-		first, err := p.Poll(ctx, src)
+		first, err := p.Poll(ctx, src, nil)
 		if err != nil {
 			t.Fatal(err)
 		}
-		if _, err := p.Poll(ctx, src); err != nil {
+		if _, err := p.Poll(ctx, src, nil); err != nil {
 			t.Fatal(err)
 		}
 		items := count(t, ctx, `SELECT count(DISTINCT item_id) FROM sightings WHERE source_id = $1`, src)
@@ -70,8 +70,8 @@ func TestOneLinkSeenByTwoSourcesIsOneItem(t *testing.T) {
 	dreltest.WithRollback(t, e, func(ctx context.Context) {
 		a := seedSource(t, ctx, e, sources.KindHN, srv.URL+"/hn?poll-test=a")
 		b := seedSource(t, ctx, e, sources.KindHN, srv.URL+"/hn?poll-test=b")
-		ia, _ := p.Poll(ctx, a)
-		ib, _ := p.Poll(ctx, b)
+		ia, _ := p.Poll(ctx, a, nil)
+		ib, _ := p.Poll(ctx, b, nil)
 		slices.Sort(ia)
 		slices.Sort(ib)
 		if len(ia) != 3 || !slices.Equal(ia, ib) {
@@ -93,7 +93,7 @@ func TestFailingSourceRecordsItsError(t *testing.T) {
 	p := NewPoller(e, testConnectors(srv), time.Now)
 	dreltest.WithRollback(t, e, func(ctx context.Context) {
 		src := seedSource(t, ctx, e, sources.KindRSS, srv.URL+"/feed?poll-test=fail")
-		if _, err := p.Poll(ctx, src); err == nil {
+		if _, err := p.Poll(ctx, src, nil); err == nil {
 			t.Fatal("want an error")
 		}
 		if n := count(t, ctx, `SELECT count(*) FROM sources WHERE id = $1 AND last_error LIKE '%503%'`, src); n != 1 {
@@ -113,7 +113,7 @@ func TestDisabledSourceIsNotFetched(t *testing.T) {
 		if _, err := drel.MustFromContext(ctx).Exec(ctx, `UPDATE sources SET enabled = false WHERE id = $1`, src); err != nil {
 			t.Fatal(err)
 		}
-		if ids, err := p.Poll(ctx, src); err != nil || len(ids) != 0 || hits != 0 {
+		if ids, err := p.Poll(ctx, src, nil); err != nil || len(ids) != 0 || hits != 0 {
 			t.Errorf("disabled source polled: ids=%v err=%v hits=%d", ids, err, hits)
 		}
 	})

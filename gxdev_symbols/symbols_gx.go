@@ -1011,6 +1011,7 @@ func Packages() []gx.DevPackage {
 				"DefaultTuning":      reflect.ValueOf(p33.DefaultTuning),
 				"ErrCut":             reflect.ValueOf(&p33.ErrCut).Elem(),
 				"ErrPrivateAddress":  reflect.ValueOf(&p33.ErrPrivateAddress).Elem(),
+				"InsertInTx":         reflect.ValueOf(p33.InsertInTx),
 				"LoadConfig":         reflect.ValueOf(p33.LoadConfig),
 				"LoadConfigFromEnv":  reflect.ValueOf(p33.LoadConfigFromEnv),
 				"MigrateApp":         reflect.ValueOf(p33.MigrateApp),
@@ -1037,6 +1038,7 @@ func Packages() []gx.DevPackage {
 				"FetchTuning":    reflect.TypeFor[p33.FetchTuning](),
 				"FilterTuning":   reflect.TypeFor[p33.FilterTuning](),
 				"LearningTuning": reflect.TypeFor[p33.LearningTuning](),
+				"Next":           reflect.TypeFor[p33.Next](),
 				"OpenRouter":     reflect.TypeFor[p33.OpenRouter](),
 				"PenaltyWeights": reflect.TypeFor[p33.PenaltyWeights](),
 				"PollTuning":     reflect.TypeFor[p33.PollTuning](),
@@ -1142,7 +1144,6 @@ func Packages() []gx.DevPackage {
 			},
 			Types: map[string]reflect.Type{
 				"Claim":                    reflect.TypeFor[p37.Claim](),
-				"Claims":                   reflect.TypeFor[p37.Claims](),
 				"Concept":                  reflect.TypeFor[p37.Concept](),
 				"ConceptRepository":        reflect.TypeFor[p37.ConceptRepository](),
 				"Confidence":               reflect.TypeFor[p37.Confidence](),

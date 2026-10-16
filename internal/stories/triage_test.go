@@ -69,7 +69,7 @@ func TestTriageKeepsWorthyItemsOutsideOther(t *testing.T) {
 		other := insertItem(t, ctx, "https://triage.test/other", "worth=0.9 category=other", ingest.ItemPassed)
 		filtered := insertItem(t, ctx, "https://triage.test/filtered", "worth=0.9 category=security", ingest.ItemFiltered)
 
-		kept, err := tr.Triage(ctx, []int64{keep, weak, other, filtered})
+		kept, err := tr.Triage(ctx, []int64{keep, weak, other, filtered}, nil)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -112,7 +112,7 @@ func TestEmbedStoresVectorAndModel(t *testing.T) {
 		a := insertItem(t, ctx, "https://embed.test/a", "A", ingest.ItemKept)
 		b := insertItem(t, ctx, "https://embed.test/b", "B", ingest.ItemKept)
 		rejected := insertItem(t, ctx, "https://embed.test/r", "R", ingest.ItemRejected)
-		done, err := em.Embed(ctx, []int64{a, b, rejected})
+		done, err := em.Embed(ctx, []int64{a, b, rejected}, nil)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -127,7 +127,7 @@ func TestEmbedStoresVectorAndModel(t *testing.T) {
 		if dims != 1536 || model != "openai/text-embedding-3-small" {
 			t.Errorf("stored %d dims, model %q", dims, model)
 		}
-		again, err := em.Embed(ctx, []int64{a, b})
+		again, err := em.Embed(ctx, []int64{a, b}, nil)
 		if err != nil || len(again) != 0 {
 			t.Errorf("re-embed: %v %v", again, err)
 		}
