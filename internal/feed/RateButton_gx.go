@@ -33,15 +33,17 @@ func RateButton(p RateButtonProps) gx.Node {
 //line RateButton.gx:15:1
 		gx.Open("form", p.F.Attrs()),
 //line RateButton.gx:16:3
-		gx.Open("button", gx.Attrs{gx.Attr{Key: "class", Value: gx.Classes("label min-h-target border border-border px-half hover:border-foreground", gx.When("border-foreground", p.Chosen), gx.When("bg-foreground", p.Chosen), gx.When("text-background", p.Chosen)), Kind: gx.AttrText}, gx.Attr{Key: "type", Value: "submit", Kind: gx.AttrText}, gx.Attr{Key: "name", Value: p.F.Rating.Name, Kind: gx.AttrText}, gx.Attr{Key: "value", Value: p.Value, Kind: gx.AttrText}, gx.Attr{Key: "aria-pressed", Value: gx.TextValue(p.Chosen), Kind: gx.AttrText}}),
-//line RateButton.gx:16:267
+		gx.Open("input", gx.Attrs{gx.Attr{Key: "type", Value: "hidden", Kind: gx.AttrText}, gx.Attr{Key: "name", Value: p.F.Rating.Name, Kind: gx.AttrText}, gx.Attr{Key: "value", Value: p.Value, Kind: gx.AttrText}}),
+//line RateButton.gx:17:3
+		gx.Open("button", gx.Attrs{gx.Attr{Key: "class", Value: gx.Classes("label min-h-target border border-border px-half hover:border-foreground", gx.When("border-foreground", p.Chosen), gx.When("bg-foreground", p.Chosen), gx.When("text-background", p.Chosen)), Kind: gx.AttrText}, gx.Attr{Key: "type", Value: "submit", Kind: gx.AttrText}, gx.Attr{Key: "aria-pressed", Value: gx.TextValue(p.Chosen), Kind: gx.AttrText}}),
+//line RateButton.gx:17:228
 		gx.Text(p.Label),
 	)
 }
 
 var _tRateButton0 = gx.NewTemplate(
-	[]string{"<form", ">\n  <button", ">", "</button>\n</form>\n"},
-	[]int{0, 1, 2},
-	[]gx.TemplateEl{{Slot: 0, Start: 0, EndStatic: 3, End: 17}, {Slot: 1, Start: 4, EndStatic: 3, End: 9}},
+	[]string{"<form", ">\n  <input", ">\n  <button", ">", "</button>\n</form>\n"},
+	[]int{0, 1, 1, 2},
+	[]gx.TemplateEl{{Slot: 0, Start: 0, EndStatic: 4, End: 17}, {Slot: 1, Start: 4, EndStatic: 2, End: 1}, {Slot: 2, Start: 4, EndStatic: 4, End: 9}},
 	[]gx.TemplateRoot{{El: 0, Slot: -1}, {El: -1, Slot: -1}},
 )

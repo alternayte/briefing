@@ -13,5 +13,6 @@ props {
 }
 
 <form {...p.F.Attrs()}>
-  <button type="submit" name={p.F.Rating.Name} value={p.Value} aria-pressed={p.Chosen} class="label min-h-target border border-border px-half hover:border-foreground" class:border-foreground={p.Chosen} class:bg-foreground={p.Chosen} class:text-background={p.Chosen}>{p.Label}</button>
+  <input type="hidden" name={p.F.Rating.Name} value={p.Value} />
+  <button type="submit" aria-pressed={p.Chosen} class="label min-h-target border border-border px-half hover:border-foreground" class:border-foreground={p.Chosen} class:bg-foreground={p.Chosen} class:text-background={p.Chosen}>{p.Label}</button>
 </form>

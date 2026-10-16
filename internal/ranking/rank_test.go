@@ -101,7 +101,7 @@ func TestRankFillsEachReadersFeedFromTheirInterests(t *testing.T) {
 		bioReader := f.reader("bio@example.com", 2, []float32{0, 1, 0}, "biology")
 
 		core := f.story("Rust 2.0 ships rel=3 exc=0", []float32{1, 0, 0}, time.Hour, 3)
-		near := f.story("Rust compiler faster rel=2 exc=0", []float32{0.97, 0.24, 0}, 2*time.Hour, 2)
+		near := f.story("Rust compiler faster rel=2 exc=0", []float32{0.99, 0.14, 0}, 2*time.Hour, 2)
 		bio := f.story("Cell atlas complete rel=3 exc=0", []float32{0, 1, 0}, time.Hour, 3)
 		f.story("Old Rust news rel=3 exc=0", []float32{1, 0, 0}, 100*time.Hour, 3)
 

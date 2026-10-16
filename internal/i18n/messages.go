@@ -76,18 +76,21 @@ type Messages struct {
 	CalibrateFinish    string
 	CalibrateNoStories string
 
-	FeedTitle        string
-	FeedEmpty        string
-	FeedMore         string
-	FeedNewStories   string
-	FeedShow         string
-	FeedPublishers   string
+	FeedTitle      string
+	FeedEmpty      string
+	FeedMore       string
+	FeedNewStories string
+	FeedShow       string
+	// FeedPublishers takes the count of publishers, 2 or more.
+	FeedPublishers string
+	// FeedConfidence takes the confidence word.
 	FeedConfidence   string
 	ConfidenceHigh   string
 	ConfidenceMedium string
 	ConfidenceLow    string
 	FeedLinkCard     string
-	FeedBecause      string
+	// FeedBecause takes the interest text.
+	FeedBecause string
 }
 
 func (m Messages) MagicLinkText(link string, minutes int) string {
@@ -169,13 +172,13 @@ var en = Messages{
 	FeedMore:         "More stories",
 	FeedNewStories:   "New stories are ready.",
 	FeedShow:         "Show",
-	FeedPublishers:   "publishers",
-	FeedConfidence:   "Confidence",
+	FeedPublishers:   "%d publishers",
+	FeedConfidence:   "%s confidence",
 	ConfidenceHigh:   "high",
 	ConfidenceMedium: "medium",
 	ConfidenceLow:    "low",
 	FeedLinkCard:     "Not enough source text for a summary yet. Read the original:",
-	FeedBecause:      "Because you follow",
+	FeedBecause:      "Because you follow “%s”",
 }
 
 var fr = Messages{
@@ -253,11 +256,11 @@ var fr = Messages{
 	FeedMore:         "Autres articles",
 	FeedNewStories:   "De nouveaux articles sont prêts.",
 	FeedShow:         "Afficher",
-	FeedPublishers:   "médias",
-	FeedConfidence:   "Fiabilité",
+	FeedPublishers:   "%d médias",
+	FeedConfidence:   "fiabilité %s",
 	ConfidenceHigh:   "élevée",
 	ConfidenceMedium: "moyenne",
 	ConfidenceLow:    "faible",
 	FeedLinkCard:     "Pas encore assez de texte source pour un résumé. Lire l’original :",
-	FeedBecause:      "Parce que vous suivez",
+	FeedBecause:      "Parce que vous suivez « %s »",
 }

@@ -2,6 +2,7 @@ package feed
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/alternayte/drel"
@@ -22,8 +23,9 @@ type Card struct {
 	Concepts   []string
 	Sources    []SourceLink
 	Publishers int
-	Confidence string
-	Reason     string
+	// Meta is the coverage and confidence line, in the reader's locale.
+	Meta   []string
+	Reason string
 }
 
 // SourceLink is one publisher of a story.
@@ -83,7 +85,15 @@ func queryCards(ctx context.Context, tx *drel.Tx, msg i18n.Messages, sql string,
 				c.LinkURL = c.Sources[0].URL
 			}
 		}
-		c.Confidence = map[string]string{"high": msg.ConfidenceHigh, "medium": msg.ConfidenceMedium, "low": msg.ConfidenceLow}[confidence]
+		if c.Publishers > 1 {
+			c.Meta = append(c.Meta, fmt.Sprintf(msg.FeedPublishers, c.Publishers))
+		}
+		if word := map[string]string{"high": msg.ConfidenceHigh, "medium": msg.ConfidenceMedium, "low": msg.ConfidenceLow}[confidence]; word != "" {
+			c.Meta = append(c.Meta, fmt.Sprintf(msg.FeedConfidence, word))
+		}
+		if c.Reason != "" {
+			c.Reason = fmt.Sprintf(msg.FeedBecause, c.Reason)
+		}
 		out = append(out, c)
 	}
 	return out, rows.Err()

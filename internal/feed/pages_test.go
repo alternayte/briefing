@@ -63,8 +63,7 @@ func TestHomeShowsTodaysStoriesAndSendsNewReadersToOnboarding(t *testing.T) {
 
 		rec := get()
 		body := rec.Body.String()
-		fr := i18n.For(i18n.FR)
-		for _, want := range []string{"Probe lands on a comet", "example-news.test", fr.ConfidenceHigh, fr.FeedBecause} {
+		for _, want := range []string{"Probe lands on a comet", "example-news.test", "fiabilité élevée", "2 médias", "Parce que vous suivez « space »"} {
 			if !strings.Contains(body, want) {
 				t.Errorf("feed lacks %q", want)
 			}

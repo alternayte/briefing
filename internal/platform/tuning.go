@@ -199,7 +199,7 @@ func DefaultTuning() Tuning {
 			ConceptMatchMin:       0.83,
 		},
 		Rank: RankTuning{
-			RelevanceMin:     0.30,
+			RelevanceMin:     0.20,
 			Interval:         time.Hour,
 			PublisherCap:     4,
 			FreshnessHalf:    24 * time.Hour,

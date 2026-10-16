@@ -1,6 +1,10 @@
 package feed
 
-import "github.com/alternayte/briefing/internal/i18n"
+import (
+  "strings"
+
+  "github.com/alternayte/briefing/internal/i18n"
+)
 
 props {
   // Card is the story.
@@ -24,20 +28,17 @@ props {
       }
     </ul>
   }
-  <footer class="mt-half flex flex-wrap items-center gap-x-half gap-y-quarter text-small text-muted-foreground">
-    <ul class="flex items-center gap-quarter">
+  <footer class="mt-half text-small text-muted-foreground">
+    <ul class="flex flex-wrap items-center gap-x-half">
       for _, s := range p.Card.Sources {
         <li><a href={s.URL} rel="noopener" title={s.Domain} class="inline-flex min-h-target items-center gap-quarter hover:text-foreground"><img src={s.Favicon} alt="" width="16" height="16" loading="lazy" class="size-4" />{s.Domain}</a></li>
       }
     </ul>
-    if p.Card.Publishers > 1 {
-      <span>· {gx.TextValue(p.Card.Publishers)} {p.Msg.FeedPublishers}</span>
+    if len(p.Card.Meta) > 0 {
+      <p>{strings.Join(p.Card.Meta, " · ")}</p>
     }
-    if p.Card.Confidence != "" {
-      <span>· {p.Msg.FeedConfidence} {p.Card.Confidence}</span>
+    if p.Card.Reason != "" {
+      <p class="label mt-quarter">{p.Card.Reason}</p>
     }
   </footer>
-  if p.Card.Reason != "" {
-    <p class="label mt-quarter text-muted-foreground">{p.Msg.FeedBecause} “{p.Card.Reason}”</p>
-  }
 </article>
