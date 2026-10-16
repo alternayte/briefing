@@ -7,7 +7,6 @@ import (
 	"github.com/alternayte/drel"
 	"github.com/google/uuid"
 
-	"github.com/alternayte/briefing/internal/accounts/model"
 	"github.com/alternayte/briefing/internal/i18n"
 	"github.com/alternayte/briefing/internal/platform"
 )
@@ -22,18 +21,18 @@ func NewProfileStore(engine *drel.Engine, t platform.Tuning) *ProfileStore {
 	return &ProfileStore{engine: engine, defaultBudget: t.Rank.DefaultDailyFeed}
 }
 
-func txProfiles(ctx context.Context) *model.TxProfileRepository {
-	return &model.TxProfileRepository{TxRepository: drel.NewTxRepository(drel.MustFromContext(ctx), model.ProfileMeta)}
+func txProfiles(ctx context.Context) *TxProfileRepository {
+	return &TxProfileRepository{TxRepository: drel.NewTxRepository(drel.MustFromContext(ctx), ProfileMeta)}
 }
 
 // Ensure returns the profile of a user and creates it on first use. A
 // concurrent first request creates nothing twice.
-func (s *ProfileStore) Ensure(ctx context.Context, userID uuid.UUID, displayName string, locale i18n.Locale) (*model.Profile, error) {
-	var p *model.Profile
+func (s *ProfileStore) Ensure(ctx context.Context, userID uuid.UUID, displayName string, locale i18n.Locale) (*Profile, error) {
+	var p *Profile
 	err := s.engine.WithTx(ctx, func(ctx context.Context) error {
 		repo := txProfiles(ctx)
-		_, err := repo.BulkUpsert(ctx, []*model.Profile{model.NewProfile(userID, displayName, locale, s.defaultBudget)},
-			drel.ConflictColumns(model.Profiles.ID), drel.DoNothing())
+		_, err := repo.BulkUpsert(ctx, []*Profile{newProfile(userID, displayName, locale, s.defaultBudget)},
+			drel.ConflictColumns(Profiles.ID), drel.DoNothing())
 		if err != nil {
 			return err
 		}
@@ -46,8 +45,8 @@ func (s *ProfileStore) Ensure(ctx context.Context, userID uuid.UUID, displayName
 	return p, nil
 }
 
-func (s *ProfileStore) Get(ctx context.Context, userID uuid.UUID) (*model.Profile, error) {
-	var p *model.Profile
+func (s *ProfileStore) Get(ctx context.Context, userID uuid.UUID) (*Profile, error) {
+	var p *Profile
 	err := s.engine.WithTx(ctx, func(ctx context.Context) (err error) {
 		p, err = txProfiles(ctx).FindByID(ctx, userID)
 		return err

@@ -1,6 +1,4 @@
-// Package model holds the drel models of the accounts slice. They live apart
-// from the slice code; workaround: alternayte/drel#10
-package model
+package accounts
 
 import (
 	"time"
@@ -20,7 +18,7 @@ type Profile struct {
 	OnboardedAt *time.Time `db:"onboarded_at"`
 }
 
-func NewProfile(userID uuid.UUID, displayName string, locale i18n.Locale, dailyBudget int) *Profile {
+func newProfile(userID uuid.UUID, displayName string, locale i18n.Locale, dailyBudget int) *Profile {
 	p := &Profile{DisplayName: displayName, Locale: string(locale), DailyBudget: dailyBudget}
 	p.SetID(userID)
 	return p

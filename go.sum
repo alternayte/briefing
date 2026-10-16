@@ -6,8 +6,8 @@ github.com/Microsoft/go-winio v0.6.2 h1:F2VQgta7ecxGYO8k3ZZz3RS8fVIXVxONVUPlNERo
 github.com/Microsoft/go-winio v0.6.2/go.mod h1:yd8OoFMLzJbo9gZq8j5qaps8bJ9aShtEA8Ipt1oGCvU=
 github.com/alternayte/auth-all v0.5.1 h1:zlyzrJMOe8koBKaqWF0kvYbydTOh2TBBOExaXvEaXI8=
 github.com/alternayte/auth-all v0.5.1/go.mod h1:R0cqJZoxuzllxbONfiPNNNXvHJoHS7efm8pA0/JEplE=
-github.com/alternayte/drel v0.10.1 h1:/cjkXOQXg91rNYx/KxtwlcRgbyPR50i1IlLh3K0q0M0=
-github.com/alternayte/drel v0.10.1/go.mod h1:XY8EMHGTTLuLJDfWMJX6NJgGYqWRm/YNHc52aLZLkUs=
+github.com/alternayte/drel v0.10.2 h1:IzqRq0h8PBT9qsg5EfYP0k5fwy2b/Tp5dnnp66JF8Tk=
+github.com/alternayte/drel v0.10.2/go.mod h1:XY8EMHGTTLuLJDfWMJX6NJgGYqWRm/YNHc52aLZLkUs=
 github.com/antlr4-go/antlr/v4 v4.13.0 h1:lxCg3LAv+EUK6t1i0y1V6/SLeUi0eKEKdhQAlS8TVTI=
 github.com/antlr4-go/antlr/v4 v4.13.0/go.mod h1:pfChB/xh/Unjila75QW7+VU4TSnWnnk9UTnmpPaOR2g=
 github.com/cenkalti/backoff/v4 v4.3.0 h1:MyRJ/UdXutAwSAT+s3wNd7MfTIcy71VQueUuFK343L8=

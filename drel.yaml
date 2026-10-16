@@ -1,7 +1,6 @@
-# Models live in <feature>/model; workaround: alternayte/drel#10
 modules:
   - name: accounts
-    packages: [./internal/accounts/model]
+    packages: [./internal/accounts]
 
 output:
   db: ./internal/db/drel_gen.go

@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/alternayte/briefing/internal/accounts"
-	accountsmigrations "github.com/alternayte/briefing/internal/accounts/model/migrations"
+	accountsmigrations "github.com/alternayte/briefing/internal/accounts/migrations"
 	"github.com/alternayte/briefing/internal/platform"
 	"github.com/alternayte/briefing/internal/platform/migrations"
 )
