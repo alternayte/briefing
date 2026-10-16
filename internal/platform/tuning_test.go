@@ -15,6 +15,7 @@ func TestTuningValidateRejectsBrokenInvariants(t *testing.T) {
 		"review intervals not rising":   func(tu *Tuning) { tu.Review.IntervalsDays = []int{1, 3, 3} },
 		"taxonomy without other":        func(tu *Tuning) { tu.Taxonomy = tu.Taxonomy[:len(tu.Taxonomy)-1] },
 		"concepts range inverted":       func(tu *Tuning) { tu.Write.MinConcepts = tu.Write.MaxConcepts + 1 },
+		"bad deny pattern":              func(tu *Tuning) { tu.Filter.DenyPatterns = []string{"("} },
 	}
 	for name, breakIt := range cases {
 		t.Run(name, func(t *testing.T) {

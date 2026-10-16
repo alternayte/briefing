@@ -37,3 +37,30 @@ func RecordError(ctx context.Context, engine *drel.Engine, id int64, cause error
 		return err
 	})
 }
+
+// Due returns the enabled sources whose poll interval has passed since their
+// last success. A source that failed waits a full interval after the failure.
+func Due(ctx context.Context, engine *drel.Engine, now time.Time) ([]int64, error) {
+	var ids []int64
+	err := engine.WithTx(ctx, func(ctx context.Context) error {
+		rows, err := drel.MustFromContext(ctx).Query(ctx, `
+			SELECT id FROM sources
+			WHERE enabled
+			  AND (last_ok_at IS NULL OR last_ok_at + make_interval(secs => poll_interval_seconds) <= $1)
+			  AND (last_error = '' OR updated_at + make_interval(secs => poll_interval_seconds) <= $1)
+			ORDER BY id`, now)
+		if err != nil {
+			return err
+		}
+		defer rows.Close()
+		for rows.Next() {
+			var id int64
+			if err := rows.Scan(&id); err != nil {
+				return err
+			}
+			ids = append(ids, id)
+		}
+		return rows.Err()
+	})
+	return ids, err
+}

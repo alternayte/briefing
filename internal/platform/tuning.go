@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"math"
+	"regexp"
 	"slices"
 	"time"
 )
@@ -47,6 +48,10 @@ type PollTuning struct {
 
 type FilterTuning struct {
 	MaxItemAge time.Duration
+	// BlockedDomains are registrable domains whose items never pass.
+	BlockedDomains []string
+	// DenyPatterns are case-insensitive regular expressions on the title.
+	DenyPatterns []string
 }
 
 type TriageTuning struct {
@@ -141,7 +146,17 @@ func DefaultTuning() Tuning {
 			MaxBytes:     5 << 20,
 			SnippetChars: 600,
 		},
-		Filter: FilterTuning{MaxItemAge: 72 * time.Hour},
+		Filter: FilterTuning{
+			MaxItemAge:     72 * time.Hour,
+			BlockedDomains: []string{},
+			DenyPatterns: []string{
+				`\bsponsored\b`,
+				`\b(coupon|promo) codes?\b`,
+				`\bbest\b.*\bdeals?\b`,
+				`\b\d+% off\b`,
+				`\b(we'?re|now) hiring\b`,
+			},
+		},
 		Triage: TriageTuning{WorthMin: 0.5, MaxStateChars: 6000},
 		Cluster: ClusterTuning{
 			JoinHigh:     0.85,
@@ -233,6 +248,11 @@ func (t Tuning) Validate() error {
 	}
 	if !(w.SummaryMinWords < w.SummaryMaxWords && w.SummaryMaxWords <= w.SummaryRejectWords) {
 		fail("summary words must satisfy min < max <= reject")
+	}
+	for _, p := range t.Filter.DenyPatterns {
+		if _, err := regexp.Compile("(?i)" + p); err != nil {
+			fail("deny pattern %q: %v", p, err)
+		}
 	}
 	if min(t.Poll.RSS, t.Poll.HN, t.Poll.Bluesky) < time.Minute {
 		fail("poll intervals must be at least one minute, got %+v", t.Poll)

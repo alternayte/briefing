@@ -32,3 +32,17 @@ func TestCanonicalURLRejectsNonWeb(t *testing.T) {
 		}
 	}
 }
+
+func TestRegistrableDomain(t *testing.T) {
+	cases := map[string]string{
+		"https://www.bbc.co.uk/news/x":   "bbc.co.uk",
+		"https://blog.cloudflare.com/a":  "cloudflare.com",
+		"https://example.github.io/post": "example.github.io",
+		"https://localhost:8080/":        "localhost",
+	}
+	for in, want := range cases {
+		if got := RegistrableDomain(in); got != want {
+			t.Errorf("%s: %q", in, got)
+		}
+	}
+}

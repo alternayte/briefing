@@ -6,6 +6,8 @@ import (
 	"errors"
 	"net/url"
 	"strings"
+
+	"golang.org/x/net/publicsuffix"
 )
 
 // trackingParams are query keys that never change the page a URL names.
@@ -46,4 +48,18 @@ func CanonicalURL(raw string) (string, error) {
 	}
 	u.RawQuery = q.Encode()
 	return u.String(), nil
+}
+
+// RegistrableDomain returns the domain a publisher registered, such as
+// bbc.co.uk for www.bbc.co.uk, so subdomains count as one publisher.
+func RegistrableDomain(canonicalURL string) string {
+	u, err := url.Parse(canonicalURL)
+	if err != nil {
+		return ""
+	}
+	host := u.Hostname()
+	if d, err := publicsuffix.EffectiveTLDPlusOne(host); err == nil {
+		return d
+	}
+	return host
 }
