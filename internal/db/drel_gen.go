@@ -8,16 +8,19 @@ import (
 	accounts "github.com/alternayte/briefing/internal/accounts"
 	ingest "github.com/alternayte/briefing/internal/ingest"
 	sources "github.com/alternayte/briefing/internal/sources"
+	model "github.com/alternayte/briefing/internal/stories/model"
 	"github.com/alternayte/drel"
 )
 
 type DB struct {
 	*drel.Engine
-	Profiles  *accounts.ProfileRepository
-	Items     *ingest.ItemRepository
-	Sightings *ingest.SightingRepository
-	Sources   *sources.SourceRepository
-	Modules   Modules
+	Profiles   *accounts.ProfileRepository
+	Items      *ingest.ItemRepository
+	Sightings  *ingest.SightingRepository
+	Sources    *sources.SourceRepository
+	Stories    *model.StoryRepository
+	StoryItems *model.StoryItemRepository
+	Modules    Modules
 }
 
 func Open(dsn string, opts ...drel.Option) (*DB, error) {
@@ -26,11 +29,13 @@ func Open(dsn string, opts ...drel.Option) (*DB, error) {
 		return nil, err
 	}
 	return &DB{
-		Engine:    engine,
-		Profiles:  &accounts.ProfileRepository{Repository: drel.NewRepository(engine, accounts.ProfileMeta)},
-		Items:     &ingest.ItemRepository{Repository: drel.NewRepository(engine, ingest.ItemMeta)},
-		Sightings: &ingest.SightingRepository{Repository: drel.NewRepository(engine, ingest.SightingMeta)},
-		Sources:   &sources.SourceRepository{Repository: drel.NewRepository(engine, sources.SourceMeta)},
+		Engine:     engine,
+		Profiles:   &accounts.ProfileRepository{Repository: drel.NewRepository(engine, accounts.ProfileMeta)},
+		Items:      &ingest.ItemRepository{Repository: drel.NewRepository(engine, ingest.ItemMeta)},
+		Sightings:  &ingest.SightingRepository{Repository: drel.NewRepository(engine, ingest.SightingMeta)},
+		Sources:    &sources.SourceRepository{Repository: drel.NewRepository(engine, sources.SourceMeta)},
+		Stories:    &model.StoryRepository{Repository: drel.NewRepository(engine, model.StoryMeta)},
+		StoryItems: &model.StoryItemRepository{Repository: drel.NewRepository(engine, model.StoryItemMeta)},
 		Modules: Modules{
 			Accounts: AccountsRepos{
 				Profiles: &accounts.ProfileRepository{Repository: drel.NewRepository(engine, accounts.ProfileMeta)},
@@ -42,6 +47,10 @@ func Open(dsn string, opts ...drel.Option) (*DB, error) {
 			Sources: SourcesRepos{
 				Sources: &sources.SourceRepository{Repository: drel.NewRepository(engine, sources.SourceMeta)},
 			},
+			Stories: StoriesRepos{
+				Stories:    &model.StoryRepository{Repository: drel.NewRepository(engine, model.StoryMeta)},
+				StoryItems: &model.StoryItemRepository{Repository: drel.NewRepository(engine, model.StoryItemMeta)},
+			},
 		},
 	}, nil
 }
@@ -49,11 +58,13 @@ func Open(dsn string, opts ...drel.Option) (*DB, error) {
 // TxRepos holds the tracked repositories of one transaction. Load through
 // the fields, stage with Add and Remove, then let WithTx commit.
 type TxRepos struct {
-	Profiles  *accounts.TxProfileRepository
-	Items     *ingest.TxItemRepository
-	Sightings *ingest.TxSightingRepository
-	Sources   *sources.TxSourceRepository
-	Modules   TxModules
+	Profiles   *accounts.TxProfileRepository
+	Items      *ingest.TxItemRepository
+	Sightings  *ingest.TxSightingRepository
+	Sources    *sources.TxSourceRepository
+	Stories    *model.TxStoryRepository
+	StoryItems *model.TxStoryItemRepository
+	Modules    TxModules
 }
 
 // Tx returns the tracked repositories bound to the transaction in ctx.
@@ -61,10 +72,12 @@ type TxRepos struct {
 func (db *DB) Tx(ctx context.Context) TxRepos {
 	tx := drel.MustFromContext(ctx)
 	return TxRepos{
-		Profiles:  &accounts.TxProfileRepository{TxRepository: drel.NewTxRepository(tx, accounts.ProfileMeta)},
-		Items:     &ingest.TxItemRepository{TxRepository: drel.NewTxRepository(tx, ingest.ItemMeta)},
-		Sightings: &ingest.TxSightingRepository{TxRepository: drel.NewTxRepository(tx, ingest.SightingMeta)},
-		Sources:   &sources.TxSourceRepository{TxRepository: drel.NewTxRepository(tx, sources.SourceMeta)},
+		Profiles:   &accounts.TxProfileRepository{TxRepository: drel.NewTxRepository(tx, accounts.ProfileMeta)},
+		Items:      &ingest.TxItemRepository{TxRepository: drel.NewTxRepository(tx, ingest.ItemMeta)},
+		Sightings:  &ingest.TxSightingRepository{TxRepository: drel.NewTxRepository(tx, ingest.SightingMeta)},
+		Sources:    &sources.TxSourceRepository{TxRepository: drel.NewTxRepository(tx, sources.SourceMeta)},
+		Stories:    &model.TxStoryRepository{TxRepository: drel.NewTxRepository(tx, model.StoryMeta)},
+		StoryItems: &model.TxStoryItemRepository{TxRepository: drel.NewTxRepository(tx, model.StoryItemMeta)},
 		Modules: TxModules{
 			Accounts: AccountsTxRepos{
 				Profiles: &accounts.TxProfileRepository{TxRepository: drel.NewTxRepository(tx, accounts.ProfileMeta)},
@@ -75,6 +88,10 @@ func (db *DB) Tx(ctx context.Context) TxRepos {
 			},
 			Sources: SourcesTxRepos{
 				Sources: &sources.TxSourceRepository{TxRepository: drel.NewTxRepository(tx, sources.SourceMeta)},
+			},
+			Stories: StoriesTxRepos{
+				Stories:    &model.TxStoryRepository{TxRepository: drel.NewTxRepository(tx, model.StoryMeta)},
+				StoryItems: &model.TxStoryItemRepository{TxRepository: drel.NewTxRepository(tx, model.StoryItemMeta)},
 			},
 		},
 	}
@@ -112,12 +129,25 @@ type SourcesTxRepos struct {
 	Sources *sources.TxSourceRepository
 }
 
+// StoriesRepos holds the untracked repositories of the "stories" module.
+type StoriesRepos struct {
+	Stories    *model.StoryRepository
+	StoryItems *model.StoryItemRepository
+}
+
+// StoriesTxRepos holds the tracked repositories of the "stories" module.
+type StoriesTxRepos struct {
+	Stories    *model.TxStoryRepository
+	StoryItems *model.TxStoryItemRepository
+}
+
 // Modules groups the untracked repositories by feature slice, so a slice
 // reaches only its own models.
 type Modules struct {
 	Accounts AccountsRepos
 	Ingest   IngestRepos
 	Sources  SourcesRepos
+	Stories  StoriesRepos
 }
 
 // TxModules groups the tracked repositories by feature slice. Every set is
@@ -126,6 +156,7 @@ type TxModules struct {
 	Accounts AccountsTxRepos
 	Ingest   IngestTxRepos
 	Sources  SourcesTxRepos
+	Stories  StoriesTxRepos
 }
 
 // WithTx runs fn inside a transaction and puts that transaction in the

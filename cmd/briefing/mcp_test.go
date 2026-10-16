@@ -61,12 +61,12 @@ func TestMCPNeedsAValidAccessToken(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer pool.Close()
+	t.Cleanup(pool.Close)
 	engine, err := drel.NewEngine(dsn)
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer engine.Close()
+	t.Cleanup(engine.Close)
 	auth, err := accounts.NewAuth(cfg, pool)
 	if err != nil {
 		t.Fatal(err)

@@ -830,6 +830,7 @@ func Packages() []gx.DevPackage {
 			Consts: map[string]constant.Value{
 				"CategoryOther":  gx.DevString("other"),
 				"OpenRouterBase": gx.DevString("https://openrouter.ai"),
+				"QueueCluster":   gx.DevString("cluster"),
 				"QueuePoll":      gx.DevString("poll"),
 			},
 			Types: map[string]reflect.Type{

@@ -5,6 +5,9 @@ modules:
     packages: [./internal/sources]
   - name: ingest
     packages: [./internal/ingest]
+  # workaround: alternayte/drel#13
+  - name: stories
+    packages: [./internal/stories/model]
 
 output:
   db: ./internal/db/drel_gen.go

@@ -1,0 +1,158 @@
+{
+  "tables": [
+    {
+      "name": "stories",
+      "columns": [
+        {
+          "name": "id",
+          "type": "BIGSERIAL PRIMARY KEY",
+          "notNull": true,
+          "pk": true
+        },
+        {
+          "name": "revision",
+          "type": "integer",
+          "notNull": true,
+          "default": "0"
+        },
+        {
+          "name": "centroid",
+          "type": "vector",
+          "notNull": false
+        },
+        {
+          "name": "opened_at",
+          "type": "timestamptz",
+          "notNull": true
+        },
+        {
+          "name": "last_item_at",
+          "type": "timestamptz",
+          "notNull": true
+        },
+        {
+          "name": "publisher_count",
+          "type": "integer",
+          "notNull": true,
+          "default": "1"
+        },
+        {
+          "name": "significance",
+          "type": "double precision",
+          "notNull": true,
+          "default": "0"
+        },
+        {
+          "name": "learning",
+          "type": "double precision",
+          "notNull": true,
+          "default": "0"
+        },
+        {
+          "name": "sensational",
+          "type": "double precision",
+          "notNull": true,
+          "default": "0"
+        },
+        {
+          "name": "category",
+          "type": "text",
+          "notNull": true
+        },
+        {
+          "name": "status",
+          "type": "\"storystatus\"",
+          "notNull": true,
+          "default": "'open'"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamptz",
+          "notNull": true,
+          "default": "NOW()"
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "notNull": true,
+          "default": "NOW()"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "idx_stories_open_recent",
+          "columns": [
+            "last_item_at",
+            "status"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "story_items",
+      "columns": [
+        {
+          "name": "id",
+          "type": "BIGSERIAL PRIMARY KEY",
+          "notNull": true,
+          "pk": true
+        },
+        {
+          "name": "story_id",
+          "type": "bigint",
+          "notNull": true,
+          "ref": "stories",
+          "refColumn": "id",
+          "onDelete": "CASCADE"
+        },
+        {
+          "name": "item_id",
+          "type": "bigint",
+          "notNull": true,
+          "ref": "items",
+          "refColumn": "id",
+          "onDelete": "CASCADE"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamptz",
+          "notNull": true,
+          "default": "NOW()"
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "notNull": true,
+          "default": "NOW()"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "uq_story_items",
+          "columns": [
+            "story_id",
+            "item_id"
+          ],
+          "unique": true
+        },
+        {
+          "name": "uq_story_items_item",
+          "columns": [
+            "item_id"
+          ],
+          "unique": true
+        }
+      ]
+    }
+  ],
+  "enums": [
+    {
+      "name": "storystatus",
+      "values": [
+        "open",
+        "closed"
+      ],
+      "baseType": "string"
+    }
+  ]
+}
