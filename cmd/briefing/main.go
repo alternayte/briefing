@@ -16,6 +16,8 @@ import (
 
 	"github.com/alternayte/briefing/internal/accounts"
 	"github.com/alternayte/briefing/internal/admin"
+	"github.com/alternayte/briefing/internal/embed"
+	"github.com/alternayte/briefing/internal/feed"
 	"github.com/alternayte/briefing/internal/platform"
 )
 
@@ -84,10 +86,18 @@ func serve(ctx context.Context, cfg platform.Config) error {
 	if err := auth.CheckSchema(ctx); err != nil {
 		return fmt.Errorf("auth schema: %w; run briefing migrate", err)
 	}
-	web := accounts.NewWeb(cfg, auth, accounts.NewProfileStore(engine, platform.DefaultTuning()))
+	tuning := platform.DefaultTuning()
+	profiles := accounts.NewProfileStore(engine, tuning)
+	web := accounts.NewWeb(cfg, auth, profiles)
+	jobs, err := platform.NewRiver(pool, nil, nil)
+	if err != nil {
+		return err
+	}
+	or := platform.NewOpenRouter(platform.OpenRouterBase, cfg.OpenRouterAPIKey, &http.Client{Timeout: time.Minute}, engine, time.Now)
+	feedWeb := feed.NewWeb(engine, embed.New(or, cfg), profiles, jobs, tuning, time.Now)
 
 	adminWeb := admin.NewWeb(engine, cfg, time.Now)
-	srv := &http.Server{Addr: cfg.Addr, Handler: newHandler(web, adminWeb, pool.Ping), ReadHeaderTimeout: 10 * time.Second}
+	srv := &http.Server{Addr: cfg.Addr, Handler: newHandler(web, feedWeb, adminWeb, pool.Ping), ReadHeaderTimeout: 10 * time.Second}
 	errc := make(chan error, 1)
 	go func() {
 		slog.Info("listening", "addr", cfg.Addr)

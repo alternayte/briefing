@@ -1,0 +1,17 @@
+package feed
+
+import "github.com/alternayte/briefing/internal/feed/route"
+
+props {
+  // F is the rating form of one story.
+  F route.RateForm
+  // Label is the button text; Value is the rating it sends.
+  Label string = ""
+  Value string = ""
+  // Chosen marks the rating the reader gave.
+  Chosen bool = false
+}
+
+<form {...p.F.Attrs()}>
+  <button type="submit" name={p.F.Rating.Name} value={p.Value} aria-pressed={p.Chosen} class="label min-h-target border border-border px-half hover:border-foreground" class:border-foreground={p.Chosen} class:bg-foreground={p.Chosen} class:text-background={p.Chosen}>{p.Label}</button>
+</form>

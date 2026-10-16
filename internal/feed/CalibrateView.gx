@@ -1,0 +1,37 @@
+package feed
+
+import "github.com/alternayte/briefing/internal/i18n"
+
+props {
+  // Msg is the catalog of the request locale.
+  Msg i18n.Messages
+  // Stories are the stories to rate.
+  Stories []CalibrationRow = nil
+  // Finish is the form that ends onboarding.
+  Finish FinishButtonProps
+}
+
+<gx.Head title={p.Msg.CalibrateTitle + " · " + p.Msg.AppName} />
+<section class="pt-line" aria-labelledby="calibrate-title">
+  <h1 id="calibrate-title" class="text-headline leading-tight font-semibold">{p.Msg.CalibrateTitle}</h1>
+  <p class="mt-half text-muted-foreground">{p.Msg.CalibrateIntro}</p>
+  if len(p.Stories) == 0 {
+    <p class="mt-line text-small text-muted-foreground">{p.Msg.CalibrateNoStories}</p>
+  }
+  <ol class="mt-line divide-y divide-border border-y border-border">
+    for _, s := range p.Stories {
+      <li class="py-half">
+        <h2 class="text-body leading-tight font-semibold">{s.Headline}</h2>
+        <p class="mt-quarter line-clamp-3 text-small text-muted-foreground">{s.Summary}</p>
+        <div class="mt-quarter flex flex-wrap gap-half">
+          for _, b := range s.Buttons {
+            <RateButton f={b.F} label={b.Label} value={b.Value} chosen={b.Chosen} />
+          }
+        </div>
+      </li>
+    }
+  </ol>
+  <div class="mt-line">
+    <FinishButton f={p.Finish.F} label={p.Finish.Label} />
+  </div>
+</section>

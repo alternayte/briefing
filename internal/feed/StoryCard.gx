@@ -1,0 +1,43 @@
+package feed
+
+import "github.com/alternayte/briefing/internal/i18n"
+
+props {
+  // Card is the story.
+  Card Card
+  // Msg is the catalog of the request locale.
+  Msg i18n.Messages
+}
+
+<article class="py-line" aria-labelledby={"story-" + gx.TextValue(p.Card.StoryID)}>
+  <h2 id={"story-" + gx.TextValue(p.Card.StoryID)} class="text-deck leading-tight font-semibold">{p.Card.Headline}</h2>
+  if p.Card.LinkCard {
+    <p class="mt-quarter text-small text-muted-foreground">{p.Card.Summary}</p>
+    <p class="mt-quarter text-small">{p.Msg.FeedLinkCard} <a href={p.Card.LinkURL} rel="noopener" class="text-accent underline underline-offset-2">{p.Card.Sources[0].Domain}</a></p>
+  } else {
+    <p class="mt-quarter">{p.Card.Summary}</p>
+  }
+  if len(p.Card.Concepts) > 0 {
+    <ul class="mt-half flex flex-wrap gap-quarter" aria-label="concepts">
+      for _, name := range p.Card.Concepts {
+        <li class="label border border-border px-quarter text-muted-foreground">{name}</li>
+      }
+    </ul>
+  }
+  <footer class="mt-half flex flex-wrap items-center gap-x-half gap-y-quarter text-small text-muted-foreground">
+    <ul class="flex items-center gap-quarter">
+      for _, s := range p.Card.Sources {
+        <li><a href={s.URL} rel="noopener" title={s.Domain} class="inline-flex min-h-target items-center gap-quarter hover:text-foreground"><img src={s.Favicon} alt="" width="16" height="16" loading="lazy" class="size-4" />{s.Domain}</a></li>
+      }
+    </ul>
+    if p.Card.Publishers > 1 {
+      <span>· {gx.TextValue(p.Card.Publishers)} {p.Msg.FeedPublishers}</span>
+    }
+    if p.Card.Confidence != "" {
+      <span>· {p.Msg.FeedConfidence} {p.Card.Confidence}</span>
+    }
+  </footer>
+  if p.Card.Reason != "" {
+    <p class="label mt-quarter text-muted-foreground">{p.Msg.FeedBecause} “{p.Card.Reason}”</p>
+  }
+</article>

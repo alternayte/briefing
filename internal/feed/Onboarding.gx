@@ -1,0 +1,49 @@
+package feed
+
+import (
+  "github.com/alternayte/briefing/internal/feed/route"
+  "github.com/alternayte/briefing/internal/i18n"
+)
+
+props {
+  // F is the interests form.
+  F route.SaveInterestsForm
+  // Msg is the catalog of the request locale.
+  Msg i18n.Messages
+  // Locale is the reader's current locale.
+  Locale string = "en"
+  // Interests and Avoid prefill the text areas, one topic per line.
+  Interests string = ""
+  Avoid string = ""
+  // Error is a validation message, or empty.
+  Error string = ""
+}
+
+<gx.Head title={p.Msg.OnboardingTitle + " · " + p.Msg.AppName} />
+<section class="pt-line" aria-labelledby="onboarding-title">
+  <h1 id="onboarding-title" class="text-headline leading-tight font-semibold">{p.Msg.OnboardingTitle}</h1>
+  <p class="mt-half text-deck leading-tight text-muted-foreground italic">{p.Msg.OnboardingIntro}</p>
+  if p.Error != "" {
+    <p role="alert" class="mt-line border-l-2 border-destructive pl-half text-small text-destructive">{p.Error}</p>
+  }
+  <form {...p.F.Attrs()} class="mt-line grid gap-line border-t border-border pt-line">
+    <fieldset>
+      <legend class="label text-muted-foreground">{p.Msg.OnboardingLanguage}</legend>
+      <div class="mt-quarter flex gap-line">
+        <label class="flex min-h-target items-center gap-quarter"><input type="radio" name={p.F.Locale.Name} value="en" checked={p.Locale == "en"} class="accent-accent" /> English</label>
+        <label class="flex min-h-target items-center gap-quarter"><input type="radio" name={p.F.Locale.Name} value="fr" checked={p.Locale == "fr"} class="accent-accent" /> Français</label>
+      </div>
+    </fieldset>
+    <div class="grid gap-quarter">
+      <label for={p.F.Interests.ID} class="label text-muted-foreground">{p.Msg.OnboardingInterests}</label>
+      <textarea id={p.F.Interests.ID} name={p.F.Interests.Name} rows="5" required aria-describedby="interests-hint" class="border border-input bg-transparent p-half text-body focus:border-foreground focus:outline-none">{p.Interests}</textarea>
+      <p id="interests-hint" class="text-small text-muted-foreground">{p.Msg.OnboardingInterestsHint}</p>
+    </div>
+    <div class="grid gap-quarter">
+      <label for={p.F.Avoid.ID} class="label text-muted-foreground">{p.Msg.OnboardingAvoid}</label>
+      <textarea id={p.F.Avoid.ID} name={p.F.Avoid.Name} rows="3" aria-describedby="avoid-hint" class="border border-input bg-transparent p-half text-body focus:border-foreground focus:outline-none">{p.Avoid}</textarea>
+      <p id="avoid-hint" class="text-small text-muted-foreground">{p.Msg.OnboardingAvoidHint}</p>
+    </div>
+    <button type="submit" class="label min-h-target bg-primary px-line text-primary-foreground hover:bg-accent hover:text-accent-foreground">{p.Msg.OnboardingContinue}</button>
+  </form>
+</section>

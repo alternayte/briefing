@@ -1,0 +1,14 @@
+package feed
+
+import "github.com/alternayte/briefing/internal/feed/route"
+
+props {
+  // F is the finish form.
+  F route.FinishForm
+  // Label is the button text.
+  Label string = ""
+}
+
+<form {...p.F.Attrs()}>
+  <button type="submit" class="label min-h-target w-full bg-primary px-line text-primary-foreground hover:bg-accent hover:text-accent-foreground">{p.Label}</button>
+</form>

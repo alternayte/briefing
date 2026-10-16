@@ -18,6 +18,7 @@ import (
 
 	"github.com/alternayte/briefing/internal/accounts"
 	"github.com/alternayte/briefing/internal/admin"
+	"github.com/alternayte/briefing/internal/feed"
 	"github.com/alternayte/briefing/internal/platform"
 )
 
@@ -73,7 +74,12 @@ func TestMCPNeedsAValidAccessToken(t *testing.T) {
 		t.Fatal(err)
 	}
 	web := accounts.NewWeb(cfg, auth, accounts.NewProfileStore(engine, platform.DefaultTuning()))
-	srv.Config.Handler = newHandler(web, admin.NewWeb(engine, cfg, time.Now), pool.Ping)
+	jobs, err := platform.NewRiver(pool, nil, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	feedWeb := feed.NewWeb(engine, nil, accounts.NewProfileStore(engine, platform.DefaultTuning()), jobs, platform.DefaultTuning(), time.Now)
+	srv.Config.Handler = newHandler(web, feedWeb, admin.NewWeb(engine, cfg, time.Now), pool.Ping)
 
 	email := fmt.Sprintf("mcp-%d@example.com", time.Now().UnixNano())
 	user, err := auth.CreateUser(ctx, authall.CreateUserInput{Email: email, DisplayName: "Mcp Tester", EmailVerified: true})

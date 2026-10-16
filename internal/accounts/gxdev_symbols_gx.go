@@ -35,6 +35,7 @@ func GxDevSymbols() gx.DevPackage {
 			"SignOutButton":        reflect.ValueOf(SignOutButton),
 			"Verify":               reflect.ValueOf(Verify),
 			"VerifyPage":           reflect.ValueOf(&VerifyPage).Elem(),
+			"WithProfile":          reflect.ValueOf(WithProfile),
 			"applyAllowlist":       reflect.ValueOf(applyAllowlist),
 			"browserErrors":        reflect.ValueOf(browserErrors),
 			"diffProfile":          reflect.ValueOf(diffProfile),

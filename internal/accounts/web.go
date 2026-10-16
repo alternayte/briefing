@@ -48,6 +48,11 @@ type profileKey struct{}
 
 func webFrom(ctx context.Context) *Web { return ctx.Value(webKey{}).(*Web) }
 
+// WithProfile returns a context whose signed-in user has profile p.
+func WithProfile(ctx context.Context, p *Profile) context.Context {
+	return context.WithValue(ctx, profileKey{}, p)
+}
+
 // CurrentProfile returns the profile of the signed-in user, or nil.
 func CurrentProfile(ctx context.Context) *Profile {
 	p, _ := ctx.Value(profileKey{}).(*Profile)
@@ -67,7 +72,7 @@ func (w *Web) Middleware(next http.Handler) http.Handler {
 				http.Error(rw, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 				return
 			}
-			ctx = context.WithValue(ctx, profileKey{}, p)
+			ctx = WithProfile(ctx, p)
 			locale = p.UserLocale()
 		}
 		next.ServeHTTP(rw, r.WithContext(i18n.WithLocale(ctx, locale)))
