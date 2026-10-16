@@ -34,11 +34,13 @@ const (
 
 // Triage holds the decision-model answers about an item.
 type Triage struct {
-	Worth        float64   `json:"worth"`
-	Sensational  float64   `json:"sensational"`
-	Category     string    `json:"category"`
-	Significance int       `json:"significance"`
-	Learning     int       `json:"learning"`
+	Worth       float64 `json:"worth"`
+	Sensational float64 `json:"sensational"`
+	Category    string  `json:"category"`
+	// Significance and Learning are probability-weighted level indexes:
+	// 0 trivial … 4 landmark, and 0 nothing new … 3 substantial.
+	Significance float64   `json:"significance"`
+	Learning     float64   `json:"learning"`
 	Model        string    `json:"model"`
 	DecidedAt    time.Time `json:"decided_at"`
 }
