@@ -3,6 +3,8 @@ modules:
     packages: [./internal/accounts]
   - name: sources
     packages: [./internal/sources]
+  - name: ingest
+    packages: [./internal/ingest]
 
 output:
   db: ./internal/db/drel_gen.go

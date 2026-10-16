@@ -6,6 +6,7 @@ import (
 
 	"github.com/alternayte/briefing/internal/accounts"
 	accountsmigrations "github.com/alternayte/briefing/internal/accounts/migrations"
+	ingestmigrations "github.com/alternayte/briefing/internal/ingest/migrations"
 	"github.com/alternayte/briefing/internal/platform"
 	"github.com/alternayte/briefing/internal/platform/migrations"
 	sourcesmigrations "github.com/alternayte/briefing/internal/sources/migrations"
@@ -29,5 +30,5 @@ func migrate(ctx context.Context, cfg platform.Config) error {
 	if err := platform.MigrateRiver(ctx, pool); err != nil {
 		return err
 	}
-	return platform.MigrateApp(ctx, cfg.DatabaseURL, migrations.FS, accountsmigrations.FS, sourcesmigrations.FS)
+	return platform.MigrateApp(ctx, cfg.DatabaseURL, migrations.FS, accountsmigrations.FS, sourcesmigrations.FS, ingestmigrations.FS)
 }

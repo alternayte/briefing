@@ -1,0 +1,201 @@
+{
+  "tables": [
+    {
+      "name": "items",
+      "columns": [
+        {
+          "name": "id",
+          "type": "BIGSERIAL PRIMARY KEY",
+          "notNull": true,
+          "pk": true
+        },
+        {
+          "name": "canonical_url",
+          "type": "text",
+          "notNull": true
+        },
+        {
+          "name": "title",
+          "type": "text",
+          "notNull": true
+        },
+        {
+          "name": "snippet",
+          "type": "text",
+          "notNull": true
+        },
+        {
+          "name": "published_at",
+          "type": "timestamptz",
+          "notNull": false
+        },
+        {
+          "name": "text",
+          "type": "text",
+          "notNull": true,
+          "default": "''"
+        },
+        {
+          "name": "text_len",
+          "type": "integer",
+          "notNull": true,
+          "default": "0"
+        },
+        {
+          "name": "text_source",
+          "type": "\"textsource\"",
+          "notNull": true,
+          "default": "'pending'"
+        },
+        {
+          "name": "triage",
+          "type": "jsonb",
+          "notNull": false
+        },
+        {
+          "name": "embedding",
+          "type": "vector",
+          "notNull": false
+        },
+        {
+          "name": "embed_model",
+          "type": "text",
+          "notNull": true,
+          "default": "''"
+        },
+        {
+          "name": "status",
+          "type": "\"itemstatus\"",
+          "notNull": true,
+          "default": "'new'"
+        },
+        {
+          "name": "filter_reason",
+          "type": "text",
+          "notNull": true,
+          "default": "''"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamptz",
+          "notNull": true,
+          "default": "NOW()"
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "notNull": true,
+          "default": "NOW()"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "idx_items_status",
+          "columns": [
+            "status"
+          ]
+        },
+        {
+          "name": "uq_items_canonical_url",
+          "columns": [
+            "canonical_url"
+          ],
+          "unique": true
+        }
+      ]
+    },
+    {
+      "name": "sightings",
+      "columns": [
+        {
+          "name": "id",
+          "type": "BIGSERIAL PRIMARY KEY",
+          "notNull": true,
+          "pk": true
+        },
+        {
+          "name": "source_id",
+          "type": "bigint",
+          "notNull": true,
+          "ref": "sources",
+          "refColumn": "id",
+          "onDelete": "CASCADE"
+        },
+        {
+          "name": "external_id",
+          "type": "text",
+          "notNull": true
+        },
+        {
+          "name": "item_id",
+          "type": "bigint",
+          "notNull": true,
+          "ref": "items",
+          "refColumn": "id",
+          "onDelete": "CASCADE"
+        },
+        {
+          "name": "engagement",
+          "type": "jsonb",
+          "notNull": true
+        },
+        {
+          "name": "seen_at",
+          "type": "timestamptz",
+          "notNull": true
+        },
+        {
+          "name": "created_at",
+          "type": "timestamptz",
+          "notNull": true,
+          "default": "NOW()"
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "notNull": true,
+          "default": "NOW()"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "idx_sightings_item",
+          "columns": [
+            "item_id"
+          ]
+        },
+        {
+          "name": "uq_sightings_source_external",
+          "columns": [
+            "source_id",
+            "external_id"
+          ],
+          "unique": true
+        }
+      ]
+    }
+  ],
+  "enums": [
+    {
+      "name": "textsource",
+      "values": [
+        "pending",
+        "none",
+        "extract",
+        "render"
+      ],
+      "baseType": "string"
+    },
+    {
+      "name": "itemstatus",
+      "values": [
+        "new",
+        "filtered",
+        "passed",
+        "rejected",
+        "kept"
+      ],
+      "baseType": "string"
+    }
+  ]
+}

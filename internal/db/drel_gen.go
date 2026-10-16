@@ -6,15 +6,18 @@ import (
 	"context"
 
 	accounts "github.com/alternayte/briefing/internal/accounts"
+	ingest "github.com/alternayte/briefing/internal/ingest"
 	sources "github.com/alternayte/briefing/internal/sources"
 	"github.com/alternayte/drel"
 )
 
 type DB struct {
 	*drel.Engine
-	Profiles *accounts.ProfileRepository
-	Sources  *sources.SourceRepository
-	Modules  Modules
+	Profiles  *accounts.ProfileRepository
+	Items     *ingest.ItemRepository
+	Sightings *ingest.SightingRepository
+	Sources   *sources.SourceRepository
+	Modules   Modules
 }
 
 func Open(dsn string, opts ...drel.Option) (*DB, error) {
@@ -23,12 +26,18 @@ func Open(dsn string, opts ...drel.Option) (*DB, error) {
 		return nil, err
 	}
 	return &DB{
-		Engine:   engine,
-		Profiles: &accounts.ProfileRepository{Repository: drel.NewRepository(engine, accounts.ProfileMeta)},
-		Sources:  &sources.SourceRepository{Repository: drel.NewRepository(engine, sources.SourceMeta)},
+		Engine:    engine,
+		Profiles:  &accounts.ProfileRepository{Repository: drel.NewRepository(engine, accounts.ProfileMeta)},
+		Items:     &ingest.ItemRepository{Repository: drel.NewRepository(engine, ingest.ItemMeta)},
+		Sightings: &ingest.SightingRepository{Repository: drel.NewRepository(engine, ingest.SightingMeta)},
+		Sources:   &sources.SourceRepository{Repository: drel.NewRepository(engine, sources.SourceMeta)},
 		Modules: Modules{
 			Accounts: AccountsRepos{
 				Profiles: &accounts.ProfileRepository{Repository: drel.NewRepository(engine, accounts.ProfileMeta)},
+			},
+			Ingest: IngestRepos{
+				Items:     &ingest.ItemRepository{Repository: drel.NewRepository(engine, ingest.ItemMeta)},
+				Sightings: &ingest.SightingRepository{Repository: drel.NewRepository(engine, ingest.SightingMeta)},
 			},
 			Sources: SourcesRepos{
 				Sources: &sources.SourceRepository{Repository: drel.NewRepository(engine, sources.SourceMeta)},
@@ -40,9 +49,11 @@ func Open(dsn string, opts ...drel.Option) (*DB, error) {
 // TxRepos holds the tracked repositories of one transaction. Load through
 // the fields, stage with Add and Remove, then let WithTx commit.
 type TxRepos struct {
-	Profiles *accounts.TxProfileRepository
-	Sources  *sources.TxSourceRepository
-	Modules  TxModules
+	Profiles  *accounts.TxProfileRepository
+	Items     *ingest.TxItemRepository
+	Sightings *ingest.TxSightingRepository
+	Sources   *sources.TxSourceRepository
+	Modules   TxModules
 }
 
 // Tx returns the tracked repositories bound to the transaction in ctx.
@@ -50,11 +61,17 @@ type TxRepos struct {
 func (db *DB) Tx(ctx context.Context) TxRepos {
 	tx := drel.MustFromContext(ctx)
 	return TxRepos{
-		Profiles: &accounts.TxProfileRepository{TxRepository: drel.NewTxRepository(tx, accounts.ProfileMeta)},
-		Sources:  &sources.TxSourceRepository{TxRepository: drel.NewTxRepository(tx, sources.SourceMeta)},
+		Profiles:  &accounts.TxProfileRepository{TxRepository: drel.NewTxRepository(tx, accounts.ProfileMeta)},
+		Items:     &ingest.TxItemRepository{TxRepository: drel.NewTxRepository(tx, ingest.ItemMeta)},
+		Sightings: &ingest.TxSightingRepository{TxRepository: drel.NewTxRepository(tx, ingest.SightingMeta)},
+		Sources:   &sources.TxSourceRepository{TxRepository: drel.NewTxRepository(tx, sources.SourceMeta)},
 		Modules: TxModules{
 			Accounts: AccountsTxRepos{
 				Profiles: &accounts.TxProfileRepository{TxRepository: drel.NewTxRepository(tx, accounts.ProfileMeta)},
+			},
+			Ingest: IngestTxRepos{
+				Items:     &ingest.TxItemRepository{TxRepository: drel.NewTxRepository(tx, ingest.ItemMeta)},
+				Sightings: &ingest.TxSightingRepository{TxRepository: drel.NewTxRepository(tx, ingest.SightingMeta)},
 			},
 			Sources: SourcesTxRepos{
 				Sources: &sources.TxSourceRepository{TxRepository: drel.NewTxRepository(tx, sources.SourceMeta)},
@@ -73,6 +90,18 @@ type AccountsTxRepos struct {
 	Profiles *accounts.TxProfileRepository
 }
 
+// IngestRepos holds the untracked repositories of the "ingest" module.
+type IngestRepos struct {
+	Items     *ingest.ItemRepository
+	Sightings *ingest.SightingRepository
+}
+
+// IngestTxRepos holds the tracked repositories of the "ingest" module.
+type IngestTxRepos struct {
+	Items     *ingest.TxItemRepository
+	Sightings *ingest.TxSightingRepository
+}
+
 // SourcesRepos holds the untracked repositories of the "sources" module.
 type SourcesRepos struct {
 	Sources *sources.SourceRepository
@@ -87,6 +116,7 @@ type SourcesTxRepos struct {
 // reaches only its own models.
 type Modules struct {
 	Accounts AccountsRepos
+	Ingest   IngestRepos
 	Sources  SourcesRepos
 }
 
@@ -94,6 +124,7 @@ type Modules struct {
 // bound to the same transaction.
 type TxModules struct {
 	Accounts AccountsTxRepos
+	Ingest   IngestTxRepos
 	Sources  SourcesTxRepos
 }
 
