@@ -75,6 +75,8 @@ type FetchTuning struct {
 	Timeout      time.Duration
 	MaxBytes     int64
 	MaxRedirects int
+	// HostGap is the least time between two requests to one host.
+	HostGap time.Duration
 	// RenderBelowChars triggers rendering when readability returns less.
 	RenderBelowChars int
 }
@@ -179,6 +181,7 @@ func DefaultTuning() Tuning {
 			Timeout:          10 * time.Second,
 			MaxBytes:         2 << 20,
 			MaxRedirects:     3,
+			HostGap:          time.Second,
 			RenderBelowChars: 800,
 		},
 		Write: WriteTuning{

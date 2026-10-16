@@ -48,7 +48,7 @@ func NewPublicClient(timeout time.Duration, maxRedirects int) *http.Client {
 		Transport: transport,
 		Jar:       jar,
 		CheckRedirect: func(_ *http.Request, via []*http.Request) error {
-			if len(via) >= maxRedirects {
+			if len(via) > maxRedirects {
 				return fmt.Errorf("stopped after %d redirects", maxRedirects)
 			}
 			return nil

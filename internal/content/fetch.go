@@ -13,6 +13,7 @@ import (
 	"net/url"
 	"strings"
 	"sync"
+	"time"
 
 	readability "codeberg.org/readeck/go-readability/v2"
 
@@ -22,29 +23,38 @@ import (
 // ErrNotHTML reports a page that is not an HTML document.
 var ErrNotHTML = errors.New("not an HTML page")
 
-// Fetcher downloads pages with one request at a time per host.
+// Fetcher downloads pages with one request at a time per host, and a gap
+// between requests to one host.
 type Fetcher struct {
 	client    *http.Client
 	maxBytes  int64
 	userAgent string
+	gap       time.Duration
 
 	mu    sync.Mutex
-	hosts map[string]*sync.Mutex
+	hosts map[string]*hostSlot
+}
+
+// hostSlot serializes the requests to one host and remembers when the last
+// one started.
+type hostSlot struct {
+	sync.Mutex
+	last time.Time
 }
 
 func NewFetcher(client *http.Client, t platform.Tuning, userAgent string) *Fetcher {
-	return &Fetcher{client: client, maxBytes: t.Fetch.MaxBytes, userAgent: userAgent, hosts: map[string]*sync.Mutex{}}
+	return &Fetcher{client: client, maxBytes: t.Fetch.MaxBytes, userAgent: userAgent, gap: t.Fetch.HostGap, hosts: map[string]*hostSlot{}}
 }
 
-func (f *Fetcher) hostLock(host string) *sync.Mutex {
+func (f *Fetcher) hostSlot(host string) *hostSlot {
 	f.mu.Lock()
 	defer f.mu.Unlock()
-	l, ok := f.hosts[host]
+	s, ok := f.hosts[host]
 	if !ok {
-		l = &sync.Mutex{}
-		f.hosts[host] = l
+		s = &hostSlot{}
+		f.hosts[host] = s
 	}
-	return l
+	return s
 }
 
 // FetchText downloads a page and returns its readable text.
@@ -53,10 +63,19 @@ func (f *Fetcher) FetchText(ctx context.Context, rawURL string) (string, error) 
 	if err != nil {
 		return "", err
 	}
-	lock := f.hostLock(u.Hostname())
-	lock.Lock()
+	slot := f.hostSlot(u.Hostname())
+	slot.Lock()
+	if wait := time.Until(slot.last.Add(f.gap)); wait > 0 {
+		select {
+		case <-ctx.Done():
+			slot.Unlock()
+			return "", ctx.Err()
+		case <-time.After(wait):
+		}
+	}
+	slot.last = time.Now()
 	page, final, err := f.get(ctx, rawURL)
-	lock.Unlock()
+	slot.Unlock()
 	if err != nil {
 		return "", err
 	}

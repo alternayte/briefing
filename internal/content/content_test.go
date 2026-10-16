@@ -145,3 +145,28 @@ func TestRendererFailureIsAnError(t *testing.T) {
 		t.Error("want an error")
 	}
 }
+
+// Publishers answer bursts with 429, so requests to one host keep a gap.
+func TestRequestsToOneHostKeepTheGap(t *testing.T) {
+	var mu sync.Mutex
+	var at []time.Time
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		mu.Lock()
+		at = append(at, time.Now())
+		mu.Unlock()
+		w.Header().Set("Content-Type", "text/html")
+		_, _ = w.Write([]byte("<html><body><p>x</p></body></html>"))
+	}))
+	defer srv.Close()
+	tun := platform.DefaultTuning()
+	tun.Fetch.HostGap = 80 * time.Millisecond
+	f := NewFetcher(srv.Client(), tun, "test")
+	for range 3 {
+		_, _ = f.FetchText(context.Background(), srv.URL+"/")
+	}
+	for i := 1; i < len(at); i++ {
+		if d := at[i].Sub(at[i-1]); d < tun.Fetch.HostGap {
+			t.Errorf("request %d came %v after the previous one", i, d)
+		}
+	}
+}

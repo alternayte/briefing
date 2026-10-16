@@ -44,9 +44,13 @@ func TestIsPublicIP(t *testing.T) {
 }
 
 func TestPublicClientLimitsRedirects(t *testing.T) {
+	// via holds the requests made so far, so its length is the redirect's
+	// number: nature.com needs three hops to set its cookie.
 	c := NewPublicClient(time.Second, 3)
-	via := make([]*http.Request, 3)
-	if err := c.CheckRedirect(httptestRequest(t), via); err == nil {
+	if err := c.CheckRedirect(httptestRequest(t), make([]*http.Request, 3)); err != nil {
+		t.Errorf("a third redirect must pass: %v", err)
+	}
+	if err := c.CheckRedirect(httptestRequest(t), make([]*http.Request, 4)); err == nil {
 		t.Error("a fourth redirect must fail")
 	}
 }
