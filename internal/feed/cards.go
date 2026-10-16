@@ -27,6 +27,8 @@ type Card struct {
 	// new revision since.
 	Seen    bool
 	Updated bool
+	// Feedback holds the four feedback forms.
+	Feedback []FeedbackButtonProps
 	// Meta is the coverage and confidence line, in the reader's locale.
 	Meta   []string
 	Reason string
@@ -44,7 +46,9 @@ const cardSelect = `
 		COALESCE(m.headline, ''), COALESCE(m.summary, ''), COALESCE(m.confidence::text, ''),
 		COALESCE((SELECT array_agg(c.name ORDER BY c.name) FROM story_concepts sc JOIN concepts c ON c.id = sc.concept_id WHERE sc.story_id = s.id), '{}'),
 		(SELECT array_agg(i.canonical_url ORDER BY i.text_len DESC, i.id) FROM story_items si JOIN items i ON i.id = si.item_id WHERE si.story_id = s.id),
-		COALESCE(top.title, ''), COALESCE(top.snippet, '')
+		COALESCE(top.title, ''), COALESCE(top.snippet, ''),
+		COALESCE((SELECT array_agg(DISTINCT e.kind::text) FROM learning_events e WHERE e.user_id = f.user_id AND e.story_id = s.id
+			AND e.kind IN ('useful', 'knew', 'irrelevant', 'misleading')), '{}')
 	FROM feed_entries f
 	JOIN stories s ON s.id = f.story_id
 	LEFT JOIN LATERAL (SELECT headline, summary, confidence FROM summaries WHERE story_id = s.id ORDER BY revision DESC LIMIT 1) m ON true
@@ -77,8 +81,8 @@ func queryCards(ctx context.Context, tx *drel.Tx, msg i18n.Messages, sql string,
 	for rows.Next() {
 		var c Card
 		var confidence, title, snippet string
-		var urls []string
-		if err := rows.Scan(&c.StoryID, &c.Reason, &c.Publishers, &c.Seen, &c.Updated, &c.Headline, &c.Summary, &confidence, &c.Concepts, &urls, &title, &snippet); err != nil {
+		var urls, given []string
+		if err := rows.Scan(&c.StoryID, &c.Reason, &c.Publishers, &c.Seen, &c.Updated, &c.Headline, &c.Summary, &confidence, &c.Concepts, &urls, &title, &snippet, &given); err != nil {
 			return nil, err
 		}
 		c.Sources = sourceLinks(urls)
@@ -98,6 +102,7 @@ func queryCards(ctx context.Context, tx *drel.Tx, msg i18n.Messages, sql string,
 		if c.Reason != "" {
 			c.Reason = fmt.Sprintf(msg.FeedBecause, c.Reason)
 		}
+		c.Feedback = feedbackButtons(c.StoryID, "", given, feedbackLabels(msg))
 		out = append(out, c)
 	}
 	return out, rows.Err()
@@ -119,4 +124,8 @@ func sourceLinks(urls []string) []SourceLink {
 		}
 	}
 	return out
+}
+
+func feedbackLabels(msg i18n.Messages) [4]string {
+	return [4]string{msg.FeedbackUseful, msg.FeedbackKnew, msg.FeedbackIrrelevant, msg.FeedbackMisleading}
 }

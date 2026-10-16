@@ -1,0 +1,20 @@
+package feed
+
+import "github.com/alternayte/briefing/internal/feed/route"
+
+props {
+  // F is the feedback form of one story and kind.
+  F route.FeedbackForm
+  // Label is the button text; Kind and From are sent with it.
+  Label string = ""
+  Kind string = ""
+  From string = ""
+  // Chosen marks feedback the reader already gave.
+  Chosen bool = false
+}
+
+<form {...p.F.Attrs()}>
+  <input type="hidden" name={p.F.Kind.Name} value={p.Kind} />
+  <input type="hidden" name={p.F.From.Name} value={p.From} />
+  <button type="submit" aria-pressed={p.Chosen} class="label min-h-target border border-border px-half text-muted-foreground hover:border-foreground hover:text-foreground" class:border-foreground={p.Chosen} class:bg-foreground={p.Chosen} class:text-background={p.Chosen}>{p.Label}</button>
+</form>

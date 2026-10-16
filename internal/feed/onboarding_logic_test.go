@@ -90,8 +90,9 @@ func TestCalibrationRatingsMoveTheNearestInterest(t *testing.T) {
 		}
 		var events int
 		_ = tx.QueryRow(ctx, `SELECT count(*) FROM learning_events WHERE user_id = $1`, user).Scan(&events)
-		if events != 2 {
-			t.Errorf("%d events, want 2", events)
+		// Each kind is recorded once per story; the weight moved only once.
+		if events != 3 {
+			t.Errorf("%d events, want 3", events)
 		}
 	})
 }

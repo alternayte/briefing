@@ -29,6 +29,106 @@ func (in Calibrate) URL() string {
 	return gx.BasePath() + b.String()
 }
 
+// Pattern returns the method and pattern of Feedback.
+func (Feedback) Pattern() string { return "POST /s/{StoryID}/feedback" }
+
+// GxBindForm fills Feedback and returns one message key per field
+// that did not convert (REQ-FRM-07).
+func (in *Feedback) GxBindForm(r *http.Request) (map[string]string, error) {
+	errs := map[string]string{}
+	if v := gx.PathValue(r, "StoryID"); v != "" {
+		x, err := strconv.ParseInt(v, 10, 64)
+		if err != nil {
+			errs[""] = "invalid"
+		} else {
+			in.StoryID = int64(x)
+		}
+	}
+	{
+		if v := gx.FormText(r, "kind"); v != "" {
+			in.Kind = string(v)
+		}
+	}
+	{
+		if v := gx.FormText(r, "from"); v != "" {
+			in.From = string(v)
+		}
+	}
+	return errs, nil
+}
+
+// Bind fills Feedback from the request.
+func (in *Feedback) Bind(r *http.Request) error {
+	errs, err := in.GxBindForm(r)
+	if err != nil {
+		return err
+	}
+	for _, name := range gx.FieldNames(errs) {
+		return fmt.Errorf("gx: %s: %s", name, errs[name])
+	}
+	return nil
+}
+
+// URL returns the path of Feedback.
+func (in Feedback) URL() string {
+	var b strings.Builder
+	b.WriteString("/")
+	b.WriteString("s")
+	b.WriteString("/")
+	b.WriteString(url.PathEscape(strconv.FormatInt(int64(in.StoryID), 10)))
+	b.WriteString("/")
+	b.WriteString("feedback")
+	return gx.BasePath() + b.String()
+}
+
+// FeedbackForm is the generated form value of Feedback (REQ-FRM-03).
+type FeedbackForm struct {
+	gx.FormMeta
+	StoryID gx.FormField[int64]
+	Kind    gx.FormField[string]
+	From    gx.FormField[string]
+}
+
+// GxFormValue fills the form value of Feedback (REQ-FRM-03).
+func (in *Feedback) GxFormValue(errs map[string]string) gx.FormValue {
+	f := FeedbackForm{FormMeta: gx.FormMeta{Name: "feedback", ID: "feedback-form", Action: in.URL(), Method: "POST", Enctype: "", Tool: "feed_feedback"}}
+	f.StoryID = gx.FormField[int64]{Name: "", ID: gx.FieldID("feedback", ""), Value: in.StoryID, ErrorKey: errs[""], Error: gx.Translate(errs[""], gx.DefaultMessage(errs[""])), Constraints: nil, ValidateURL: gx.ValidateURL(in.URL(), "")}
+	f.Kind = gx.FormField[string]{Name: "kind", ID: gx.FieldID("feedback", "kind"), Value: in.Kind, ErrorKey: errs["kind"], Error: gx.Translate(errs["kind"], gx.DefaultMessage(errs["kind"])), Constraints: gx.Attrs{gx.Bool("required", true)}, ValidateURL: gx.ValidateURL(in.URL(), "kind")}
+	f.From = gx.FormField[string]{Name: "from", ID: gx.FieldID("feedback", "from"), Value: in.From, ErrorKey: errs["from"], Error: gx.Translate(errs["from"], gx.DefaultMessage(errs["from"])), Constraints: nil, ValidateURL: gx.ValidateURL(in.URL(), "from")}
+	return f
+}
+
+// GxFieldName returns the form field name of a field pointer (REQ-FRM-02).
+func (in *Feedback) GxFieldName(ptr any) string {
+	switch ptr {
+	case any(&in.StoryID):
+		return ""
+	case any(&in.Kind):
+		return "kind"
+	case any(&in.From):
+		return "from"
+	}
+	return ""
+}
+
+// GxNewForm returns a fresh Feedback (REQ-FRM-02).
+func (in *Feedback) GxNewForm() gx.FormInput { return &Feedback{} }
+
+// GxRunForm calls the form handler with the concrete input type (REQ-FRM-02).
+func (in *Feedback) GxRunForm(ctx *gx.Ctx, fn any) error {
+	return fn.(func(*gx.Ctx, *Feedback) error)(ctx, in)
+}
+
+// GxTool describes Feedback as a tool.
+func (Feedback) GxTool() gx.ToolInfo {
+	return gx.ToolInfo{
+		Name:        "feed_feedback",
+		Description: "Records the reader's feedback on a story: \"useful\" (worth reading; it also schedules the story's review questions), \"knew\" (the reader already knew it, so similar stories rank lower), \"irrelevant\" (not for this reader) or \"misleading\" (the entry misstates its sources). Use it when the reader says so about a story you showed them. Returns the story id and the recorded kind.",
+		Schema:      "{\"additionalProperties\":false,\"properties\":{\"StoryID\":{\"type\":\"integer\"},\"from\":{\"type\":\"string\"},\"kind\":{\"enum\":[\"useful\",\"knew\",\"irrelevant\",\"misleading\"],\"type\":\"string\"}},\"required\":[\"StoryID\",\"kind\"],\"type\":\"object\"}",
+		Fields:      []gx.ToolField{{Name: "StoryID", In: "path"}, {Name: "kind", In: "form"}, {Name: "from", In: "form"}},
+	}
+}
+
 // Pattern returns the method and pattern of Finish.
 func (Finish) Pattern() string { return "POST /onboarding/finish" }
 

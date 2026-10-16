@@ -45,4 +45,9 @@ props {
       <p class="label mt-quarter">{p.Card.Reason}</p>
     }
   </footer>
+  <div role="group" aria-label={p.Msg.FeedbackLabel} class="mt-half flex flex-wrap gap-quarter">
+    for _, b := range p.Card.Feedback {
+      <FeedbackButton f={b.F} label={b.Label} kind={b.Kind} from={b.From} chosen={b.Chosen} />
+    }
+  </div>
 </article>

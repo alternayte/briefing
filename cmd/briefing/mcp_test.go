@@ -105,12 +105,14 @@ func TestMCPNeedsAValidAccessToken(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	var found bool
+	names := map[string]bool{}
 	for _, tool := range tools.Tools {
-		found = found || tool.Name == "accounts_me"
+		names[tool.Name] = true
 	}
-	if !found {
-		t.Fatalf("accounts_me missing from %d tools", len(tools.Tools))
+	for _, want := range []string{"accounts_me", "feed_feedback"} {
+		if !names[want] {
+			t.Errorf("%s missing from the tools %v", want, names)
+		}
 	}
 	res, err := session.CallTool(ctx, &mcp.CallToolParams{Name: "accounts_me", Arguments: map[string]any{}})
 	if err != nil {

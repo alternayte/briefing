@@ -57,3 +57,16 @@ type Story struct {
 	gx.Route `GET /s/{ID}`
 	ID       int64
 }
+
+// Feedback records what the reader thinks of a story. From names the page to
+// return to: "story" or the feed.
+type Feedback struct {
+	gx.Route `POST /s/{StoryID}/feedback`
+	StoryID  int64
+	Kind     string
+	From     string
+}
+
+func (in *Feedback) Rules() gx.Rules {
+	return gx.Rules{gx.Field(&in.Kind, gx.Required, gx.OneOf("useful", "knew", "irrelevant", "misleading"))}
+}

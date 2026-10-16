@@ -23,6 +23,8 @@ props {
   Claims []ClaimView = nil
   Concepts []ConceptView = nil
   Sources []SourceView = nil
+  // Feedback holds the four feedback forms.
+  Feedback []FeedbackButtonProps = nil
 }
 
 <gx.Head title={p.Headline + " · " + p.Msg.AppName} />
@@ -35,6 +37,11 @@ props {
   if len(p.Meta) > 0 {
     <p class="mt-quarter text-small text-muted-foreground">{strings.Join(p.Meta, " · ")}</p>
   }
+  <div role="group" aria-label={p.Msg.FeedbackLabel} class="mt-half flex flex-wrap gap-quarter">
+    for _, b := range p.Feedback {
+      <FeedbackButton f={b.F} label={b.Label} kind={b.Kind} from={b.From} chosen={b.Chosen} />
+    }
+  </div>
   if !p.LinkCard {
     <p class="mt-half">{p.Summary}</p>
     <section class="mt-line" aria-labelledby="why">

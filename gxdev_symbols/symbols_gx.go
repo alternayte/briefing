@@ -876,6 +876,8 @@ func Packages() []gx.DevPackage {
 			Name: "route",
 			Types: map[string]reflect.Type{
 				"Calibrate":         reflect.TypeFor[p27.Calibrate](),
+				"Feedback":          reflect.TypeFor[p27.Feedback](),
+				"FeedbackForm":      reflect.TypeFor[p27.FeedbackForm](),
 				"Finish":            reflect.TypeFor[p27.Finish](),
 				"FinishForm":        reflect.TypeFor[p27.FinishForm](),
 				"Fresh":             reflect.TypeFor[p27.Fresh](),

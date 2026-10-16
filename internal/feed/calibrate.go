@@ -17,11 +17,12 @@ const (
 	maxWeight          = 2.0
 )
 
-// Ratings of calibration stories, as the form sends them.
+// Ratings of calibration stories and feedback kinds, as the forms send them.
 var ratingKinds = map[string]learning.EventKind{
 	"useful":     learning.EventUseful,
 	"knew":       learning.EventKnew,
 	"irrelevant": learning.EventIrrelevant,
+	"misleading": learning.EventMisleading,
 }
 
 type calibrationStory struct {
@@ -64,9 +65,10 @@ func calibrationSet(ctx context.Context, tx *drel.Tx, userID uuid.UUID, since ti
 	return out, rows.Err()
 }
 
-// rate records a calibration rating once per story. Useful raises, and not
-// for me lowers, the weight of the interest nearest to the story; knew is
-// only an event, which the novelty penalty and the concept states read.
+// rate records a rating once per story and kind. The first useful raises,
+// and the first irrelevant lowers, the weight of the interest nearest to the
+// story; knew and misleading are only events, which the novelty penalty, the
+// concept states and the admin read. A rated story counts as seen.
 func rate(ctx context.Context, engine *drel.Engine, userID uuid.UUID, storyID int64, rating string) error {
 	kind, ok := ratingKinds[rating]
 	if !ok {
@@ -74,13 +76,19 @@ func rate(ctx context.Context, engine *drel.Engine, userID uuid.UUID, storyID in
 	}
 	return engine.WithTx(ctx, func(ctx context.Context) error {
 		tx := drel.MustFromContext(ctx)
-		var rated bool
-		if err := tx.QueryRow(ctx, `SELECT EXISTS (SELECT 1 FROM learning_events WHERE user_id = $1 AND story_id = $2
-			AND kind IN ('useful', 'knew', 'irrelevant'))`, userID, storyID).Scan(&rated); err != nil || rated {
+		var same, opinion bool
+		if err := tx.QueryRow(ctx, `SELECT
+			EXISTS (SELECT 1 FROM learning_events WHERE user_id = $1 AND story_id = $2 AND kind = $3),
+			EXISTS (SELECT 1 FROM learning_events WHERE user_id = $1 AND story_id = $2 AND kind IN ('useful', 'irrelevant'))`,
+			userID, storyID, kind).Scan(&same, &opinion); err != nil || same {
 			return err
 		}
-		if _, err := tx.Exec(ctx, `INSERT INTO learning_events (user_id, story_id, kind, payload) VALUES ($1, $2, $3, '{"via":"calibration"}')`,
+		if _, err := tx.Exec(ctx, `INSERT INTO learning_events (user_id, story_id, kind, payload) VALUES ($1, $2, $3, '{}')`,
 			userID, storyID, kind); err != nil {
+			return err
+		}
+		if _, err := tx.Exec(ctx, `UPDATE feed_entries SET state = 'seen', updated_at = now() WHERE user_id = $1 AND story_id = $2 AND state = 'delivered'`,
+			userID, storyID); err != nil {
 			return err
 		}
 		step := 0.0
@@ -90,7 +98,7 @@ func rate(ctx context.Context, engine *drel.Engine, userID uuid.UUID, storyID in
 		case learning.EventIrrelevant:
 			step = -weightStep
 		}
-		if step == 0 {
+		if step == 0 || opinion {
 			return nil
 		}
 		_, err := tx.Exec(ctx, `
