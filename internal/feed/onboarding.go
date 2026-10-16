@@ -88,7 +88,8 @@ var CalibratePage = gx.Page(func(c *gx.Ctx, _ route.Calibrate) (CalibrateViewPro
 // Rate records one calibration rating.
 var Rate = gx.Form(func(c *gx.Ctx, in *route.Rate) error {
 	ctx := c.R.Context()
-	if err := rate(ctx, webFrom(ctx).engine, accounts.CurrentProfile(ctx).ID(), in.StoryID, in.Rating); err != nil {
+	w := webFrom(ctx)
+	if err := rate(ctx, w.engine, accounts.CurrentProfile(ctx).ID(), in.StoryID, in.Rating, w.now().UTC(), w.tuning.Review); err != nil {
 		return err
 	}
 	return c.Redirect(route.Calibrate{})

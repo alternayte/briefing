@@ -68,13 +68,13 @@ func TestCalibrationRatingsMoveTheNearestInterest(t *testing.T) {
 		}
 		rustStory, bioStory := story("[1,0,0]"), story("[0,1,0]")
 
-		if err := rate(ctx, e, user, rustStory, "useful"); err != nil {
+		if err := rate(ctx, e, user, rustStory, "useful", time.Now(), platform.DefaultTuning().Review); err != nil {
 			t.Fatal(err)
 		}
-		if err := rate(ctx, e, user, rustStory, "irrelevant"); err != nil {
+		if err := rate(ctx, e, user, rustStory, "irrelevant", time.Now(), platform.DefaultTuning().Review); err != nil {
 			t.Fatal(err)
 		}
-		if err := rate(ctx, e, user, bioStory, "irrelevant"); err != nil {
+		if err := rate(ctx, e, user, bioStory, "irrelevant", time.Now(), platform.DefaultTuning().Review); err != nil {
 			t.Fatal(err)
 		}
 		weight := func(text string) float64 {

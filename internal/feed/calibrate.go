@@ -8,6 +8,7 @@ import (
 	"github.com/google/uuid"
 
 	"github.com/alternayte/briefing/internal/learning"
+	"github.com/alternayte/briefing/internal/platform"
 )
 
 const (
@@ -65,11 +66,12 @@ func calibrationSet(ctx context.Context, tx *drel.Tx, userID uuid.UUID, since ti
 	return out, rows.Err()
 }
 
-// rate records a rating once per story and kind. The first useful raises,
+// rate records a rating once per story and kind. Useful also schedules the
+// story's review questions. The first useful raises,
 // and the first irrelevant lowers, the weight of the interest nearest to the
 // story; knew and misleading are only events, which the novelty penalty, the
 // concept states and the admin read. A rated story counts as seen.
-func rate(ctx context.Context, engine *drel.Engine, userID uuid.UUID, storyID int64, rating string) error {
+func rate(ctx context.Context, engine *drel.Engine, userID uuid.UUID, storyID int64, rating string, now time.Time, review platform.ReviewTuning) error {
 	kind, ok := ratingKinds[rating]
 	if !ok {
 		return nil
@@ -90,6 +92,11 @@ func rate(ctx context.Context, engine *drel.Engine, userID uuid.UUID, storyID in
 		if _, err := tx.Exec(ctx, `UPDATE feed_entries SET state = 'seen', updated_at = now() WHERE user_id = $1 AND story_id = $2 AND state = 'delivered'`,
 			userID, storyID); err != nil {
 			return err
+		}
+		if kind == learning.EventUseful {
+			if err := learning.ScheduleStory(ctx, tx, userID, storyID, now, review); err != nil {
+				return err
+			}
 		}
 		step := 0.0
 		switch kind {

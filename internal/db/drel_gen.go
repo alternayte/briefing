@@ -18,24 +18,25 @@ import (
 
 type DB struct {
 	*drel.Engine
-	Profiles      *accounts.ProfileRepository
-	Entries       *feed.EntryRepository
-	Interests     *feed.InterestRepository
-	Items         *ingest.ItemRepository
-	Sightings     *ingest.SightingRepository
-	Events        *learning.EventRepository
-	Sources       *sources.SourceRepository
-	Subscriptions *sources.SubscriptionRepository
-	Stories       *model.StoryRepository
-	StoryItems    *model.StoryItemRepository
-	Translations  *translate.TranslationRepository
-	Concepts      *write.ConceptRepository
-	Explanations  *write.ExplanationRepository
-	ReviewItems   *write.ReviewItemRepository
-	StoryConcepts *write.StoryConceptRepository
-	Summaries     *write.SummaryRepository
-	WriteAttempts *write.WriteAttemptRepository
-	Modules       Modules
+	Profiles        *accounts.ProfileRepository
+	Entries         *feed.EntryRepository
+	Interests       *feed.InterestRepository
+	Items           *ingest.ItemRepository
+	Sightings       *ingest.SightingRepository
+	Events          *learning.EventRepository
+	ReviewSchedules *learning.ReviewScheduleRepository
+	Sources         *sources.SourceRepository
+	Subscriptions   *sources.SubscriptionRepository
+	Stories         *model.StoryRepository
+	StoryItems      *model.StoryItemRepository
+	Translations    *translate.TranslationRepository
+	Concepts        *write.ConceptRepository
+	Explanations    *write.ExplanationRepository
+	ReviewItems     *write.ReviewItemRepository
+	StoryConcepts   *write.StoryConceptRepository
+	Summaries       *write.SummaryRepository
+	WriteAttempts   *write.WriteAttemptRepository
+	Modules         Modules
 }
 
 func Open(dsn string, opts ...drel.Option) (*DB, error) {
@@ -44,24 +45,25 @@ func Open(dsn string, opts ...drel.Option) (*DB, error) {
 		return nil, err
 	}
 	return &DB{
-		Engine:        engine,
-		Profiles:      &accounts.ProfileRepository{Repository: drel.NewRepository(engine, accounts.ProfileMeta)},
-		Entries:       &feed.EntryRepository{Repository: drel.NewRepository(engine, feed.EntryMeta)},
-		Interests:     &feed.InterestRepository{Repository: drel.NewRepository(engine, feed.InterestMeta)},
-		Items:         &ingest.ItemRepository{Repository: drel.NewRepository(engine, ingest.ItemMeta)},
-		Sightings:     &ingest.SightingRepository{Repository: drel.NewRepository(engine, ingest.SightingMeta)},
-		Events:        &learning.EventRepository{Repository: drel.NewRepository(engine, learning.EventMeta)},
-		Sources:       &sources.SourceRepository{Repository: drel.NewRepository(engine, sources.SourceMeta)},
-		Subscriptions: &sources.SubscriptionRepository{Repository: drel.NewRepository(engine, sources.SubscriptionMeta)},
-		Stories:       &model.StoryRepository{Repository: drel.NewRepository(engine, model.StoryMeta)},
-		StoryItems:    &model.StoryItemRepository{Repository: drel.NewRepository(engine, model.StoryItemMeta)},
-		Translations:  &translate.TranslationRepository{Repository: drel.NewRepository(engine, translate.TranslationMeta)},
-		Concepts:      &write.ConceptRepository{Repository: drel.NewRepository(engine, write.ConceptMeta)},
-		Explanations:  &write.ExplanationRepository{Repository: drel.NewRepository(engine, write.ExplanationMeta)},
-		ReviewItems:   &write.ReviewItemRepository{Repository: drel.NewRepository(engine, write.ReviewItemMeta)},
-		StoryConcepts: &write.StoryConceptRepository{Repository: drel.NewRepository(engine, write.StoryConceptMeta)},
-		Summaries:     &write.SummaryRepository{Repository: drel.NewRepository(engine, write.SummaryMeta)},
-		WriteAttempts: &write.WriteAttemptRepository{Repository: drel.NewRepository(engine, write.WriteAttemptMeta)},
+		Engine:          engine,
+		Profiles:        &accounts.ProfileRepository{Repository: drel.NewRepository(engine, accounts.ProfileMeta)},
+		Entries:         &feed.EntryRepository{Repository: drel.NewRepository(engine, feed.EntryMeta)},
+		Interests:       &feed.InterestRepository{Repository: drel.NewRepository(engine, feed.InterestMeta)},
+		Items:           &ingest.ItemRepository{Repository: drel.NewRepository(engine, ingest.ItemMeta)},
+		Sightings:       &ingest.SightingRepository{Repository: drel.NewRepository(engine, ingest.SightingMeta)},
+		Events:          &learning.EventRepository{Repository: drel.NewRepository(engine, learning.EventMeta)},
+		ReviewSchedules: &learning.ReviewScheduleRepository{Repository: drel.NewRepository(engine, learning.ReviewScheduleMeta)},
+		Sources:         &sources.SourceRepository{Repository: drel.NewRepository(engine, sources.SourceMeta)},
+		Subscriptions:   &sources.SubscriptionRepository{Repository: drel.NewRepository(engine, sources.SubscriptionMeta)},
+		Stories:         &model.StoryRepository{Repository: drel.NewRepository(engine, model.StoryMeta)},
+		StoryItems:      &model.StoryItemRepository{Repository: drel.NewRepository(engine, model.StoryItemMeta)},
+		Translations:    &translate.TranslationRepository{Repository: drel.NewRepository(engine, translate.TranslationMeta)},
+		Concepts:        &write.ConceptRepository{Repository: drel.NewRepository(engine, write.ConceptMeta)},
+		Explanations:    &write.ExplanationRepository{Repository: drel.NewRepository(engine, write.ExplanationMeta)},
+		ReviewItems:     &write.ReviewItemRepository{Repository: drel.NewRepository(engine, write.ReviewItemMeta)},
+		StoryConcepts:   &write.StoryConceptRepository{Repository: drel.NewRepository(engine, write.StoryConceptMeta)},
+		Summaries:       &write.SummaryRepository{Repository: drel.NewRepository(engine, write.SummaryMeta)},
+		WriteAttempts:   &write.WriteAttemptRepository{Repository: drel.NewRepository(engine, write.WriteAttemptMeta)},
 		Modules: Modules{
 			Accounts: AccountsRepos{
 				Profiles: &accounts.ProfileRepository{Repository: drel.NewRepository(engine, accounts.ProfileMeta)},
@@ -75,7 +77,8 @@ func Open(dsn string, opts ...drel.Option) (*DB, error) {
 				Sightings: &ingest.SightingRepository{Repository: drel.NewRepository(engine, ingest.SightingMeta)},
 			},
 			Learning: LearningRepos{
-				Events: &learning.EventRepository{Repository: drel.NewRepository(engine, learning.EventMeta)},
+				Events:          &learning.EventRepository{Repository: drel.NewRepository(engine, learning.EventMeta)},
+				ReviewSchedules: &learning.ReviewScheduleRepository{Repository: drel.NewRepository(engine, learning.ReviewScheduleMeta)},
 			},
 			Sources: SourcesRepos{
 				Sources:       &sources.SourceRepository{Repository: drel.NewRepository(engine, sources.SourceMeta)},
@@ -103,24 +106,25 @@ func Open(dsn string, opts ...drel.Option) (*DB, error) {
 // TxRepos holds the tracked repositories of one transaction. Load through
 // the fields, stage with Add and Remove, then let WithTx commit.
 type TxRepos struct {
-	Profiles      *accounts.TxProfileRepository
-	Entries       *feed.TxEntryRepository
-	Interests     *feed.TxInterestRepository
-	Items         *ingest.TxItemRepository
-	Sightings     *ingest.TxSightingRepository
-	Events        *learning.TxEventRepository
-	Sources       *sources.TxSourceRepository
-	Subscriptions *sources.TxSubscriptionRepository
-	Stories       *model.TxStoryRepository
-	StoryItems    *model.TxStoryItemRepository
-	Translations  *translate.TxTranslationRepository
-	Concepts      *write.TxConceptRepository
-	Explanations  *write.TxExplanationRepository
-	ReviewItems   *write.TxReviewItemRepository
-	StoryConcepts *write.TxStoryConceptRepository
-	Summaries     *write.TxSummaryRepository
-	WriteAttempts *write.TxWriteAttemptRepository
-	Modules       TxModules
+	Profiles        *accounts.TxProfileRepository
+	Entries         *feed.TxEntryRepository
+	Interests       *feed.TxInterestRepository
+	Items           *ingest.TxItemRepository
+	Sightings       *ingest.TxSightingRepository
+	Events          *learning.TxEventRepository
+	ReviewSchedules *learning.TxReviewScheduleRepository
+	Sources         *sources.TxSourceRepository
+	Subscriptions   *sources.TxSubscriptionRepository
+	Stories         *model.TxStoryRepository
+	StoryItems      *model.TxStoryItemRepository
+	Translations    *translate.TxTranslationRepository
+	Concepts        *write.TxConceptRepository
+	Explanations    *write.TxExplanationRepository
+	ReviewItems     *write.TxReviewItemRepository
+	StoryConcepts   *write.TxStoryConceptRepository
+	Summaries       *write.TxSummaryRepository
+	WriteAttempts   *write.TxWriteAttemptRepository
+	Modules         TxModules
 }
 
 // Tx returns the tracked repositories bound to the transaction in ctx.
@@ -128,23 +132,24 @@ type TxRepos struct {
 func (db *DB) Tx(ctx context.Context) TxRepos {
 	tx := drel.MustFromContext(ctx)
 	return TxRepos{
-		Profiles:      &accounts.TxProfileRepository{TxRepository: drel.NewTxRepository(tx, accounts.ProfileMeta)},
-		Entries:       &feed.TxEntryRepository{TxRepository: drel.NewTxRepository(tx, feed.EntryMeta)},
-		Interests:     &feed.TxInterestRepository{TxRepository: drel.NewTxRepository(tx, feed.InterestMeta)},
-		Items:         &ingest.TxItemRepository{TxRepository: drel.NewTxRepository(tx, ingest.ItemMeta)},
-		Sightings:     &ingest.TxSightingRepository{TxRepository: drel.NewTxRepository(tx, ingest.SightingMeta)},
-		Events:        &learning.TxEventRepository{TxRepository: drel.NewTxRepository(tx, learning.EventMeta)},
-		Sources:       &sources.TxSourceRepository{TxRepository: drel.NewTxRepository(tx, sources.SourceMeta)},
-		Subscriptions: &sources.TxSubscriptionRepository{TxRepository: drel.NewTxRepository(tx, sources.SubscriptionMeta)},
-		Stories:       &model.TxStoryRepository{TxRepository: drel.NewTxRepository(tx, model.StoryMeta)},
-		StoryItems:    &model.TxStoryItemRepository{TxRepository: drel.NewTxRepository(tx, model.StoryItemMeta)},
-		Translations:  &translate.TxTranslationRepository{TxRepository: drel.NewTxRepository(tx, translate.TranslationMeta)},
-		Concepts:      &write.TxConceptRepository{TxRepository: drel.NewTxRepository(tx, write.ConceptMeta)},
-		Explanations:  &write.TxExplanationRepository{TxRepository: drel.NewTxRepository(tx, write.ExplanationMeta)},
-		ReviewItems:   &write.TxReviewItemRepository{TxRepository: drel.NewTxRepository(tx, write.ReviewItemMeta)},
-		StoryConcepts: &write.TxStoryConceptRepository{TxRepository: drel.NewTxRepository(tx, write.StoryConceptMeta)},
-		Summaries:     &write.TxSummaryRepository{TxRepository: drel.NewTxRepository(tx, write.SummaryMeta)},
-		WriteAttempts: &write.TxWriteAttemptRepository{TxRepository: drel.NewTxRepository(tx, write.WriteAttemptMeta)},
+		Profiles:        &accounts.TxProfileRepository{TxRepository: drel.NewTxRepository(tx, accounts.ProfileMeta)},
+		Entries:         &feed.TxEntryRepository{TxRepository: drel.NewTxRepository(tx, feed.EntryMeta)},
+		Interests:       &feed.TxInterestRepository{TxRepository: drel.NewTxRepository(tx, feed.InterestMeta)},
+		Items:           &ingest.TxItemRepository{TxRepository: drel.NewTxRepository(tx, ingest.ItemMeta)},
+		Sightings:       &ingest.TxSightingRepository{TxRepository: drel.NewTxRepository(tx, ingest.SightingMeta)},
+		Events:          &learning.TxEventRepository{TxRepository: drel.NewTxRepository(tx, learning.EventMeta)},
+		ReviewSchedules: &learning.TxReviewScheduleRepository{TxRepository: drel.NewTxRepository(tx, learning.ReviewScheduleMeta)},
+		Sources:         &sources.TxSourceRepository{TxRepository: drel.NewTxRepository(tx, sources.SourceMeta)},
+		Subscriptions:   &sources.TxSubscriptionRepository{TxRepository: drel.NewTxRepository(tx, sources.SubscriptionMeta)},
+		Stories:         &model.TxStoryRepository{TxRepository: drel.NewTxRepository(tx, model.StoryMeta)},
+		StoryItems:      &model.TxStoryItemRepository{TxRepository: drel.NewTxRepository(tx, model.StoryItemMeta)},
+		Translations:    &translate.TxTranslationRepository{TxRepository: drel.NewTxRepository(tx, translate.TranslationMeta)},
+		Concepts:        &write.TxConceptRepository{TxRepository: drel.NewTxRepository(tx, write.ConceptMeta)},
+		Explanations:    &write.TxExplanationRepository{TxRepository: drel.NewTxRepository(tx, write.ExplanationMeta)},
+		ReviewItems:     &write.TxReviewItemRepository{TxRepository: drel.NewTxRepository(tx, write.ReviewItemMeta)},
+		StoryConcepts:   &write.TxStoryConceptRepository{TxRepository: drel.NewTxRepository(tx, write.StoryConceptMeta)},
+		Summaries:       &write.TxSummaryRepository{TxRepository: drel.NewTxRepository(tx, write.SummaryMeta)},
+		WriteAttempts:   &write.TxWriteAttemptRepository{TxRepository: drel.NewTxRepository(tx, write.WriteAttemptMeta)},
 		Modules: TxModules{
 			Accounts: AccountsTxRepos{
 				Profiles: &accounts.TxProfileRepository{TxRepository: drel.NewTxRepository(tx, accounts.ProfileMeta)},
@@ -158,7 +163,8 @@ func (db *DB) Tx(ctx context.Context) TxRepos {
 				Sightings: &ingest.TxSightingRepository{TxRepository: drel.NewTxRepository(tx, ingest.SightingMeta)},
 			},
 			Learning: LearningTxRepos{
-				Events: &learning.TxEventRepository{TxRepository: drel.NewTxRepository(tx, learning.EventMeta)},
+				Events:          &learning.TxEventRepository{TxRepository: drel.NewTxRepository(tx, learning.EventMeta)},
+				ReviewSchedules: &learning.TxReviewScheduleRepository{TxRepository: drel.NewTxRepository(tx, learning.ReviewScheduleMeta)},
 			},
 			Sources: SourcesTxRepos{
 				Sources:       &sources.TxSourceRepository{TxRepository: drel.NewTxRepository(tx, sources.SourceMeta)},
@@ -219,12 +225,14 @@ type IngestTxRepos struct {
 
 // LearningRepos holds the untracked repositories of the "learning" module.
 type LearningRepos struct {
-	Events *learning.EventRepository
+	Events          *learning.EventRepository
+	ReviewSchedules *learning.ReviewScheduleRepository
 }
 
 // LearningTxRepos holds the tracked repositories of the "learning" module.
 type LearningTxRepos struct {
-	Events *learning.TxEventRepository
+	Events          *learning.TxEventRepository
+	ReviewSchedules *learning.TxReviewScheduleRepository
 }
 
 // SourcesRepos holds the untracked repositories of the "sources" module.

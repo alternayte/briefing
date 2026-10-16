@@ -66,6 +66,84 @@
           ]
         }
       ]
+    },
+    {
+      "name": "review_schedules",
+      "columns": [
+        {
+          "name": "id",
+          "type": "BIGSERIAL PRIMARY KEY",
+          "notNull": true,
+          "pk": true
+        },
+        {
+          "name": "user_id",
+          "type": "uuid",
+          "notNull": true,
+          "ref": "auth_users",
+          "refColumn": "id",
+          "onDelete": "CASCADE"
+        },
+        {
+          "name": "review_item_id",
+          "type": "bigint",
+          "notNull": true,
+          "ref": "review_items",
+          "refColumn": "id",
+          "onDelete": "CASCADE"
+        },
+        {
+          "name": "due_at",
+          "type": "timestamptz",
+          "notNull": true
+        },
+        {
+          "name": "interval_days",
+          "type": "integer",
+          "notNull": true
+        },
+        {
+          "name": "streak",
+          "type": "integer",
+          "notNull": true,
+          "default": "0"
+        },
+        {
+          "name": "last_result",
+          "type": "text",
+          "notNull": true,
+          "default": "''"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamptz",
+          "notNull": true,
+          "default": "NOW()"
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "notNull": true,
+          "default": "NOW()"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "idx_review_schedules_due",
+          "columns": [
+            "user_id",
+            "due_at"
+          ]
+        },
+        {
+          "name": "uq_review_schedules",
+          "columns": [
+            "user_id",
+            "review_item_id"
+          ],
+          "unique": true
+        }
+      ]
     }
   ],
   "enums": [

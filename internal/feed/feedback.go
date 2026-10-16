@@ -21,7 +21,8 @@ type FeedbackResult struct {
 var Feedback = gx.Form(func(c *gx.Ctx, in *route.Feedback) error {
 	ctx := c.R.Context()
 	profile := accounts.CurrentProfile(ctx)
-	if err := rate(ctx, webFrom(ctx).engine, profile.ID(), in.StoryID, in.Kind); err != nil {
+	w := webFrom(ctx)
+	if err := rate(ctx, w.engine, profile.ID(), in.StoryID, in.Kind, w.now().UTC(), w.tuning.Review); err != nil {
 		return err
 	}
 	gx.ToolResult(c, FeedbackResult{StoryID: in.StoryID, Kind: in.Kind})
