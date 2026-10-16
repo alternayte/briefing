@@ -1,0 +1,14 @@
+package admin
+
+import "github.com/alternayte/briefing/internal/admin/route"
+
+props {
+  // F is the toggle form of one source.
+  F route.ToggleSourceForm
+  // Label is the button text in the request locale.
+  Label string = ""
+}
+
+<form {...p.F.Attrs()}>
+  <button type="submit" class="label min-h-target text-muted-foreground hover:text-accent">{p.Label}</button>
+</form>

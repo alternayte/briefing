@@ -13,16 +13,18 @@ import (
 	"github.com/alternayte/briefing/app"
 	"github.com/alternayte/briefing/gxstyles"
 	"github.com/alternayte/briefing/internal/accounts"
+	"github.com/alternayte/briefing/internal/admin"
 )
 
 // newHandler mounts auth-all, the health check and the Gx app on one mux.
-func newHandler(web *accounts.Web, ping func(context.Context) error) http.Handler {
+func newHandler(web *accounts.Web, adminWeb *admin.Web, ping func(context.Context) error) http.Handler {
 	setupGallery()
 	gx.SetStylesheet(gxstyles.CSS())
 	gx.SetWidgetStylesheets(gxstyles.Widgets())
 	gx.SetRouteStylesheets(gxstyles.Routes())
 	ui := gx.New(gx.Config{Adapter: datastar.Adapter()})
 	ui.Group("/", app.Layout, gx.Nav(gx.MorphNavigation), accounts.Routes)
+	ui.Group("/", app.Layout, gx.Nav(gx.MorphNavigation), adminWeb.Middleware, admin.Routes)
 	gxmcp.Mount(ui, "/mcp", accounts.RequireAccessToken)
 
 	mux := http.NewServeMux()

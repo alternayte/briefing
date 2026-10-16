@@ -15,6 +15,7 @@ import (
 	"github.com/alternayte/drel"
 
 	"github.com/alternayte/briefing/internal/accounts"
+	"github.com/alternayte/briefing/internal/admin"
 	"github.com/alternayte/briefing/internal/platform"
 )
 
@@ -85,7 +86,8 @@ func serve(ctx context.Context, cfg platform.Config) error {
 	}
 	web := accounts.NewWeb(cfg, auth, accounts.NewProfileStore(engine, platform.DefaultTuning()))
 
-	srv := &http.Server{Addr: cfg.Addr, Handler: newHandler(web, pool.Ping), ReadHeaderTimeout: 10 * time.Second}
+	adminWeb := admin.NewWeb(engine, cfg, time.Now)
+	srv := &http.Server{Addr: cfg.Addr, Handler: newHandler(web, adminWeb, pool.Ping), ReadHeaderTimeout: 10 * time.Second}
 	errc := make(chan error, 1)
 	go func() {
 		slog.Info("listening", "addr", cfg.Addr)

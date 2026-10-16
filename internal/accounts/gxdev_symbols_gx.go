@@ -20,6 +20,7 @@ func GxDevSymbols() gx.DevPackage {
 		Values: map[string]reflect.Value{
 			"CurrentProfile":       reflect.ValueOf(CurrentProfile),
 			"Handler":              reflect.ValueOf(Handler),
+			"IsAdmin":              reflect.ValueOf(IsAdmin),
 			"Login":                reflect.ValueOf(Login),
 			"LoginPage":            reflect.ValueOf(&LoginPage).Elem(),
 			"NewAuth":              reflect.ValueOf(NewAuth),

@@ -30,6 +30,31 @@ type Messages struct {
 	VerifyTitle  string
 	VerifyBody   string
 	VerifyButton string
+
+	AdminTitle        string
+	AdminSources      string
+	AdminSource       string
+	AdminKind         string
+	AdminLastSuccess  string
+	AdminLastError    string
+	AdminNever        string
+	AdminEnable       string
+	AdminDisable      string
+	AdminDisabled     string
+	AdminJobs         string
+	AdminJobKind      string
+	AdminJobState     string
+	AdminJobCount     string
+	AdminFailures     string
+	AdminNoFailures   string
+	AdminSpend        string
+	AdminStage        string
+	AdminCalls        string
+	AdminCost         string
+	AdminTotal        string
+	AdminCap          string
+	AdminCapReached   string
+	AdminNoSpendToday string
 }
 
 func (m Messages) MagicLinkText(link string, minutes int) string {
@@ -61,6 +86,31 @@ var en = Messages{
 	VerifyTitle:  "Confirm sign-in",
 	VerifyBody:   "Select the button to finish signing in. If you did not ask for this link, close this page.",
 	VerifyButton: "Sign in",
+
+	AdminTitle:        "Operations",
+	AdminSources:      "Sources",
+	AdminSource:       "Source",
+	AdminKind:         "Kind",
+	AdminLastSuccess:  "Last success",
+	AdminLastError:    "Last error",
+	AdminNever:        "never",
+	AdminEnable:       "Enable",
+	AdminDisable:      "Disable",
+	AdminDisabled:     "off",
+	AdminJobs:         "Jobs",
+	AdminJobKind:      "Job",
+	AdminJobState:     "State",
+	AdminJobCount:     "Count",
+	AdminFailures:     "Recent failures",
+	AdminNoFailures:   "No recent failures.",
+	AdminSpend:        "Model spend today (UTC)",
+	AdminStage:        "Stage",
+	AdminCalls:        "Calls",
+	AdminCost:         "Cost",
+	AdminTotal:        "Total",
+	AdminCap:          "Daily cap",
+	AdminCapReached:   "The daily cap is reached. Writing, explanations and translations wait until tomorrow; triage and embeddings continue.",
+	AdminNoSpendToday: "No model calls today.",
 }
 
 var fr = Messages{
@@ -88,4 +138,29 @@ var fr = Messages{
 	VerifyTitle:  "Confirmer la connexion",
 	VerifyBody:   "Sélectionnez le bouton pour terminer la connexion. Si vous n’avez pas demandé ce lien, fermez cette page.",
 	VerifyButton: "Se connecter",
+
+	AdminTitle:        "Exploitation",
+	AdminSources:      "Sources",
+	AdminSource:       "Source",
+	AdminKind:         "Type",
+	AdminLastSuccess:  "Dernier succès",
+	AdminLastError:    "Dernière erreur",
+	AdminNever:        "jamais",
+	AdminEnable:       "Activer",
+	AdminDisable:      "Désactiver",
+	AdminDisabled:     "désactivée",
+	AdminJobs:         "Tâches",
+	AdminJobKind:      "Tâche",
+	AdminJobState:     "État",
+	AdminJobCount:     "Nombre",
+	AdminFailures:     "Échecs récents",
+	AdminNoFailures:   "Aucun échec récent.",
+	AdminSpend:        "Dépenses de modèles aujourd’hui (UTC)",
+	AdminStage:        "Étape",
+	AdminCalls:        "Appels",
+	AdminCost:         "Coût",
+	AdminTotal:        "Total",
+	AdminCap:          "Plafond quotidien",
+	AdminCapReached:   "Le plafond quotidien est atteint. La rédaction, les explications et les traductions reprennent demain ; le tri et les plongements continuent.",
+	AdminNoSpendToday: "Aucun appel de modèle aujourd’hui.",
 }

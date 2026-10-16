@@ -64,3 +64,22 @@ func Due(ctx context.Context, engine *drel.Engine, now time.Time) ([]int64, erro
 	})
 	return ids, err
 }
+
+// List returns every source, by kind and title.
+func List(ctx context.Context, engine *drel.Engine) ([]*Source, error) {
+	var out []*Source
+	err := engine.WithTx(ctx, func(ctx context.Context) (err error) {
+		out, err = drel.NewTxRepository(drel.MustFromContext(ctx), SourceMeta).
+			OrderBy(Sources.Kind.Asc(), Sources.Title.Asc()).All(ctx)
+		return err
+	})
+	return out, err
+}
+
+// SetEnabled turns polling of a source on or off.
+func SetEnabled(ctx context.Context, engine *drel.Engine, id int64, enabled bool) error {
+	return engine.WithTx(ctx, func(ctx context.Context) error {
+		_, err := drel.MustFromContext(ctx).Exec(ctx, `UPDATE sources SET enabled = $2, updated_at = now() WHERE id = $1`, id, enabled)
+		return err
+	})
+}

@@ -1,0 +1,83 @@
+package admin
+
+import "github.com/alternayte/briefing/internal/i18n"
+
+props {
+  // Msg is the catalog of the request locale.
+  Msg i18n.Messages
+  // Sources lists every source.
+  Sources []SourceRow = nil
+  // Jobs counts the jobs by kind and state.
+  Jobs []JobCount = nil
+  // Failures lists the latest failed job attempts.
+  Failures []Failure = nil
+  // Spend lists today's model spend by stage and model.
+  Spend []SpendRow = nil
+  // SpendTotal and SpendCap are formatted amounts.
+  SpendTotal string = ""
+  SpendCap string = ""
+  // CapReached marks that writing has stopped for the day.
+  CapReached bool = false
+}
+
+<gx.Head title={p.Msg.AdminTitle + " · " + p.Msg.AppName} />
+<h1 class="pt-line text-headline leading-tight font-semibold">{p.Msg.AdminTitle}</h1>
+
+<section class="mt-line" aria-labelledby="spend">
+  <h2 id="spend" class="label border-b border-foreground pb-quarter">{p.Msg.AdminSpend}</h2>
+  if p.CapReached {
+    <p role="status" class="mt-half border-l-2 border-destructive pl-half text-small text-destructive">{p.Msg.AdminCapReached}</p>
+  }
+  <p class="mt-half text-deck">{p.SpendTotal} <span class="text-small text-muted-foreground">/ {p.Msg.AdminCap} {p.SpendCap}</span></p>
+  if len(p.Spend) == 0 {
+    <p class="mt-quarter text-small text-muted-foreground">{p.Msg.AdminNoSpendToday}</p>
+  } else {
+    <table class="mt-half w-full text-small tabular-nums">
+      <thead class="label text-muted-foreground"><tr class="border-b border-border"><th class="py-quarter text-left font-normal">{p.Msg.AdminStage}</th><th class="text-right font-normal">{p.Msg.AdminCalls}</th><th class="text-right font-normal">{p.Msg.AdminCost}</th></tr></thead>
+      <tbody>
+        for _, r := range p.Spend {
+          <tr class="border-b border-border"><td class="py-quarter">{r.Stage} <span class="text-muted-foreground">· {r.Model}</span></td><td class="text-right">{r.Calls}</td><td class="text-right">{r.Cost}</td></tr>
+        }
+      </tbody>
+    </table>
+  }
+</section>
+
+<section class="mt-line" aria-labelledby="sources">
+  <h2 id="sources" class="label border-b border-foreground pb-quarter">{p.Msg.AdminSources}</h2>
+  <ul class="divide-y divide-border">
+    for _, s := range p.Sources {
+      <li class="flex items-start justify-between gap-half py-half" class:text-muted-foreground={!s.Enabled}>
+        <div class="min-w-0">
+          <p class="leading-tight">{s.Title} <span class="label text-muted-foreground">{s.Kind}</span></p>
+          <p class="text-small text-muted-foreground">{p.Msg.AdminLastSuccess}: {s.LastSuccess}</p>
+          if s.LastError != "" {
+            <p class="text-small break-words text-destructive">{p.Msg.AdminLastError}: {s.LastError}</p>
+          }
+        </div>
+        <ToggleButton f={s.Toggle.F} label={s.Toggle.Label} />
+      </li>
+    }
+  </ul>
+</section>
+
+<section class="mt-line" aria-labelledby="jobs">
+  <h2 id="jobs" class="label border-b border-foreground pb-quarter">{p.Msg.AdminJobs}</h2>
+  <table class="mt-half w-full text-small tabular-nums">
+    <thead class="label text-muted-foreground"><tr class="border-b border-border"><th class="py-quarter text-left font-normal">{p.Msg.AdminJobKind}</th><th class="text-left font-normal">{p.Msg.AdminJobState}</th><th class="text-right font-normal">{p.Msg.AdminJobCount}</th></tr></thead>
+    <tbody>
+      for _, j := range p.Jobs {
+        <tr class="border-b border-border"><td class="py-quarter">{j.Kind}</td><td>{j.State}</td><td class="text-right">{j.Count}</td></tr>
+      }
+    </tbody>
+  </table>
+  <h3 class="label mt-line text-muted-foreground">{p.Msg.AdminFailures}</h3>
+  if len(p.Failures) == 0 {
+    <p class="mt-quarter text-small text-muted-foreground">{p.Msg.AdminNoFailures}</p>
+  }
+  <ul class="mt-quarter">
+    for _, f := range p.Failures {
+      <li class="border-b border-border py-quarter text-small"><span class="label">{f.Kind}</span> <span class="text-muted-foreground">{f.At}</span><br /><span class="break-words">{f.Error}</span></li>
+    }
+  </ul>
+</section>

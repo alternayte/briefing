@@ -16,5 +16,7 @@ func Fixtures() []gx.Fixture {
 		{Component: "Login", Package: "github.com/alternayte/briefing/internal/accounts", Missing: true},
 		{Component: "SignOutButton", Package: "github.com/alternayte/briefing/internal/accounts", Missing: true},
 		{Component: "Verify", Package: "github.com/alternayte/briefing/internal/accounts", Missing: true},
+		{Component: "Dashboard", Package: "github.com/alternayte/briefing/internal/admin", Missing: true},
+		{Component: "ToggleButton", Package: "github.com/alternayte/briefing/internal/admin", Missing: true},
 	}
 }

@@ -17,6 +17,7 @@ import (
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
 	"github.com/alternayte/briefing/internal/accounts"
+	"github.com/alternayte/briefing/internal/admin"
 	"github.com/alternayte/briefing/internal/platform"
 )
 
@@ -72,7 +73,7 @@ func TestMCPNeedsAValidAccessToken(t *testing.T) {
 		t.Fatal(err)
 	}
 	web := accounts.NewWeb(cfg, auth, accounts.NewProfileStore(engine, platform.DefaultTuning()))
-	srv.Config.Handler = newHandler(web, pool.Ping)
+	srv.Config.Handler = newHandler(web, admin.NewWeb(engine, cfg, time.Now), pool.Ping)
 
 	email := fmt.Sprintf("mcp-%d@example.com", time.Now().UnixNano())
 	user, err := auth.CreateUser(ctx, authall.CreateUserInput{Email: email, DisplayName: "Mcp Tester", EmailVerified: true})

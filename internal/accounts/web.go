@@ -85,3 +85,10 @@ func (w *Web) ensureProfile(ctx context.Context, userID, displayName string, loc
 	}
 	return p, err
 }
+
+// IsAdmin reports whether the signed-in user is listed in ADMIN_EMAILS.
+func IsAdmin(ctx context.Context) bool {
+	u := authall.UserFrom(ctx)
+	w, ok := ctx.Value(webKey{}).(*Web)
+	return u != nil && ok && w.cfg.IsAdmin(u.Email)
+}
