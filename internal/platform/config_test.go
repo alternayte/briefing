@@ -49,6 +49,9 @@ func TestLoadConfigAppliesDefaults(t *testing.T) {
 	if c.DailySpendUSD != 1 {
 		t.Errorf("spend cap = %v", c.DailySpendUSD)
 	}
+	if c.EmailFrom != "Briefing <briefing@briefing.example.com>" {
+		t.Errorf("email from = %q", c.EmailFrom)
+	}
 	if c.MagicLinkEnabled() || c.RenderingEnabled() || c.SignUpRestricted() {
 		t.Error("optional features must be off without their env")
 	}

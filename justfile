@@ -1,6 +1,8 @@
 set dotenv-load
 
 test_db := "postgres://briefing:briefing@localhost:55432/briefing_test?sslmode=disable"
+# Placeholder secrets: migrate validates the whole config before it runs.
+test_env := "BASE_URL=http://localhost:8080 SESSION_SECRET=test-secret-test-secret-test-secret GITHUB_CLIENT_ID=test GITHUB_CLIENT_SECRET=test OPENROUTER_API_KEY=test"
 
 # Fast gate: format, vet and tests of the packages changed since upstream.
 check:
@@ -23,6 +25,7 @@ check:
 
 # Full suite with Postgres and the race detector.
 test: db
+    DATABASE_URL="{{test_db}}" {{test_env}} go run ./cmd/briefing migrate
     TEST_DATABASE_URL="{{test_db}}" go test -race -count=1 ./...
 
 # Start the local Postgres with pgvector.

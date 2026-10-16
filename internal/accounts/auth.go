@@ -3,10 +3,14 @@ package accounts
 
 import (
 	"fmt"
+	"net/http"
+	"time"
 
 	authall "github.com/alternayte/auth-all"
 	"github.com/alternayte/auth-all/oauth/github"
+	"github.com/alternayte/auth-all/plugin"
 	"github.com/alternayte/auth-all/plugins/apikeys"
+	"github.com/alternayte/auth-all/plugins/magiclink"
 	"github.com/alternayte/auth-all/plugins/roles"
 	"github.com/alternayte/auth-all/ratelimit"
 	"github.com/alternayte/auth-all/ratelimit/storelimit"
@@ -14,6 +18,7 @@ import (
 	"github.com/alternayte/auth-all/store/postgres"
 	"github.com/jackc/pgx/v5/pgxpool"
 
+	"github.com/alternayte/briefing/internal/i18n"
 	"github.com/alternayte/briefing/internal/platform"
 )
 
@@ -37,7 +42,19 @@ func NewAuth(cfg platform.Config, pool *pgxpool.Pool) (*authall.Auth, error) {
 	if err != nil {
 		return nil, fmt.Errorf("auth rate limiter: %w", err)
 	}
-	auth, err := authall.New(
+	plugins := []plugin.Plugin{
+		roles.New(roles.Hierarchy(RoleMember, RoleAdmin)),
+		apikeys.New(apikeys.Prefix(AccessTokenPrefix), apikeys.AdminRole(RoleAdmin)),
+	}
+	opts := []authall.Option{}
+	if cfg.MagicLinkEnabled() {
+		plugins = append(plugins, magiclink.New(
+			// The emailed link opens the app's own localized confirmation page.
+			magiclink.WithVerifyURL(cfg.BaseURL.JoinPath("/login/verify").String()),
+		))
+		opts = append(opts, authall.WithEmailSender(newResendSender(cfg, resendEndpoint, &http.Client{Timeout: 10 * time.Second})))
+	}
+	auth, err := authall.New(append(opts,
 		authall.WithStore(st),
 		authall.WithRateLimiter(limiter),
 		authall.WithStrictRateLimiting(),
@@ -47,13 +64,25 @@ func NewAuth(cfg platform.Config, pool *pgxpool.Pool) (*authall.Auth, error) {
 			github.WithClientID(cfg.GitHubClientID),
 			github.WithClientSecret(cfg.GitHubClientSecret),
 		)),
-		authall.WithPlugins(
-			roles.New(roles.Hierarchy(RoleMember, RoleAdmin)),
-			apikeys.New(apikeys.Prefix(AccessTokenPrefix), apikeys.AdminRole(RoleAdmin)),
-		),
-	)
+		authall.WithPlugins(plugins...),
+	)...)
 	if err != nil {
 		return nil, fmt.Errorf("auth: %w", err)
 	}
+	applyAllowlist(auth.Hooks(), cfg)
 	return auth, nil
+}
+
+// Handler serves the auth-all routes under /api/auth/.
+func Handler(auth *authall.Auth) http.Handler {
+	return withRequestLocale(browserErrors(auth.Handler()))
+}
+
+// withRequestLocale puts the browser's preferred locale in the context, so
+// an email sent during the request uses it.
+func withRequestLocale(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		l := i18n.FromAcceptLanguage(r.Header.Get("Accept-Language"))
+		next.ServeHTTP(w, r.WithContext(i18n.WithLocale(r.Context(), l)))
+	})
 }

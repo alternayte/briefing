@@ -1,0 +1,8 @@
+modules:
+  - name: accounts
+    packages: [./internal/accounts]
+
+output:
+  db: ./internal/db/drel_gen.go
+
+dialect: postgres

@@ -1,0 +1,47 @@
+{
+  "tables": [
+    {
+      "name": "profiles",
+      "columns": [
+        {
+          "name": "id",
+          "type": "uuid PRIMARY KEY",
+          "notNull": true,
+          "pk": true
+        },
+        {
+          "name": "display_name",
+          "type": "text",
+          "notNull": true
+        },
+        {
+          "name": "locale",
+          "type": "text",
+          "notNull": true
+        },
+        {
+          "name": "daily_budget",
+          "type": "integer",
+          "notNull": true
+        },
+        {
+          "name": "onboarded_at",
+          "type": "timestamptz",
+          "notNull": false
+        },
+        {
+          "name": "created_at",
+          "type": "timestamptz",
+          "notNull": true,
+          "default": "NOW()"
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "notNull": true,
+          "default": "NOW()"
+        }
+      ]
+    }
+  ]
+}

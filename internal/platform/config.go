@@ -32,6 +32,7 @@ type Config struct {
 	AllowedEmails []string
 	AdminEmails   []string
 	ResendAPIKey  string
+	EmailFrom     string
 
 	DecideAPI      DecideAPI
 	DecideModel    string
@@ -81,6 +82,7 @@ func LoadConfig(lookup func(string) (string, bool)) (Config, error) {
 			r.fail("BASE_URL must be an absolute URL, got %q", raw)
 		}
 		c.BaseURL = u
+		c.EmailFrom = r.optional("EMAIL_FROM", "Briefing <briefing@"+u.Hostname()+">")
 	}
 	if c.SessionSecret != "" && len(c.SessionSecret) < minSessionSecretLen {
 		r.fail("SESSION_SECRET must be at least %d characters", minSessionSecretLen)
