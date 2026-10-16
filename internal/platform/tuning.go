@@ -159,8 +159,8 @@ func DefaultTuning() Tuning {
 		},
 		Triage: TriageTuning{WorthMin: 0.5, MaxStateChars: 6000},
 		Cluster: ClusterTuning{
-			JoinHigh:     0.85,
-			JoinLow:      0.72,
+			JoinHigh:     0.82,
+			JoinLow:      0.60,
 			SameEventMin: 0.6,
 			OpenWindow:   72 * time.Hour,
 		},
