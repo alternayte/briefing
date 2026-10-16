@@ -1,0 +1,4 @@
+# GitHub shows a .gx file with HTML highlighting.
+*.gx linguist-language=HTML
+# Generated Go stays out of diffs and out of the language statistics.
+*_gx.go linguist-generated=true

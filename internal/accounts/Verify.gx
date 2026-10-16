@@ -1,0 +1,23 @@
+package accounts
+
+import "github.com/alternayte/briefing/internal/i18n"
+
+props {
+  // Msg is the catalog of the request locale.
+  Msg i18n.Messages
+  // Token is the one-time magic link token.
+  Token string
+  // CallbackURL is where auth-all sends the browser after sign-in.
+  CallbackURL string
+}
+
+<gx.Head title={p.Msg.VerifyTitle + " · " + p.Msg.AppName} meta={[]gx.Meta{{Name: "referrer", Content: "no-referrer"}}} />
+<section class="mx-auto max-w-column pt-line" aria-labelledby="verify-title">
+  <h1 id="verify-title" class="text-headline leading-tight font-semibold">{p.Msg.VerifyTitle}</h1>
+  <p class="mt-half">{p.Msg.VerifyBody}</p>
+  <form method="post" action="/api/auth/magic-link/verify" class="mt-line border-t border-border pt-line">
+    <input type="hidden" name="token" value={p.Token} />
+    <input type="hidden" name="callbackURL" value={p.CallbackURL} />
+    <button type="submit" class="label inline-flex min-h-target w-full items-center justify-center bg-primary px-line text-primary-foreground hover:bg-accent hover:text-accent-foreground">{p.Msg.VerifyButton}</button>
+  </form>
+</section>

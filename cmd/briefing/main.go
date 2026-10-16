@@ -12,6 +12,9 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/alternayte/drel"
+
+	"github.com/alternayte/briefing/internal/accounts"
 	"github.com/alternayte/briefing/internal/platform"
 )
 
@@ -49,9 +52,26 @@ func run(args []string) error {
 }
 
 func serve(ctx context.Context, cfg platform.Config) error {
-	mux := http.NewServeMux()
-	srv := &http.Server{Addr: cfg.Addr, Handler: mux, ReadHeaderTimeout: 10 * time.Second}
+	pool, err := platform.OpenPool(ctx, cfg.DatabaseURL)
+	if err != nil {
+		return err
+	}
+	defer pool.Close()
+	engine, err := drel.NewEngine(cfg.DatabaseURL)
+	if err != nil {
+		return fmt.Errorf("open drel engine: %w", err)
+	}
+	defer engine.Close()
+	auth, err := accounts.NewAuth(cfg, pool)
+	if err != nil {
+		return err
+	}
+	if err := auth.CheckSchema(ctx); err != nil {
+		return fmt.Errorf("auth schema: %w; run briefing migrate", err)
+	}
+	web := accounts.NewWeb(cfg, auth, accounts.NewProfileStore(engine, platform.DefaultTuning()))
 
+	srv := &http.Server{Addr: cfg.Addr, Handler: newHandler(web, pool.Ping), ReadHeaderTimeout: 10 * time.Second}
 	errc := make(chan error, 1)
 	go func() {
 		slog.Info("listening", "addr", cfg.Addr)

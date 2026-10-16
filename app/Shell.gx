@@ -1,0 +1,29 @@
+package app
+
+import (
+  "github.com/alternayte/briefing/internal/accounts"
+  "github.com/alternayte/briefing/internal/i18n"
+)
+
+props {
+  // Msg is the catalog of the request locale.
+  Msg i18n.Messages
+  // Lang is the language of the page.
+  Lang string
+  // SignOut is the sign-out form, or nil when nobody is signed in.
+  SignOut *accounts.SignOutButtonProps = nil
+  // Children is the page.
+  Children gx.Node
+}
+
+<gx.Head title={p.Msg.AppName} lang={p.Lang} bodyClass="min-h-dvh" />
+<a href="#main" class="label sr-only focus:not-sr-only focus:absolute focus:left-half focus:top-half focus:bg-background focus:p-quarter">{p.Msg.SkipToContent}</a>
+<header class="mx-auto max-w-column px-half pt-line">
+  <div class="flex items-baseline justify-between border-b-2 border-foreground pb-quarter">
+    <a href="/" class="text-masthead leading-tight font-bold tracking-tight">{p.Msg.AppName}</a>
+    if p.SignOut != nil {
+      <accounts.SignOutButton f={p.SignOut.F} label={p.SignOut.Label} />
+    }
+  </div>
+</header>
+<main id="main" class="mx-auto max-w-column px-half pb-line">{p.Children}</main>

@@ -1,0 +1,14 @@
+package accounts
+
+import "github.com/alternayte/briefing/internal/accounts/route"
+
+props {
+  // F is the sign-out form.
+  F route.SignOutForm
+  // Label is the button text in the request locale.
+  Label string = ""
+}
+
+<form {...p.F.Attrs()}>
+  <button type="submit" class="label text-muted-foreground hover:text-accent">{p.Label}</button>
+</form>

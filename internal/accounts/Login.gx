@@ -1,0 +1,42 @@
+package accounts
+
+import (
+  "github.com/alternayte/briefing/internal/accounts/route"
+  "github.com/alternayte/briefing/internal/i18n"
+)
+
+props {
+  // F is the magic link form.
+  F route.SendLinkForm
+  // Msg is the catalog of the request locale.
+  Msg i18n.Messages
+  // Notice is the error or confirmation text, or empty.
+  Notice string = ""
+  // NoticeIsError marks Notice as an error.
+  NoticeIsError bool = false
+  // MagicLink shows the email form.
+  MagicLink bool = false
+}
+
+<gx.Head title={p.Msg.LoginTitle + " · " + p.Msg.AppName} />
+<section class="mx-auto max-w-column pt-line" aria-labelledby="login-title">
+  <h1 id="login-title" class="text-headline leading-tight font-semibold">{p.Msg.LoginTitle}</h1>
+  <p class="mt-half text-deck leading-tight text-muted-foreground italic">{p.Msg.LoginIntro}</p>
+
+  if p.Notice != "" {
+    <p role="status" class="mt-line border-l-2 border-foreground pl-half text-small" class:border-destructive={p.NoticeIsError} class:text-destructive={p.NoticeIsError}>{p.Notice}</p>
+  }
+
+  <div class="mt-line border-t border-border pt-line">
+    <a href="/api/auth/oauth/github?redirect_to=/" class="label inline-flex min-h-target w-full items-center justify-center bg-primary px-line text-primary-foreground hover:bg-accent hover:text-accent-foreground">{p.Msg.LoginGitHub}</a>
+  </div>
+
+  if p.MagicLink {
+    <p class="label my-half flex items-center gap-half text-muted-foreground before:h-px before:flex-1 before:bg-border after:h-px after:flex-1 after:bg-border">{p.Msg.LoginOr}</p>
+    <form {...p.F.Attrs()} class="grid gap-quarter">
+      <label for={p.F.Email.ID} class="label text-muted-foreground">{p.Msg.LoginEmailLabel}</label>
+      <input {...p.F.Email.Attrs()} type="email" required maxlength="254" autocomplete="email" inputmode="email" class="min-h-target border-0 border-b border-input bg-transparent px-0 text-body focus:border-foreground focus:outline-none" />
+      <button type="submit" class="label mt-half min-h-target border border-foreground px-line hover:bg-foreground hover:text-background">{p.Msg.LoginEmailSend}</button>
+    </form>
+  }
+</section>

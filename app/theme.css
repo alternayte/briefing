@@ -1,0 +1,181 @@
+/* Direction: the briefs column on the front page of a printed morning newspaper: serif text set for reading on warm newsprint, small-caps section labels, hairline rules, and one red printing ink; dark mode is the same page under a reading lamp. */
+@import "tailwindcss";
+
+@source "../.gx/classes.txt";
+@source not "../js/vendor";
+@source not "../gxislands";
+@source not "../gxstyles";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    font-family: var(--font-serif);
+    font-size: 100%;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-background text-foreground text-body leading-body antialiased;
+    font-variant-numeric: oldstyle-nums proportional-nums;
+  }
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-ring;
+  }
+}
+
+/* Cross-document view transitions for full loads. */
+@view-transition {
+  navigation: auto;
+}
+
+/* Newsprint by day. */
+:root {
+  --radius: 0.125rem;
+  --paper: oklch(0.965 0.014 85);
+  --paper-deep: oklch(0.93 0.018 82);
+  --ink: oklch(0.22 0.012 60);
+  --ink-soft: oklch(0.45 0.015 65);
+  --rule: oklch(0.84 0.02 80);
+  --red-ink: oklch(0.5 0.17 30);
+  --red-ink-paper: oklch(0.97 0.012 85);
+  --ok-ink: oklch(0.46 0.09 150);
+  --warn-ink: oklch(0.55 0.11 75);
+}
+
+/* The same page under a reading lamp. */
+.dark {
+  --paper: oklch(0.19 0.01 70);
+  --paper-deep: oklch(0.23 0.012 70);
+  --ink: oklch(0.91 0.02 85);
+  --ink-soft: oklch(0.7 0.02 80);
+  --rule: oklch(0.34 0.012 70);
+  --red-ink: oklch(0.68 0.15 32);
+  --red-ink-paper: oklch(0.17 0.01 70);
+  --ok-ink: oklch(0.72 0.1 150);
+  --warn-ink: oklch(0.76 0.11 80);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    --paper: oklch(0.19 0.01 70);
+    --paper-deep: oklch(0.23 0.012 70);
+    --ink: oklch(0.91 0.02 85);
+    --ink-soft: oklch(0.7 0.02 80);
+    --rule: oklch(0.34 0.012 70);
+    --red-ink: oklch(0.68 0.15 32);
+    --red-ink-paper: oklch(0.17 0.01 70);
+    --ok-ink: oklch(0.72 0.1 150);
+    --warn-ink: oklch(0.76 0.11 80);
+  }
+}
+
+/* The registry component names map onto the page's few inks. */
+:root, .dark {
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --card: var(--paper);
+  --card-foreground: var(--ink);
+  --popover: var(--paper-deep);
+  --popover-foreground: var(--ink);
+  --primary: var(--ink);
+  --primary-foreground: var(--paper);
+  --secondary: var(--paper-deep);
+  --secondary-foreground: var(--ink);
+  --muted: var(--paper-deep);
+  --muted-foreground: var(--ink-soft);
+  --accent: var(--red-ink);
+  --accent-foreground: var(--red-ink-paper);
+  --destructive: var(--red-ink);
+  --destructive-foreground: var(--red-ink-paper);
+  --success: var(--ok-ink);
+  --warning: var(--warn-ink);
+  --border: var(--rule);
+  --input: var(--rule);
+  --ring: var(--red-ink);
+  --chart-1: var(--ink);
+  --chart-2: var(--red-ink);
+  --chart-3: var(--ink-soft);
+  --chart-4: var(--ok-ink);
+  --chart-5: var(--warn-ink);
+  --sidebar: var(--paper);
+  --sidebar-foreground: var(--ink);
+  --sidebar-primary: var(--ink);
+  --sidebar-primary-foreground: var(--paper);
+  --sidebar-accent: var(--paper-deep);
+  --sidebar-accent-foreground: var(--ink);
+  --sidebar-border: var(--rule);
+  --sidebar-ring: var(--red-ink);
+}
+
+@theme inline {
+  /* Text faces a newspaper would set: a sturdy book serif, no sans. */
+  --font-serif: Charter, "Bitstream Charter", "Iowan Old Style", "Sitka Text", Cambria, Georgia, serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  /* Minor third (1.2) from an 18px reading size. */
+  --text-label: 0.8125rem;
+  --text-label--letter-spacing: 0.08em;
+  --text-small: 0.9375rem;
+  --text-body: 1.125rem;
+  --text-deck: 1.35rem;
+  --text-headline: 1.62rem;
+  --text-masthead: 1.944rem;
+  --leading-body: 1.5;
+  --leading-tight: 1.2;
+
+  /* Spacing follows the 27px body line: quarter, half and whole lines; a target is the smallest touch area. */
+  --spacing-line: 1.6875rem;
+  --spacing-half: 0.84375rem;
+  --spacing-quarter: 0.421875rem;
+  --spacing-target: 2.75rem;
+  --container-column: 36rem;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --radius-sm: var(--radius);
+  --radius-md: var(--radius);
+  --radius-lg: var(--radius);
+  --radius-xl: var(--radius);
+}
+
+@utility label {
+  font-size: var(--text-label);
+  letter-spacing: var(--text-label--letter-spacing);
+  font-variant-caps: all-small-caps;
+  font-weight: 600;
+}

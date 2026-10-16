@@ -15,9 +15,9 @@ jobs:
           go-version-file: go.mod
           cache: true
       - name: Format
-        run: test -z "$(gofmt -l $(git ls-files '*.go'))"
-      - name: Vet
-        run: go vet ./...
+        run: test -z "$(gofmt -l $(git ls-files '*.go' ':!:*_gx.go'))"
+      - name: Lint
+        run: go run ./cmd/gx lint
       - name: Generated code is current
         run: |
           if [ -f drel.yaml ]; then go tool drel generate; fi

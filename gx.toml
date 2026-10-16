@@ -1,0 +1,14 @@
+# The configuration of the Briefing app.
+
+# The hypermedia adapter. Keep it equal to the adapter in cmd/briefing/main.go.
+adapter = "datastar"
+
+[registry]
+# gx add copies components from this registry into dir.
+url = "https://raw.githubusercontent.com/alternayte/gx/v0.4.1/registry"
+dir = "ui"
+
+[site]
+# gx export uses the site data for page titles, canonical links and
+# sitemap.xml. Set url to the public address of the site.
+title = "Briefing"
