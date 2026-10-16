@@ -267,7 +267,7 @@ func (r *Ranker) deliver(ctx context.Context, userID uuid.UUID, budget int, now 
 	var n int64
 	err := r.engine.WithTx(ctx, func(ctx context.Context) (err error) {
 		n, err = drel.MustFromContext(ctx).Exec(ctx, `
-			UPDATE feed_entries SET state = 'delivered', delivered_on = $2::date, shown_revision = s.revision, updated_at = now()
+			UPDATE feed_entries SET state = 'delivered', delivered_on = $2::date, delivered_at = now(), shown_revision = s.revision, updated_at = now()
 			FROM stories s
 			WHERE feed_entries.story_id = s.id AND feed_entries.id IN (
 				SELECT f.id FROM feed_entries f JOIN stories st ON st.id = f.story_id

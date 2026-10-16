@@ -58,6 +58,11 @@
           "notNull": false
         },
         {
+          "name": "delivered_at",
+          "type": "timestamptz",
+          "notNull": false
+        },
+        {
           "name": "state",
           "type": "\"entrystate\"",
           "notNull": true,

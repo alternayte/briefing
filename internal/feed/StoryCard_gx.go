@@ -154,30 +154,11 @@ func StoryCard(p StoryCardProps) gx.Node {
 	_b1.Add(_tStoryCard14.With(
 //line StoryCard.gx:38:3
 		_b3.Node(),
-	))
 //line StoryCard.gx:51:3
-	var _b5 gx.Builder
-//line StoryCard.gx:51:97
-	_b5.Add(_tStoryCard6)
-//line StoryCard.gx:52:5
-	for _, b := range p.Card.Feedback {
-//line StoryCard.gx:52:40
-		_b5.Add(_tStoryCard15.With(
-//line StoryCard.gx:53:7
-			FeedbackButton(FeedbackButtonProps{F: b.F, Label: b.Label, Kind: b.Kind, From: b.From, Chosen: b.Chosen}),
-		))
-	}
-//line StoryCard.gx:54:6
-	_b5.Add(_tStoryCard0)
-//line StoryCard.gx:51:3
-	_b1.Add(_tStoryCard16.With(
-//line StoryCard.gx:51:3
-		gx.Open("div", gx.Attrs{gx.Attr{Key: "class", Value: "mt-half flex flex-wrap gap-quarter", Kind: gx.AttrText}, gx.Attr{Key: "role", Value: "group", Kind: gx.AttrText}, gx.Attr{Key: "aria-label", Value: p.Msg.FeedbackLabel, Kind: gx.AttrText}}),
-//line StoryCard.gx:51:3
-		_b5.Node(),
+		FeedbackGroup(FeedbackGroupProps{Buttons: p.Card.Feedback, Msg: p.Msg}),
 	))
 //line StoryCard.gx:17:1
-	_b.Add(_tStoryCard17.With(
+	_b.Add(_tStoryCard15.With(
 //line StoryCard.gx:17:1
 		gx.Open("article", gx.Attrs{gx.Attr{Key: "class", Value: "py-line", Kind: gx.AttrText}, gx.Attr{Key: "aria-labelledby", Value: "story-" + gx.TextValue(p.Card.StoryID), Kind: gx.AttrText}}),
 //line StoryCard.gx:17:1
@@ -285,27 +266,13 @@ var _tStoryCard13 = gx.NewTemplate(
 )
 
 var _tStoryCard14 = gx.NewTemplate(
-	[]string{"<footer class=\"mt-half text-small text-muted-foreground\">", "</footer>\n  "},
-	[]int{1},
+	[]string{"<footer class=\"mt-half text-small text-muted-foreground\">", "</footer>\n  ", "\n"},
+	[]int{1, 0},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "footer"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "footer"}, {El: -1, Slot: -1}, {El: -1, Slot: 1}, {El: -1, Slot: -1}},
 )
 
 var _tStoryCard15 = gx.NewTemplate(
-	[]string{"\n      ", "\n    "},
-	[]int{0},
-	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: 0}, {El: -1, Slot: -1}},
-)
-
-var _tStoryCard16 = gx.NewTemplate(
-	[]string{"<div", ">", "</div>\n"},
-	[]int{0, 1},
-	[]gx.TemplateEl{{Slot: 0, Start: 0, EndStatic: 2, End: 6}},
-	[]gx.TemplateRoot{{El: 0, Slot: -1}, {El: -1, Slot: -1}},
-)
-
-var _tStoryCard17 = gx.NewTemplate(
 	[]string{"<article", ">", "</article>\n"},
 	[]int{0, 1},
 	[]gx.TemplateEl{{Slot: 0, Start: 0, EndStatic: 2, End: 10}},

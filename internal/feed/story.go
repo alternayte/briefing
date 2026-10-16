@@ -186,9 +186,8 @@ func loadStory(ctx context.Context, tx *drel.Tx, storyID int64, userID uuid.UUID
 	if err := crow.Err(); err != nil {
 		return false, err
 	}
-	var given []string
-	if err := tx.QueryRow(ctx, `SELECT COALESCE(array_agg(DISTINCT kind::text), '{}') FROM learning_events
-		WHERE user_id = $1 AND story_id = $2 AND kind IN ('useful', 'knew', 'irrelevant', 'misleading')`, userID, storyID).Scan(&given); err != nil {
+	given, err := givenFeedback(ctx, tx, userID, storyID)
+	if err != nil {
 		return false, err
 	}
 	p.Feedback = feedbackButtons(storyID, "story", given, feedbackLabels(msg))

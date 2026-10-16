@@ -50,14 +50,20 @@ var HomePage = gx.Page(func(c *gx.Ctx, _ route.Home) (HomeProps, error) {
 
 // FreshAction tells an open feed that stories arrived after it loaded. The
 // page calls it every minute and shows a banner when the count is not zero.
+// It counts entries delivered after the load and stories of today that got a
+// new revision after it; rescoring, feedback and opening a story change an
+// entry too, but a reload would show nothing new for them.
 var FreshAction = gx.Action(func(c *gx.Ctx, in route.Fresh) error {
 	ctx := c.R.Context()
 	w, profile := webFrom(ctx), accounts.CurrentProfile(ctx)
 	var n int
 	err := w.engine.WithTx(ctx, func(ctx context.Context) error {
 		return drel.MustFromContext(ctx).QueryRow(ctx, `
-			SELECT count(*) FROM feed_entries
-			WHERE user_id = $1 AND delivered_on = $2::date AND updated_at > to_timestamp($3)`,
+			SELECT count(*) FROM feed_entries f JOIN stories s ON s.id = f.story_id
+			WHERE f.user_id = $1 AND f.delivered_on = $2::date AND (
+				f.delivered_at > to_timestamp($3)
+				OR (f.shown_revision > 0 AND f.shown_revision < s.revision AND EXISTS (
+					SELECT 1 FROM summaries m WHERE m.story_id = s.id AND m.revision = s.revision AND m.created_at > to_timestamp($3))))`,
 			profile.ID(), w.now().UTC().Format("2006-01-02"), in.Since).Scan(&n)
 	})
 	if err != nil || n == 0 {

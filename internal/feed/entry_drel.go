@@ -20,6 +20,7 @@ var Entries = struct {
 	Reason        drel.StringColumn
 	ShownRevision drel.OrderedColumn[int]
 	DeliveredOn   drel.ComparableColumn[*time.Time]
+	DeliveredAt   drel.ComparableColumn[*time.Time]
 	State         drel.ComparableColumn[EntryState]
 	CreatedAt     drel.TimeColumn
 	UpdatedAt     drel.TimeColumn
@@ -33,6 +34,7 @@ var Entries = struct {
 	Reason:        drel.NewStringCol("reason"),
 	ShownRevision: drel.NewOrderedCol[int]("shown_revision"),
 	DeliveredOn:   drel.NewComparableCol[*time.Time]("delivered_on"),
+	DeliveredAt:   drel.NewComparableCol[*time.Time]("delivered_at"),
 	State:         drel.NewComparableCol[EntryState]("state"),
 	CreatedAt:     drel.NewTimeCol("created_at"),
 	UpdatedAt:     drel.NewTimeCol("updated_at"),
@@ -54,7 +56,7 @@ func (r EntryState) IsValid() bool {
 func scanEntry(row drel.Row) (*Entry, error) {
 	p := &Entry{}
 	idPtr, createdAtPtr, updatedAtPtr := p.ScanPtrs()
-	err := row.Scan(idPtr, &p.UserID, &p.StoryID, &p.Relevance, &p.Excluded, &p.Score, &p.Reason, &p.ShownRevision, &p.DeliveredOn, &p.State, createdAtPtr, updatedAtPtr)
+	err := row.Scan(idPtr, &p.UserID, &p.StoryID, &p.Relevance, &p.Excluded, &p.Score, &p.Reason, &p.ShownRevision, &p.DeliveredOn, &p.DeliveredAt, &p.State, createdAtPtr, updatedAtPtr)
 	if err != nil {
 		return nil, err
 	}
@@ -70,11 +72,12 @@ type entrySnapshot struct {
 	Reason        string
 	ShownRevision int
 	DeliveredOn   *time.Time
+	DeliveredAt   *time.Time
 	State         EntryState
 }
 
 func snapshotEntry(p *Entry) any {
-	return entrySnapshot{UserID: p.UserID, StoryID: p.StoryID, Relevance: p.Relevance, Excluded: p.Excluded, Score: p.Score, Reason: p.Reason, ShownRevision: p.ShownRevision, DeliveredOn: p.DeliveredOn, State: p.State}
+	return entrySnapshot{UserID: p.UserID, StoryID: p.StoryID, Relevance: p.Relevance, Excluded: p.Excluded, Score: p.Score, Reason: p.Reason, ShownRevision: p.ShownRevision, DeliveredOn: p.DeliveredOn, DeliveredAt: p.DeliveredAt, State: p.State}
 }
 
 func diffEntry(p *Entry, snap any) []drel.FieldChange {
@@ -103,6 +106,9 @@ func diffEntry(p *Entry, snap any) []drel.FieldChange {
 	}
 	if p.DeliveredOn != s.DeliveredOn {
 		changes = append(changes, drel.FieldChange{Column: "delivered_on", Value: p.DeliveredOn})
+	}
+	if p.DeliveredAt != s.DeliveredAt {
+		changes = append(changes, drel.FieldChange{Column: "delivered_at", Value: p.DeliveredAt})
 	}
 	if p.State != s.State {
 		changes = append(changes, drel.FieldChange{Column: "state", Value: p.State})
@@ -135,17 +141,19 @@ func entryColumnValue(p *Entry, idx int) any {
 	case 8:
 		return p.DeliveredOn
 	case 9:
-		return p.State
+		return p.DeliveredAt
 	case 10:
-		return p.CreatedAt()
+		return p.State
 	case 11:
+		return p.CreatedAt()
+	case 12:
 		return p.UpdatedAt()
 	}
 	return nil
 }
 
 func entryInsertColumns(p *Entry) ([]string, []any) {
-	return []string{"user_id", "story_id", "relevance", "excluded", "score", "reason", "shown_revision", "delivered_on", "state"}, []any{p.UserID, p.StoryID, p.Relevance, p.Excluded, p.Score, p.Reason, p.ShownRevision, p.DeliveredOn, p.State}
+	return []string{"user_id", "story_id", "relevance", "excluded", "score", "reason", "shown_revision", "delivered_on", "delivered_at", "state"}, []any{p.UserID, p.StoryID, p.Relevance, p.Excluded, p.Score, p.Reason, p.ShownRevision, p.DeliveredOn, p.DeliveredAt, p.State}
 }
 
 func entryScanReturning(p *Entry, row drel.Row) error {
@@ -163,7 +171,7 @@ func entryNormalizeKey(v any) any {
 
 var EntryMeta = drel.ModelMeta[Entry]{
 	Table:         "feed_entries",
-	Columns:       []string{"id", "user_id", "story_id", "relevance", "excluded", "score", "reason", "shown_revision", "delivered_on", "state", "created_at", "updated_at"},
+	Columns:       []string{"id", "user_id", "story_id", "relevance", "excluded", "score", "reason", "shown_revision", "delivered_on", "delivered_at", "state", "created_at", "updated_at"},
 	PKColumns:     []string{"id"},
 	Scan:          scanEntry,
 	Snapshot:      snapshotEntry,

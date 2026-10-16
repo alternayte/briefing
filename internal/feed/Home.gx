@@ -41,7 +41,7 @@ if len(p.Today) == 0 {
 }
 <ol class="divide-y divide-border">
   for _, c := range p.Today {
-    <li><StoryCard card={c} msg={p.Msg} /></li>
+    <li id={entryID(c.StoryID)}><StoryCard card={c} msg={p.Msg} /></li>
   }
 </ol>
 if p.CaughtUp {
@@ -55,7 +55,7 @@ if len(p.More) > 0 {
     <summary class="label min-h-target cursor-pointer py-half">{p.Msg.FeedMore} ({len(p.More)})</summary>
     <ol class="divide-y divide-border">
       for _, c := range p.More {
-        <li><StoryCard card={c} msg={p.Msg} /></li>
+        <li id={entryID(c.StoryID)}><StoryCard card={c} msg={p.Msg} /></li>
       }
     </ol>
   </details>

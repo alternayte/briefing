@@ -1,0 +1,16 @@
+package feed
+
+import "github.com/alternayte/briefing/internal/i18n"
+
+props {
+  // Buttons are the four feedback forms of one story.
+  Buttons []FeedbackButtonProps
+  // Msg is the catalog of the request locale.
+  Msg     i18n.Messages
+}
+
+<div role="group" aria-label={p.Msg.FeedbackLabel} class="mt-half flex flex-wrap gap-quarter">
+  for _, b := range p.Buttons {
+    <FeedbackButton f={b.F} label={b.Label} kind={b.Kind} from={b.From} chosen={b.Chosen} />
+  }
+</div>

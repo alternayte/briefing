@@ -108,7 +108,9 @@ func Home(p HomeProps) gx.Node {
 	for _, c := range p.Today {
 //line Home.gx:43:30
 		_b3.Add(_tHome9.With(
-//line Home.gx:44:9
+//line Home.gx:44:5
+			gx.Open("li", gx.Attrs{gx.Attr{Key: "id", Value: entryID(c.StoryID), Kind: gx.AttrText}}),
+//line Home.gx:44:33
 			StoryCard(StoryCardProps{Card: c, Msg: p.Msg}),
 		))
 	}
@@ -152,7 +154,9 @@ func Home(p HomeProps) gx.Node {
 		for _, c := range p.More {
 //line Home.gx:57:33
 			_b5.Add(_tHome14.With(
-//line Home.gx:58:13
+//line Home.gx:58:9
+				gx.Open("li", gx.Attrs{gx.Attr{Key: "id", Value: entryID(c.StoryID), Kind: gx.AttrText}}),
+//line Home.gx:58:37
 				StoryCard(StoryCardProps{Card: c, Msg: p.Msg}),
 			))
 		}
@@ -272,10 +276,10 @@ var _tHome8 = gx.NewTemplate(
 )
 
 var _tHome9 = gx.NewTemplate(
-	[]string{"\n    <li>", "</li>\n  "},
-	[]int{1},
-	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "li"}, {El: -1, Slot: -1}},
+	[]string{"\n    <li", ">", "</li>\n  "},
+	[]int{0, 1},
+	[]gx.TemplateEl{{Slot: 0, Start: 5, EndStatic: 2, End: 5}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: 0, Slot: -1}, {El: -1, Slot: -1}},
 )
 
 var _tHome10 = gx.NewTemplate(
@@ -307,10 +311,10 @@ var _tHome13 = gx.NewTemplate(
 ).With()
 
 var _tHome14 = gx.NewTemplate(
-	[]string{"\n        <li>", "</li>\n      "},
-	[]int{1},
-	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "li"}, {El: -1, Slot: -1}},
+	[]string{"\n        <li", ">", "</li>\n      "},
+	[]int{0, 1},
+	[]gx.TemplateEl{{Slot: 0, Start: 9, EndStatic: 2, End: 5}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: 0, Slot: -1}, {El: -1, Slot: -1}},
 )
 
 var _tHome15 = gx.NewTemplate(

@@ -1,0 +1,1 @@
+ALTER TABLE "feed_entries" ADD COLUMN "delivered_at" timestamptz;

@@ -44,5 +44,8 @@ type Entry struct {
 	Reason            string     `db:"reason,default=''"`
 	ShownRevision     int        `db:"shown_revision,default=0"`
 	DeliveredOn       *time.Time `db:"delivered_on,type=date"`
-	State             EntryState `db:"state,default=candidate"`
+	// DeliveredAt is when the entry entered the feed; an open page counts
+	// the entries delivered after it loaded.
+	DeliveredAt *time.Time `db:"delivered_at"`
+	State       EntryState `db:"state,default=candidate"`
 }
