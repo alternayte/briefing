@@ -58,4 +58,4 @@ var FreshAction = gx.Action(func(c *gx.Ctx, in route.Fresh) error {
 })
 
 // Routes lists every page, action and form of the slice.
-var Routes = gx.Collect(HomePage, FreshAction, StoryPage, Feedback, Explain, OnboardingPage, SaveInterests, CalibratePage, Rate, Finish)
+var Routes = gx.Collect(HomePage, FreshAction, StoryPage, Feedback, Explain, SettingsPage, SetLocale, SetBudget, InterestsList, InterestsAdd, InterestsRemove, OnboardingPage, SaveInterests, CalibratePage, Rate, Finish)

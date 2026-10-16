@@ -1,0 +1,20 @@
+package sources
+
+import "github.com/alternayte/briefing/internal/sources/route"
+
+props {
+  // F is the follow form of one source.
+  F route.SubscribeForm
+  // Label is the button text; On is the state it sets.
+  Label string = ""
+  On bool = false
+}
+
+<form {...p.F.Attrs()}>
+  if p.On {
+    <input type="hidden" name={p.F.On.Name} value="true" />
+  } else {
+    <input type="hidden" name={p.F.On.Name} value="false" />
+  }
+  <button type="submit" class="label min-h-target text-muted-foreground hover:text-accent">{p.Label}</button>
+</form>

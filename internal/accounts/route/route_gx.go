@@ -11,6 +11,73 @@ import (
 	"strings"
 )
 
+// Pattern returns the method and pattern of CreateToken.
+func (CreateToken) Pattern() string { return "POST /settings/tokens" }
+
+// GxBindForm fills CreateToken and returns one message key per field
+// that did not convert (REQ-FRM-07).
+func (in *CreateToken) GxBindForm(r *http.Request) (map[string]string, error) {
+	errs := map[string]string{}
+	{
+		if v := gx.FormText(r, "name"); v != "" {
+			in.Name = string(v)
+		}
+	}
+	return errs, nil
+}
+
+// Bind fills CreateToken from the request.
+func (in *CreateToken) Bind(r *http.Request) error {
+	errs, err := in.GxBindForm(r)
+	if err != nil {
+		return err
+	}
+	for _, name := range gx.FieldNames(errs) {
+		return fmt.Errorf("gx: %s: %s", name, errs[name])
+	}
+	return nil
+}
+
+// URL returns the path of CreateToken.
+func (in CreateToken) URL() string {
+	var b strings.Builder
+	b.WriteString("/")
+	b.WriteString("settings")
+	b.WriteString("/")
+	b.WriteString("tokens")
+	return gx.BasePath() + b.String()
+}
+
+// CreateTokenForm is the generated form value of CreateToken (REQ-FRM-03).
+type CreateTokenForm struct {
+	gx.FormMeta
+	Name gx.FormField[string]
+}
+
+// GxFormValue fills the form value of CreateToken (REQ-FRM-03).
+func (in *CreateToken) GxFormValue(errs map[string]string) gx.FormValue {
+	f := CreateTokenForm{FormMeta: gx.FormMeta{Name: "createToken", ID: "createToken-form", Action: in.URL(), Method: "POST", Enctype: ""}}
+	f.Name = gx.FormField[string]{Name: "name", ID: gx.FieldID("createToken", "name"), Value: in.Name, ErrorKey: errs["name"], Error: gx.Translate(errs["name"], gx.DefaultMessage(errs["name"])), Constraints: nil, ValidateURL: gx.ValidateURL(in.URL(), "name")}
+	return f
+}
+
+// GxFieldName returns the form field name of a field pointer (REQ-FRM-02).
+func (in *CreateToken) GxFieldName(ptr any) string {
+	switch ptr {
+	case any(&in.Name):
+		return "name"
+	}
+	return ""
+}
+
+// GxNewForm returns a fresh CreateToken (REQ-FRM-02).
+func (in *CreateToken) GxNewForm() gx.FormInput { return &CreateToken{} }
+
+// GxRunForm calls the form handler with the concrete input type (REQ-FRM-02).
+func (in *CreateToken) GxRunForm(ctx *gx.Ctx, fn any) error {
+	return fn.(func(*gx.Ctx, *CreateToken) error)(ctx, in)
+}
+
 // Pattern returns the method and pattern of Login.
 func (Login) Pattern() string { return "GET /login" }
 
@@ -109,6 +176,75 @@ func (Me) GxTool() gx.ToolInfo {
 		Schema:      "{\"additionalProperties\":false,\"properties\":{},\"type\":\"object\"}",
 		Fields:      []gx.ToolField{},
 	}
+}
+
+// Pattern returns the method and pattern of RevokeToken.
+func (RevokeToken) Pattern() string { return "POST /settings/tokens/{ID}/revoke" }
+
+// GxBindForm fills RevokeToken and returns one message key per field
+// that did not convert (REQ-FRM-07).
+func (in *RevokeToken) GxBindForm(r *http.Request) (map[string]string, error) {
+	errs := map[string]string{}
+	if v := gx.PathValue(r, "ID"); v != "" {
+		in.ID = string(v)
+	}
+	return errs, nil
+}
+
+// Bind fills RevokeToken from the request.
+func (in *RevokeToken) Bind(r *http.Request) error {
+	errs, err := in.GxBindForm(r)
+	if err != nil {
+		return err
+	}
+	for _, name := range gx.FieldNames(errs) {
+		return fmt.Errorf("gx: %s: %s", name, errs[name])
+	}
+	return nil
+}
+
+// URL returns the path of RevokeToken.
+func (in RevokeToken) URL() string {
+	var b strings.Builder
+	b.WriteString("/")
+	b.WriteString("settings")
+	b.WriteString("/")
+	b.WriteString("tokens")
+	b.WriteString("/")
+	b.WriteString(url.PathEscape(in.ID))
+	b.WriteString("/")
+	b.WriteString("revoke")
+	return gx.BasePath() + b.String()
+}
+
+// RevokeTokenForm is the generated form value of RevokeToken (REQ-FRM-03).
+type RevokeTokenForm struct {
+	gx.FormMeta
+	ID gx.FormField[string]
+}
+
+// GxFormValue fills the form value of RevokeToken (REQ-FRM-03).
+func (in *RevokeToken) GxFormValue(errs map[string]string) gx.FormValue {
+	f := RevokeTokenForm{FormMeta: gx.FormMeta{Name: "revokeToken", ID: "revokeToken-form", Action: in.URL(), Method: "POST", Enctype: ""}}
+	f.ID = gx.FormField[string]{Name: "", ID: gx.FieldID("revokeToken", ""), Value: in.ID, ErrorKey: errs[""], Error: gx.Translate(errs[""], gx.DefaultMessage(errs[""])), Constraints: nil, ValidateURL: gx.ValidateURL(in.URL(), "")}
+	return f
+}
+
+// GxFieldName returns the form field name of a field pointer (REQ-FRM-02).
+func (in *RevokeToken) GxFieldName(ptr any) string {
+	switch ptr {
+	case any(&in.ID):
+		return ""
+	}
+	return ""
+}
+
+// GxNewForm returns a fresh RevokeToken (REQ-FRM-02).
+func (in *RevokeToken) GxNewForm() gx.FormInput { return &RevokeToken{} }
+
+// GxRunForm calls the form handler with the concrete input type (REQ-FRM-02).
+func (in *RevokeToken) GxRunForm(ctx *gx.Ctx, fn any) error {
+	return fn.(func(*gx.Ctx, *RevokeToken) error)(ctx, in)
 }
 
 // Pattern returns the method and pattern of SendLink.

@@ -1,0 +1,21 @@
+package feed
+
+import "github.com/alternayte/briefing/internal/feed/route"
+
+props {
+  // F is the language form.
+  F route.SetLocaleForm
+  // Current is the reader's locale; the labels are in it.
+  Current string = "en"
+  Label string = ""
+  Save string = ""
+}
+
+<form {...p.F.Attrs()} class="flex flex-wrap items-center gap-line">
+  <fieldset class="flex gap-line">
+    <legend class="sr-only">{p.Label}</legend>
+    <label class="flex min-h-target items-center gap-quarter"><input type="radio" name={p.F.Locale.Name} value="en" checked={p.Current == "en"} class="accent-accent" /> English</label>
+    <label class="flex min-h-target items-center gap-quarter"><input type="radio" name={p.F.Locale.Name} value="fr" checked={p.Current == "fr"} class="accent-accent" /> Français</label>
+  </fieldset>
+  <button type="submit" class="label min-h-target border border-foreground px-half hover:bg-foreground hover:text-background">{p.Save}</button>
+</form>

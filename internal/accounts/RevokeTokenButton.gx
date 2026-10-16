@@ -1,0 +1,14 @@
+package accounts
+
+import "github.com/alternayte/briefing/internal/accounts/route"
+
+props {
+  // F is the revoke form of one token.
+  F route.RevokeTokenForm
+  // Label is the button text.
+  Label string = ""
+}
+
+<form {...p.F.Attrs()}>
+  <button type="submit" class="label min-h-target text-muted-foreground hover:text-destructive">{p.Label}</button>
+</form>

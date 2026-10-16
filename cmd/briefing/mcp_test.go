@@ -20,6 +20,7 @@ import (
 	"github.com/alternayte/briefing/internal/admin"
 	"github.com/alternayte/briefing/internal/feed"
 	"github.com/alternayte/briefing/internal/platform"
+	"github.com/alternayte/briefing/internal/sources"
 )
 
 type bearer struct{ token string }
@@ -78,8 +79,8 @@ func TestMCPNeedsAValidAccessToken(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	feedWeb := feed.NewWeb(engine, nil, nil, accounts.NewProfileStore(engine, platform.DefaultTuning()), jobs, platform.DefaultTuning(), time.Now)
-	srv.Config.Handler = newHandler(web, feedWeb, admin.NewWeb(engine, cfg, time.Now), pool.Ping)
+	feedWeb := feed.NewWeb(engine, nil, nil, accounts.NewProfileStore(engine, platform.DefaultTuning()), jobs, platform.DefaultTuning(), cfg.BaseURL.String(), time.Now)
+	srv.Config.Handler = newHandler(web, feedWeb, sources.NewWeb(engine, http.DefaultClient, platform.DefaultTuning()), admin.NewWeb(engine, cfg, time.Now), pool.Ping)
 
 	email := fmt.Sprintf("mcp-%d@example.com", time.Now().UnixNano())
 	user, err := auth.CreateUser(ctx, authall.CreateUserInput{Email: email, DisplayName: "Mcp Tester", EmailVerified: true})
@@ -109,7 +110,7 @@ func TestMCPNeedsAValidAccessToken(t *testing.T) {
 	for _, tool := range tools.Tools {
 		names[tool.Name] = true
 	}
-	for _, want := range []string{"accounts_me", "feed_feedback", "feed_explain"} {
+	for _, want := range []string{"accounts_me", "feed_feedback", "feed_explain", "feed_interests_list", "feed_interests_add", "feed_interests_remove", "sources_list", "sources_subscribe", "sources_add_rss"} {
 		if !names[want] {
 			t.Errorf("%s missing from the tools %v", want, names)
 		}

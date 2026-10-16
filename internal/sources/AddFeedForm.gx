@@ -1,0 +1,16 @@
+package sources
+
+import "github.com/alternayte/briefing/internal/sources/route"
+
+props {
+  // F is the add-feed form.
+  F route.AddRSSForm
+  // Label and Placeholder are in the request locale.
+  Label string = ""
+  Placeholder string = ""
+}
+
+<form {...p.F.Attrs()} class="flex flex-wrap items-end gap-half">
+  <input name={p.F.Address.Name} id={p.F.Address.ID} type="url" required inputmode="url" aria-label={p.Placeholder} placeholder={p.Placeholder} class="min-h-target min-w-0 flex-1 border-0 border-b border-input bg-transparent text-body focus:border-foreground focus:outline-none" />
+  <button type="submit" class="label min-h-target border border-foreground px-half hover:bg-foreground hover:text-background">{p.Label}</button>
+</form>

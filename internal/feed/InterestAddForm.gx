@@ -1,0 +1,20 @@
+package feed
+
+import "github.com/alternayte/briefing/internal/feed/route"
+
+props {
+  // F is the add-interest form.
+  F route.InterestsAddForm
+  // Negative adds a topic to leave out.
+  Negative bool = false
+  Label string = ""
+  Placeholder string = ""
+}
+
+<form {...p.F.Attrs()} class="mt-half flex flex-wrap items-end gap-half">
+  if p.Negative {
+    <input type="hidden" name={p.F.Negative.Name} value="true" />
+  }
+  <input name={p.F.Text.Name} type="text" required maxlength="80" aria-label={p.Placeholder} placeholder={p.Placeholder} class="min-h-target min-w-0 flex-1 border-0 border-b border-input bg-transparent text-body focus:border-foreground focus:outline-none" />
+  <button type="submit" class="label min-h-target border border-foreground px-half hover:bg-foreground hover:text-background">{p.Label}</button>
+</form>

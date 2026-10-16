@@ -1,0 +1,116 @@
+package feed
+
+import (
+  "github.com/alternayte/briefing/internal/accounts"
+  "github.com/alternayte/briefing/internal/i18n"
+  "github.com/alternayte/briefing/internal/sources"
+)
+
+props {
+  // Msg is the catalog of the request locale.
+  Msg i18n.Messages
+  // Notice confirms a saved change.
+  Notice string = ""
+  Locale LocaleFormProps
+  Budget BudgetFormProps
+  Interests []InterestView = nil
+  Avoid []InterestView = nil
+  AddInterest InterestAddFormProps
+  AddAvoid InterestAddFormProps
+  Sources []SourceRow = nil
+  AddFeed sources.AddFeedFormProps
+  FeedNotice string = ""
+  Tokens []TokenRow = nil
+  CreateToken accounts.CreateTokenFormProps
+  // NewToken is a token created just before, shown once.
+  NewToken string = ""
+  MCPEndpoint string = ""
+}
+
+<gx.Head title={p.Msg.SettingsTitle + " · " + p.Msg.AppName} />
+<h1 class="pt-line text-headline leading-tight font-semibold">{p.Msg.SettingsTitle}</h1>
+if p.Notice != "" {
+  <p role="status" class="mt-half border-l-2 border-foreground pl-half text-small">{p.Notice}</p>
+}
+
+<section class="mt-line" aria-labelledby="language">
+  <h2 id="language" class="label border-b border-foreground pb-quarter">{p.Msg.OnboardingLanguage}</h2>
+  <div class="mt-half"><LocaleForm f={p.Locale.F} current={p.Locale.Current} label={p.Locale.Label} save={p.Locale.Save} /></div>
+</section>
+
+<section class="mt-line" aria-labelledby="budget">
+  <h2 id="budget" class="label border-b border-foreground pb-quarter">{p.Msg.SettingsBudget}</h2>
+  <div class="mt-half"><BudgetForm f={p.Budget.F} current={p.Budget.Current} label={p.Budget.Label} hint={p.Budget.Hint} save={p.Budget.Save} /></div>
+</section>
+
+<section class="mt-line" aria-labelledby="interests">
+  <h2 id="interests" class="label border-b border-foreground pb-quarter">{p.Msg.SettingsInterests}</h2>
+  <ul class="divide-y divide-border">
+    for _, i := range p.Interests {
+      <li class="flex items-center justify-between gap-half py-quarter"><span>{i.Text}</span><InterestRemoveButton f={i.Remove.F} label={i.Remove.Label} /></li>
+    }
+  </ul>
+  <InterestAddForm f={p.AddInterest.F} label={p.AddInterest.Label} placeholder={p.AddInterest.Placeholder} />
+  <h3 class="label mt-line text-muted-foreground">{p.Msg.SettingsAvoid}</h3>
+  <ul class="divide-y divide-border">
+    for _, i := range p.Avoid {
+      <li class="flex items-center justify-between gap-half py-quarter"><span>{i.Text}</span><InterestRemoveButton f={i.Remove.F} label={i.Remove.Label} /></li>
+    }
+  </ul>
+  <InterestAddForm f={p.AddAvoid.F} negative={true} label={p.AddAvoid.Label} placeholder={p.AddAvoid.Placeholder} />
+</section>
+
+<section class="mt-line" aria-labelledby="sources" id="sources">
+  <h2 id="sources-heading" class="label border-b border-foreground pb-quarter">{p.Msg.SettingsSources}</h2>
+  if p.FeedNotice != "" {
+    <p role="status" class="mt-half border-l-2 border-foreground pl-half text-small">{p.FeedNotice}</p>
+  }
+  <sources.AddFeedForm f={p.AddFeed.F} label={p.AddFeed.Label} placeholder={p.AddFeed.Placeholder} />
+  <ul class="mt-half divide-y divide-border">
+    for _, s := range p.Sources {
+      <li class="flex items-center justify-between gap-half py-quarter" class:text-muted-foreground={!s.Subscribed}>
+        <span class="min-w-0">{s.Title} <span class="label text-muted-foreground">{s.Kind}</span></span>
+        <sources.SubscribeButton f={s.Toggle.F} label={s.Toggle.Label} on={s.Toggle.On} />
+      </li>
+    }
+  </ul>
+</section>
+
+<section class="mt-line" aria-labelledby="tokens">
+  <h2 id="tokens" class="label border-b border-foreground pb-quarter">{p.Msg.SettingsTokens}</h2>
+  <p class="mt-half text-small text-muted-foreground">{p.Msg.SettingsTokensHint}</p>
+  if p.NewToken != "" {
+    <div role="status" class="mt-half border-2 border-accent p-half">
+      <p class="text-small">{p.Msg.SettingsTokenNew}</p>
+      <p class="mt-quarter font-mono text-small break-all select-all">{p.NewToken}</p>
+    </div>
+  }
+  <div class="mt-half"><accounts.CreateTokenForm f={p.CreateToken.F} label={p.CreateToken.Label} placeholder={p.CreateToken.Placeholder} /></div>
+  if len(p.Tokens) == 0 {
+    <p class="mt-half text-small text-muted-foreground">{p.Msg.SettingsTokenNone}</p>
+  }
+  <ul class="mt-half divide-y divide-border">
+    for _, t := range p.Tokens {
+      <li class="flex items-center justify-between gap-half py-quarter">
+        <span class="min-w-0"><span>{t.Name}</span> <span class="font-mono text-small text-muted-foreground">{t.Start}…</span>
+          <br /><span class="text-small text-muted-foreground">{t.Created}
+          if t.LastUsed != "" {
+            · {p.Msg.SettingsTokenLastUse} {t.LastUsed}
+          }
+          </span></span>
+        <accounts.RevokeTokenButton f={t.Revoke.F} label={t.Revoke.Label} />
+      </li>
+    }
+  </ul>
+</section>
+
+<section class="mt-line pb-line" aria-labelledby="mcp">
+  <h2 id="mcp" class="label border-b border-foreground pb-quarter">{p.Msg.SettingsMCP}</h2>
+  <p class="mt-half text-small">{p.Msg.SettingsMCPHint}</p>
+  <dl class="mt-half grid gap-quarter text-small">
+    <dt class="label text-muted-foreground">{p.Msg.SettingsMCPEndpoint}</dt>
+    <dd class="font-mono break-all select-all">{p.MCPEndpoint}</dd>
+    <dt class="label text-muted-foreground">{p.Msg.SettingsMCPHeader}</dt>
+    <dd class="font-mono break-all">Authorization: Bearer brf_…</dd>
+  </dl>
+</section>

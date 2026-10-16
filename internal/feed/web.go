@@ -3,6 +3,7 @@ package feed
 import (
 	"context"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/alternayte/drel"
@@ -23,11 +24,12 @@ type Web struct {
 	profiles  *accounts.ProfileStore
 	jobs      *river.Client[pgx.Tx]
 	tuning    platform.Tuning
+	baseURL   string
 	now       func() time.Time
 }
 
-func NewWeb(engine *drel.Engine, e *embed.Embedder, x *write.Explainer, profiles *accounts.ProfileStore, jobs *river.Client[pgx.Tx], t platform.Tuning, now func() time.Time) *Web {
-	return &Web{engine: engine, embedder: e, explainer: x, profiles: profiles, jobs: jobs, tuning: t, now: now}
+func NewWeb(engine *drel.Engine, e *embed.Embedder, x *write.Explainer, profiles *accounts.ProfileStore, jobs *river.Client[pgx.Tx], t platform.Tuning, baseURL string, now func() time.Time) *Web {
+	return &Web{engine: engine, embedder: e, explainer: x, profiles: profiles, jobs: jobs, tuning: t, baseURL: strings.TrimSuffix(baseURL, "/"), now: now}
 }
 
 type webKey struct{}

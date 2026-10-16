@@ -1,0 +1,20 @@
+package feed
+
+import "github.com/alternayte/briefing/internal/feed/route"
+
+props {
+  // F is the budget form.
+  F route.SetBudgetForm
+  // Current is the reader's budget.
+  Current int = 10
+  Label string = ""
+  Hint string = ""
+  Save string = ""
+}
+
+<form {...p.F.Attrs()} class="flex flex-wrap items-end gap-half">
+  <label for={p.F.Budget.ID} class="sr-only">{p.Label}</label>
+  <input id={p.F.Budget.ID} name={p.F.Budget.Name} type="number" min="3" max="30" value={gx.TextValue(p.Current)} aria-describedby="budget-hint" class="min-h-target w-20 border-0 border-b border-input bg-transparent text-body tabular-nums focus:border-foreground focus:outline-none" />
+  <button type="submit" class="label min-h-target border border-foreground px-half hover:bg-foreground hover:text-background">{p.Save}</button>
+  <p id="budget-hint" class="w-full text-small text-muted-foreground">{p.Hint}</p>
+</form>

@@ -80,3 +80,48 @@ type Feedback struct {
 func (in *Feedback) Rules() gx.Rules {
 	return gx.Rules{gx.Field(&in.Kind, gx.Required, gx.OneOf("useful", "knew", "irrelevant", "misleading"))}
 }
+
+// Settings is the settings page. Feed carries a notice code from AddRSS.
+type Settings struct {
+	gx.Route `GET /settings`
+	Feed     string `query:"feed"`
+	Saved    bool   `query:"saved"`
+}
+
+// SetLocale changes the reader's language.
+type SetLocale struct {
+	gx.Route `POST /settings/locale`
+	Locale   string
+}
+
+func (in *SetLocale) Rules() gx.Rules { return gx.Rules{} }
+
+// SetBudget changes how many stories a day the feed shows.
+type SetBudget struct {
+	gx.Route `POST /settings/budget`
+	Budget   int
+}
+
+func (in *SetBudget) Rules() gx.Rules { return gx.Rules{} }
+
+// InterestsList lists the reader's interests.
+type InterestsList struct {
+	gx.Route `GET /api/interests`
+}
+
+// InterestsAdd adds one interest; Negative marks a topic to leave out.
+type InterestsAdd struct {
+	gx.Route `POST /settings/interests`
+	Text     string
+	Negative bool
+}
+
+func (in *InterestsAdd) Rules() gx.Rules { return gx.Rules{} }
+
+// InterestsRemove removes one interest.
+type InterestsRemove struct {
+	gx.Route `POST /settings/interests/{ID}/remove`
+	ID       int64
+}
+
+func (in *InterestsRemove) Rules() gx.Rules { return gx.Rules{} }

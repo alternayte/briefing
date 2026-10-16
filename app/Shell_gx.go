@@ -48,11 +48,15 @@ func Shell(p ShellProps) gx.Node {
 	if p.SignOut != nil {
 //line Shell.gx:24:26
 		_b2.Add(_tShell3.With(
-//line Shell.gx:25:7
+//line Shell.gx:26:117
+			gx.Text(p.Msg.FeedTitle),
+//line Shell.gx:27:125
+			gx.Text(p.Msg.SettingsTitle),
+//line Shell.gx:28:9
 			accounts.SignOutButton(accounts.SignOutButtonProps{F: p.SignOut.F, Label: p.SignOut.Label}),
 		))
 	}
-//line Shell.gx:26:6
+//line Shell.gx:30:6
 	_b2.Add(_tShell1)
 //line Shell.gx:22:3
 	_b1.Add(_tShell4.With(
@@ -63,9 +67,9 @@ func Shell(p ShellProps) gx.Node {
 	_b.Add(_tShell5.With(
 //line Shell.gx:21:1
 		_b1.Node(),
-//line Shell.gx:29:1
+//line Shell.gx:33:1
 		gx.Open("main", gx.Attrs{gx.Attr{Key: "class", Value: "mx-auto max-w-column px-half pb-line", Kind: gx.AttrText}, gx.Attr{Key: "id", Value: "main", Kind: gx.AttrText}}),
-//line Shell.gx:29:62
+//line Shell.gx:33:62
 		p.Children,
 	))
 	return _b.Node()
@@ -93,10 +97,10 @@ var _tShell2 = gx.NewTemplate(
 )
 
 var _tShell3 = gx.NewTemplate(
-	[]string{"\n      ", "\n    "},
-	[]int{0},
+	[]string{"\n      <nav class=\"flex items-center gap-half\">\n        <a class=\"label min-h-target inline-flex items-center text-muted-foreground hover:text-foreground\" href=\"/\">", "</a>\n        <a class=\"label min-h-target inline-flex items-center text-muted-foreground hover:text-foreground\" href=\"/settings\">", "</a>\n        ", "\n      </nav>\n    "},
+	[]int{2, 2, 1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: 0}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "nav"}, {El: -1, Slot: -1}},
 )
 
 var _tShell4 = gx.NewTemplate(

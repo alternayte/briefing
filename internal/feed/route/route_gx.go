@@ -317,6 +317,209 @@ func (in Home) URL() string {
 	return gx.BasePath() + b.String()
 }
 
+// Pattern returns the method and pattern of InterestsAdd.
+func (InterestsAdd) Pattern() string { return "POST /settings/interests" }
+
+// GxBindForm fills InterestsAdd and returns one message key per field
+// that did not convert (REQ-FRM-07).
+func (in *InterestsAdd) GxBindForm(r *http.Request) (map[string]string, error) {
+	errs := map[string]string{}
+	{
+		if v := gx.FormText(r, "text"); v != "" {
+			in.Text = string(v)
+		}
+	}
+	{
+		if v := gx.FormText(r, "negative"); v != "" {
+			x, err := gx.ParseBool(v)
+			if err != nil {
+				errs["negative"] = "invalid"
+			} else {
+				in.Negative = bool(x)
+			}
+		}
+	}
+	return errs, nil
+}
+
+// Bind fills InterestsAdd from the request.
+func (in *InterestsAdd) Bind(r *http.Request) error {
+	errs, err := in.GxBindForm(r)
+	if err != nil {
+		return err
+	}
+	for _, name := range gx.FieldNames(errs) {
+		return fmt.Errorf("gx: %s: %s", name, errs[name])
+	}
+	return nil
+}
+
+// URL returns the path of InterestsAdd.
+func (in InterestsAdd) URL() string {
+	var b strings.Builder
+	b.WriteString("/")
+	b.WriteString("settings")
+	b.WriteString("/")
+	b.WriteString("interests")
+	return gx.BasePath() + b.String()
+}
+
+// InterestsAddForm is the generated form value of InterestsAdd (REQ-FRM-03).
+type InterestsAddForm struct {
+	gx.FormMeta
+	Text     gx.FormField[string]
+	Negative gx.FormField[bool]
+}
+
+// GxFormValue fills the form value of InterestsAdd (REQ-FRM-03).
+func (in *InterestsAdd) GxFormValue(errs map[string]string) gx.FormValue {
+	f := InterestsAddForm{FormMeta: gx.FormMeta{Name: "interestsAdd", ID: "interestsAdd-form", Action: in.URL(), Method: "POST", Enctype: "", Tool: "feed_interests_add"}}
+	f.Text = gx.FormField[string]{Name: "text", ID: gx.FieldID("interestsAdd", "text"), Value: in.Text, ErrorKey: errs["text"], Error: gx.Translate(errs["text"], gx.DefaultMessage(errs["text"])), Constraints: nil, ValidateURL: gx.ValidateURL(in.URL(), "text")}
+	f.Negative = gx.FormField[bool]{Name: "negative", ID: gx.FieldID("interestsAdd", "negative"), Value: in.Negative, ErrorKey: errs["negative"], Error: gx.Translate(errs["negative"], gx.DefaultMessage(errs["negative"])), Constraints: nil, ValidateURL: gx.ValidateURL(in.URL(), "negative")}
+	return f
+}
+
+// GxFieldName returns the form field name of a field pointer (REQ-FRM-02).
+func (in *InterestsAdd) GxFieldName(ptr any) string {
+	switch ptr {
+	case any(&in.Text):
+		return "text"
+	case any(&in.Negative):
+		return "negative"
+	}
+	return ""
+}
+
+// GxNewForm returns a fresh InterestsAdd (REQ-FRM-02).
+func (in *InterestsAdd) GxNewForm() gx.FormInput { return &InterestsAdd{} }
+
+// GxRunForm calls the form handler with the concrete input type (REQ-FRM-02).
+func (in *InterestsAdd) GxRunForm(ctx *gx.Ctx, fn any) error {
+	return fn.(func(*gx.Ctx, *InterestsAdd) error)(ctx, in)
+}
+
+// GxTool describes InterestsAdd as a tool.
+func (InterestsAdd) GxTool() gx.ToolInfo {
+	return gx.ToolInfo{
+		Name:        "feed_interests_add",
+		Description: "Adds one interest in the reader's own words, such as \"Rust compilers\" or \"exoplanet atmospheres\". With negative true the topic is left out of the feed instead. The feed re-ranks right after. Returns the reader's interests.",
+		Schema:      "{\"additionalProperties\":false,\"properties\":{\"negative\":{\"type\":\"boolean\"},\"text\":{\"type\":\"string\"}},\"type\":\"object\"}",
+		Fields:      []gx.ToolField{{Name: "text", In: "form"}, {Name: "negative", In: "form"}},
+	}
+}
+
+// Pattern returns the method and pattern of InterestsList.
+func (InterestsList) Pattern() string { return "GET /api/interests" }
+
+// Bind fills InterestsList from the request.
+func (in *InterestsList) Bind(r *http.Request) error {
+	return nil
+}
+
+// URL returns the path of InterestsList.
+func (in InterestsList) URL() string {
+	var b strings.Builder
+	b.WriteString("/")
+	b.WriteString("api")
+	b.WriteString("/")
+	b.WriteString("interests")
+	return gx.BasePath() + b.String()
+}
+
+// GxTool describes InterestsList as a tool.
+func (InterestsList) GxTool() gx.ToolInfo {
+	return gx.ToolInfo{
+		Name:        "feed_interests_list",
+		Description: "Lists the reader's interests: the topics they follow, and with negative true, the topics they want left out. Use it before feed_interests_add or feed_interests_remove, or to explain why a story was chosen.",
+		Schema:      "{\"additionalProperties\":false,\"properties\":{},\"type\":\"object\"}",
+		Fields:      []gx.ToolField{},
+	}
+}
+
+// Pattern returns the method and pattern of InterestsRemove.
+func (InterestsRemove) Pattern() string { return "POST /settings/interests/{ID}/remove" }
+
+// GxBindForm fills InterestsRemove and returns one message key per field
+// that did not convert (REQ-FRM-07).
+func (in *InterestsRemove) GxBindForm(r *http.Request) (map[string]string, error) {
+	errs := map[string]string{}
+	if v := gx.PathValue(r, "ID"); v != "" {
+		x, err := strconv.ParseInt(v, 10, 64)
+		if err != nil {
+			errs[""] = "invalid"
+		} else {
+			in.ID = int64(x)
+		}
+	}
+	return errs, nil
+}
+
+// Bind fills InterestsRemove from the request.
+func (in *InterestsRemove) Bind(r *http.Request) error {
+	errs, err := in.GxBindForm(r)
+	if err != nil {
+		return err
+	}
+	for _, name := range gx.FieldNames(errs) {
+		return fmt.Errorf("gx: %s: %s", name, errs[name])
+	}
+	return nil
+}
+
+// URL returns the path of InterestsRemove.
+func (in InterestsRemove) URL() string {
+	var b strings.Builder
+	b.WriteString("/")
+	b.WriteString("settings")
+	b.WriteString("/")
+	b.WriteString("interests")
+	b.WriteString("/")
+	b.WriteString(url.PathEscape(strconv.FormatInt(int64(in.ID), 10)))
+	b.WriteString("/")
+	b.WriteString("remove")
+	return gx.BasePath() + b.String()
+}
+
+// InterestsRemoveForm is the generated form value of InterestsRemove (REQ-FRM-03).
+type InterestsRemoveForm struct {
+	gx.FormMeta
+	ID gx.FormField[int64]
+}
+
+// GxFormValue fills the form value of InterestsRemove (REQ-FRM-03).
+func (in *InterestsRemove) GxFormValue(errs map[string]string) gx.FormValue {
+	f := InterestsRemoveForm{FormMeta: gx.FormMeta{Name: "interestsRemove", ID: "interestsRemove-form", Action: in.URL(), Method: "POST", Enctype: "", Tool: "feed_interests_remove"}}
+	f.ID = gx.FormField[int64]{Name: "", ID: gx.FieldID("interestsRemove", ""), Value: in.ID, ErrorKey: errs[""], Error: gx.Translate(errs[""], gx.DefaultMessage(errs[""])), Constraints: nil, ValidateURL: gx.ValidateURL(in.URL(), "")}
+	return f
+}
+
+// GxFieldName returns the form field name of a field pointer (REQ-FRM-02).
+func (in *InterestsRemove) GxFieldName(ptr any) string {
+	switch ptr {
+	case any(&in.ID):
+		return ""
+	}
+	return ""
+}
+
+// GxNewForm returns a fresh InterestsRemove (REQ-FRM-02).
+func (in *InterestsRemove) GxNewForm() gx.FormInput { return &InterestsRemove{} }
+
+// GxRunForm calls the form handler with the concrete input type (REQ-FRM-02).
+func (in *InterestsRemove) GxRunForm(ctx *gx.Ctx, fn any) error {
+	return fn.(func(*gx.Ctx, *InterestsRemove) error)(ctx, in)
+}
+
+// GxTool describes InterestsRemove as a tool.
+func (InterestsRemove) GxTool() gx.ToolInfo {
+	return gx.ToolInfo{
+		Name:        "feed_interests_remove",
+		Description: "Removes one interest by its id from feed_interests_list. The feed re-ranks right after. Returns the reader's interests.",
+		Schema:      "{\"additionalProperties\":false,\"properties\":{\"ID\":{\"type\":\"integer\"}},\"required\":[\"ID\"],\"type\":\"object\"}",
+		Fields:      []gx.ToolField{{Name: "ID", In: "path"}},
+	}
+}
+
 // Pattern returns the method and pattern of Onboarding.
 func (Onboarding) Pattern() string { return "GET /onboarding" }
 
@@ -506,6 +709,182 @@ func (in *SaveInterests) GxNewForm() gx.FormInput { return &SaveInterests{} }
 // GxRunForm calls the form handler with the concrete input type (REQ-FRM-02).
 func (in *SaveInterests) GxRunForm(ctx *gx.Ctx, fn any) error {
 	return fn.(func(*gx.Ctx, *SaveInterests) error)(ctx, in)
+}
+
+// Pattern returns the method and pattern of SetBudget.
+func (SetBudget) Pattern() string { return "POST /settings/budget" }
+
+// GxBindForm fills SetBudget and returns one message key per field
+// that did not convert (REQ-FRM-07).
+func (in *SetBudget) GxBindForm(r *http.Request) (map[string]string, error) {
+	errs := map[string]string{}
+	{
+		if v := gx.FormText(r, "budget"); v != "" {
+			x, err := strconv.ParseInt(v, 10, 0)
+			if err != nil {
+				errs["budget"] = "invalid"
+			} else {
+				in.Budget = int(x)
+			}
+		}
+	}
+	return errs, nil
+}
+
+// Bind fills SetBudget from the request.
+func (in *SetBudget) Bind(r *http.Request) error {
+	errs, err := in.GxBindForm(r)
+	if err != nil {
+		return err
+	}
+	for _, name := range gx.FieldNames(errs) {
+		return fmt.Errorf("gx: %s: %s", name, errs[name])
+	}
+	return nil
+}
+
+// URL returns the path of SetBudget.
+func (in SetBudget) URL() string {
+	var b strings.Builder
+	b.WriteString("/")
+	b.WriteString("settings")
+	b.WriteString("/")
+	b.WriteString("budget")
+	return gx.BasePath() + b.String()
+}
+
+// SetBudgetForm is the generated form value of SetBudget (REQ-FRM-03).
+type SetBudgetForm struct {
+	gx.FormMeta
+	Budget gx.FormField[int]
+}
+
+// GxFormValue fills the form value of SetBudget (REQ-FRM-03).
+func (in *SetBudget) GxFormValue(errs map[string]string) gx.FormValue {
+	f := SetBudgetForm{FormMeta: gx.FormMeta{Name: "setBudget", ID: "setBudget-form", Action: in.URL(), Method: "POST", Enctype: ""}}
+	f.Budget = gx.FormField[int]{Name: "budget", ID: gx.FieldID("setBudget", "budget"), Value: in.Budget, ErrorKey: errs["budget"], Error: gx.Translate(errs["budget"], gx.DefaultMessage(errs["budget"])), Constraints: nil, ValidateURL: gx.ValidateURL(in.URL(), "budget")}
+	return f
+}
+
+// GxFieldName returns the form field name of a field pointer (REQ-FRM-02).
+func (in *SetBudget) GxFieldName(ptr any) string {
+	switch ptr {
+	case any(&in.Budget):
+		return "budget"
+	}
+	return ""
+}
+
+// GxNewForm returns a fresh SetBudget (REQ-FRM-02).
+func (in *SetBudget) GxNewForm() gx.FormInput { return &SetBudget{} }
+
+// GxRunForm calls the form handler with the concrete input type (REQ-FRM-02).
+func (in *SetBudget) GxRunForm(ctx *gx.Ctx, fn any) error {
+	return fn.(func(*gx.Ctx, *SetBudget) error)(ctx, in)
+}
+
+// Pattern returns the method and pattern of SetLocale.
+func (SetLocale) Pattern() string { return "POST /settings/locale" }
+
+// GxBindForm fills SetLocale and returns one message key per field
+// that did not convert (REQ-FRM-07).
+func (in *SetLocale) GxBindForm(r *http.Request) (map[string]string, error) {
+	errs := map[string]string{}
+	{
+		if v := gx.FormText(r, "locale"); v != "" {
+			in.Locale = string(v)
+		}
+	}
+	return errs, nil
+}
+
+// Bind fills SetLocale from the request.
+func (in *SetLocale) Bind(r *http.Request) error {
+	errs, err := in.GxBindForm(r)
+	if err != nil {
+		return err
+	}
+	for _, name := range gx.FieldNames(errs) {
+		return fmt.Errorf("gx: %s: %s", name, errs[name])
+	}
+	return nil
+}
+
+// URL returns the path of SetLocale.
+func (in SetLocale) URL() string {
+	var b strings.Builder
+	b.WriteString("/")
+	b.WriteString("settings")
+	b.WriteString("/")
+	b.WriteString("locale")
+	return gx.BasePath() + b.String()
+}
+
+// SetLocaleForm is the generated form value of SetLocale (REQ-FRM-03).
+type SetLocaleForm struct {
+	gx.FormMeta
+	Locale gx.FormField[string]
+}
+
+// GxFormValue fills the form value of SetLocale (REQ-FRM-03).
+func (in *SetLocale) GxFormValue(errs map[string]string) gx.FormValue {
+	f := SetLocaleForm{FormMeta: gx.FormMeta{Name: "setLocale", ID: "setLocale-form", Action: in.URL(), Method: "POST", Enctype: ""}}
+	f.Locale = gx.FormField[string]{Name: "locale", ID: gx.FieldID("setLocale", "locale"), Value: in.Locale, ErrorKey: errs["locale"], Error: gx.Translate(errs["locale"], gx.DefaultMessage(errs["locale"])), Constraints: nil, ValidateURL: gx.ValidateURL(in.URL(), "locale")}
+	return f
+}
+
+// GxFieldName returns the form field name of a field pointer (REQ-FRM-02).
+func (in *SetLocale) GxFieldName(ptr any) string {
+	switch ptr {
+	case any(&in.Locale):
+		return "locale"
+	}
+	return ""
+}
+
+// GxNewForm returns a fresh SetLocale (REQ-FRM-02).
+func (in *SetLocale) GxNewForm() gx.FormInput { return &SetLocale{} }
+
+// GxRunForm calls the form handler with the concrete input type (REQ-FRM-02).
+func (in *SetLocale) GxRunForm(ctx *gx.Ctx, fn any) error {
+	return fn.(func(*gx.Ctx, *SetLocale) error)(ctx, in)
+}
+
+// Pattern returns the method and pattern of Settings.
+func (Settings) Pattern() string { return "GET /settings" }
+
+// Bind fills Settings from the request.
+func (in *Settings) Bind(r *http.Request) error {
+	if v := r.URL.Query().Get("feed"); v != "" {
+		in.Feed = string(v)
+	}
+	if v := r.URL.Query().Get("saved"); v != "" {
+		x, err := gx.ParseBool(v)
+		if err != nil {
+			return fmt.Errorf("gx: Saved: %w", err)
+		}
+		in.Saved = bool(x)
+	}
+	return nil
+}
+
+// URL returns the path of Settings.
+func (in Settings) URL() string {
+	var b strings.Builder
+	b.WriteString("/")
+	b.WriteString("settings")
+	q := url.Values{}
+	if in.Feed != "" {
+		q.Set("feed", in.Feed)
+	}
+	if in.Saved {
+		q.Set("saved", strconv.FormatBool(in.Saved))
+	}
+	if s := q.Encode(); s != "" {
+		b.WriteString("?")
+		b.WriteString(s)
+	}
+	return gx.BasePath() + b.String()
 }
 
 // Pattern returns the method and pattern of Story.

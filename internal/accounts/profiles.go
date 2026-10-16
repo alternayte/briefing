@@ -89,3 +89,20 @@ func (s *ProfileStore) MarkOnboarded(ctx context.Context, userID uuid.UUID, at t
 	}
 	return nil
 }
+
+// SetDailyBudget sets how many stories a day the feed delivers.
+func (s *ProfileStore) SetDailyBudget(ctx context.Context, userID uuid.UUID, budget int) error {
+	err := s.engine.WithTx(ctx, func(ctx context.Context) error {
+		p, err := txProfiles(ctx).FindByID(ctx, userID)
+		if err != nil {
+			return err
+		}
+		p.DailyBudget = budget
+		// workaround: alternayte/drel#12
+		return drel.MustFromContext(ctx).SaveChanges(ctx)
+	})
+	if err != nil {
+		return fmt.Errorf("set budget of %s: %w", userID, err)
+	}
+	return nil
+}

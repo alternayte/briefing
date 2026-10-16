@@ -1,0 +1,16 @@
+package accounts
+
+import "github.com/alternayte/briefing/internal/accounts/route"
+
+props {
+  // F is the token form.
+  F route.CreateTokenForm
+  // Label and Placeholder are in the request locale.
+  Label string = ""
+  Placeholder string = ""
+}
+
+<form {...p.F.Attrs()} class="flex flex-wrap items-end gap-half">
+  <input name={p.F.Name.Name} id={p.F.Name.ID} type="text" maxlength="100" aria-label={p.Placeholder} placeholder={p.Placeholder} class="min-h-target min-w-0 flex-1 border-0 border-b border-input bg-transparent text-body focus:border-foreground focus:outline-none" />
+  <button type="submit" class="label min-h-target border border-foreground px-half hover:bg-foreground hover:text-background">{p.Label}</button>
+</form>

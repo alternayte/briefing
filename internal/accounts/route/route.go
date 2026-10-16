@@ -39,3 +39,19 @@ func (in *SignOut) Rules() gx.Rules { return gx.Rules{} }
 type Me struct {
 	gx.Route `GET /api/me`
 }
+
+// CreateToken creates a personal access token for MCP.
+type CreateToken struct {
+	gx.Route `POST /settings/tokens`
+	Name     string
+}
+
+func (in *CreateToken) Rules() gx.Rules { return gx.Rules{} }
+
+// RevokeToken ends one personal access token.
+type RevokeToken struct {
+	gx.Route `POST /settings/tokens/{ID}/revoke`
+	ID       string
+}
+
+func (in *RevokeToken) Rules() gx.Rules { return gx.Rules{} }

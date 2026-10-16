@@ -83,7 +83,7 @@ var SignOut = gx.Form(func(c *gx.Ctx, in *route.SignOut) error {
 }, SignOutButton)
 
 // Routes lists every page and form of the slice.
-var Routes = gx.Collect(LoginPage, VerifyPage, SendLink, SignOut, me)
+var Routes = gx.Collect(LoginPage, VerifyPage, SendLink, SignOut, me, CreateToken, RevokeToken)
 
 // homeURL is the feed. Its route type arrives with the feed slice.
 type homeURL struct{}

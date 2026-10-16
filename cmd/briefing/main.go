@@ -19,6 +19,7 @@ import (
 	"github.com/alternayte/briefing/internal/embed"
 	"github.com/alternayte/briefing/internal/feed"
 	"github.com/alternayte/briefing/internal/platform"
+	"github.com/alternayte/briefing/internal/sources"
 	"github.com/alternayte/briefing/internal/write"
 )
 
@@ -98,10 +99,10 @@ func serve(ctx context.Context, cfg platform.Config) error {
 		return err
 	}
 	or := platform.NewOpenRouter(platform.OpenRouterBase, cfg.OpenRouterAPIKey, &http.Client{Timeout: time.Minute}, engine, time.Now)
-	feedWeb := feed.NewWeb(engine, embed.New(or, cfg), write.NewExplainer(engine, or, cfg, explainsPerDay, time.Now), profiles, jobs, tuning, time.Now)
+	feedWeb := feed.NewWeb(engine, embed.New(or, cfg), write.NewExplainer(engine, or, cfg, explainsPerDay, time.Now), profiles, jobs, tuning, cfg.BaseURL.String(), time.Now)
 
 	adminWeb := admin.NewWeb(engine, cfg, time.Now)
-	srv := &http.Server{Addr: cfg.Addr, Handler: newHandler(web, feedWeb, adminWeb, pool.Ping), ReadHeaderTimeout: 10 * time.Second}
+	srv := &http.Server{Addr: cfg.Addr, Handler: newHandler(web, feedWeb, sources.NewWeb(engine, platform.NewPublicClient(tuning.Poll.Timeout, tuning.Fetch.MaxRedirects), tuning), adminWeb, pool.Ping), ReadHeaderTimeout: 10 * time.Second}
 	errc := make(chan error, 1)
 	go func() {
 		slog.Info("listening", "addr", cfg.Addr)
