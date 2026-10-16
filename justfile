@@ -12,13 +12,17 @@ check:
     changed=$( { git diff --name-only "$base"; git ls-files --others --exclude-standard; } | sort -u)
     unformatted=$(gofmt -l $(git ls-files --cached --others --exclude-standard '*.go' ':!:*_gx.go'))
     if [ -n "$unformatted" ]; then echo "gofmt: $unformatted"; exit 1; fi
-    if [ -f drel.yaml ] && echo "$changed" | grep -qE '(^drel\.yaml$|models?\.go$)'; then go tool drel generate; fi
-    if [ -f gx.toml ] && echo "$changed" | grep -qE '(\.gx$|/route/|^app/|^gx\.toml$)'; then go run ./cmd/gx check; fi
+    # Generated code depends on Go types anywhere in the module, so both
+    # generators always run; each takes about a second.
+    if [ -f drel.yaml ]; then go tool drel generate; fi
+    if [ -f gx.toml ]; then go run ./cmd/gx generate && go run ./cmd/gx check; fi
     if echo "$changed" | grep -qE '^go\.(mod|sum)$'; then
         pkgs="./..."
     else
         pkgs=$( { echo "$changed" | grep -E '\.(go|gx)$' || true; } | while read -r f; do if [ -e "$f" ]; then echo "./$(dirname "$f")"; fi; done | sort -u | tr '\n' ' ')
     fi
+    # Drop directories with no file for the default build, such as the gxdev ones.
+    pkgs=$(go list -e -f '{{"{{"}}if or .GoFiles .TestGoFiles{{"}}"}}{{"{{"}}.ImportPath{{"}}"}}{{"{{"}}end{{"}}"}}' $pkgs | tr '\n' ' ')
     if [ -z "${pkgs// }" ]; then echo "check: no Go changes"; exit 0; fi
     go run ./cmd/gx lint
     go test $pkgs

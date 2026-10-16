@@ -833,6 +833,7 @@ func Packages() []gx.DevPackage {
 				"FilterTuning":   reflect.TypeFor[p23.FilterTuning](),
 				"LearningTuning": reflect.TypeFor[p23.LearningTuning](),
 				"PenaltyWeights": reflect.TypeFor[p23.PenaltyWeights](),
+				"PollTuning":     reflect.TypeFor[p23.PollTuning](),
 				"RankTuning":     reflect.TypeFor[p23.RankTuning](),
 				"ReviewTuning":   reflect.TypeFor[p23.ReviewTuning](),
 				"ScoreWeights":   reflect.TypeFor[p23.ScoreWeights](),
