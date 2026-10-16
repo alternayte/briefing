@@ -91,7 +91,7 @@ func LoadConfig(lookup func(string) (string, bool)) (Config, error) {
 	case DecideAPIDecisions:
 		c.DecideModel = r.optional("DECIDE_MODEL", "cloudflare/clef")
 	case DecideAPISystemOne:
-		c.DecideModel = r.optional("DECIDE_MODEL", "jev-latest")
+		c.DecideModel = r.optional("DECIDE_MODEL", "~typesafe/jev-latest")
 	default:
 		r.fail("DECIDE_API must be %q or %q, got %q", DecideAPIDecisions, DecideAPISystemOne, c.DecideAPI)
 	}

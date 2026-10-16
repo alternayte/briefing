@@ -120,7 +120,7 @@ func TestLoadConfigEnablesOptionalFeatures(t *testing.T) {
 	if !c.MagicLinkEnabled() || !c.RenderingEnabled() {
 		t.Error("features must turn on with their env")
 	}
-	if c.DecideAPI != DecideAPISystemOne || c.DecideModel != "jev-latest" {
+	if c.DecideAPI != DecideAPISystemOne || c.DecideModel != "~typesafe/jev-latest" {
 		t.Errorf("systemone default model = %s", c.DecideModel)
 	}
 }
