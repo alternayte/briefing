@@ -6,7 +6,9 @@ import (
 	"context"
 
 	accounts "github.com/alternayte/briefing/internal/accounts"
+	feed "github.com/alternayte/briefing/internal/feed"
 	ingest "github.com/alternayte/briefing/internal/ingest"
+	learning "github.com/alternayte/briefing/internal/learning"
 	sources "github.com/alternayte/briefing/internal/sources"
 	model "github.com/alternayte/briefing/internal/stories/model"
 	write "github.com/alternayte/briefing/internal/write"
@@ -16,8 +18,11 @@ import (
 type DB struct {
 	*drel.Engine
 	Profiles      *accounts.ProfileRepository
+	Entries       *feed.EntryRepository
+	Interests     *feed.InterestRepository
 	Items         *ingest.ItemRepository
 	Sightings     *ingest.SightingRepository
+	Events        *learning.EventRepository
 	Sources       *sources.SourceRepository
 	Stories       *model.StoryRepository
 	StoryItems    *model.StoryItemRepository
@@ -37,8 +42,11 @@ func Open(dsn string, opts ...drel.Option) (*DB, error) {
 	return &DB{
 		Engine:        engine,
 		Profiles:      &accounts.ProfileRepository{Repository: drel.NewRepository(engine, accounts.ProfileMeta)},
+		Entries:       &feed.EntryRepository{Repository: drel.NewRepository(engine, feed.EntryMeta)},
+		Interests:     &feed.InterestRepository{Repository: drel.NewRepository(engine, feed.InterestMeta)},
 		Items:         &ingest.ItemRepository{Repository: drel.NewRepository(engine, ingest.ItemMeta)},
 		Sightings:     &ingest.SightingRepository{Repository: drel.NewRepository(engine, ingest.SightingMeta)},
+		Events:        &learning.EventRepository{Repository: drel.NewRepository(engine, learning.EventMeta)},
 		Sources:       &sources.SourceRepository{Repository: drel.NewRepository(engine, sources.SourceMeta)},
 		Stories:       &model.StoryRepository{Repository: drel.NewRepository(engine, model.StoryMeta)},
 		StoryItems:    &model.StoryItemRepository{Repository: drel.NewRepository(engine, model.StoryItemMeta)},
@@ -51,9 +59,16 @@ func Open(dsn string, opts ...drel.Option) (*DB, error) {
 			Accounts: AccountsRepos{
 				Profiles: &accounts.ProfileRepository{Repository: drel.NewRepository(engine, accounts.ProfileMeta)},
 			},
+			Feed: FeedRepos{
+				Entries:   &feed.EntryRepository{Repository: drel.NewRepository(engine, feed.EntryMeta)},
+				Interests: &feed.InterestRepository{Repository: drel.NewRepository(engine, feed.InterestMeta)},
+			},
 			Ingest: IngestRepos{
 				Items:     &ingest.ItemRepository{Repository: drel.NewRepository(engine, ingest.ItemMeta)},
 				Sightings: &ingest.SightingRepository{Repository: drel.NewRepository(engine, ingest.SightingMeta)},
+			},
+			Learning: LearningRepos{
+				Events: &learning.EventRepository{Repository: drel.NewRepository(engine, learning.EventMeta)},
 			},
 			Sources: SourcesRepos{
 				Sources: &sources.SourceRepository{Repository: drel.NewRepository(engine, sources.SourceMeta)},
@@ -77,8 +92,11 @@ func Open(dsn string, opts ...drel.Option) (*DB, error) {
 // the fields, stage with Add and Remove, then let WithTx commit.
 type TxRepos struct {
 	Profiles      *accounts.TxProfileRepository
+	Entries       *feed.TxEntryRepository
+	Interests     *feed.TxInterestRepository
 	Items         *ingest.TxItemRepository
 	Sightings     *ingest.TxSightingRepository
+	Events        *learning.TxEventRepository
 	Sources       *sources.TxSourceRepository
 	Stories       *model.TxStoryRepository
 	StoryItems    *model.TxStoryItemRepository
@@ -96,8 +114,11 @@ func (db *DB) Tx(ctx context.Context) TxRepos {
 	tx := drel.MustFromContext(ctx)
 	return TxRepos{
 		Profiles:      &accounts.TxProfileRepository{TxRepository: drel.NewTxRepository(tx, accounts.ProfileMeta)},
+		Entries:       &feed.TxEntryRepository{TxRepository: drel.NewTxRepository(tx, feed.EntryMeta)},
+		Interests:     &feed.TxInterestRepository{TxRepository: drel.NewTxRepository(tx, feed.InterestMeta)},
 		Items:         &ingest.TxItemRepository{TxRepository: drel.NewTxRepository(tx, ingest.ItemMeta)},
 		Sightings:     &ingest.TxSightingRepository{TxRepository: drel.NewTxRepository(tx, ingest.SightingMeta)},
+		Events:        &learning.TxEventRepository{TxRepository: drel.NewTxRepository(tx, learning.EventMeta)},
 		Sources:       &sources.TxSourceRepository{TxRepository: drel.NewTxRepository(tx, sources.SourceMeta)},
 		Stories:       &model.TxStoryRepository{TxRepository: drel.NewTxRepository(tx, model.StoryMeta)},
 		StoryItems:    &model.TxStoryItemRepository{TxRepository: drel.NewTxRepository(tx, model.StoryItemMeta)},
@@ -110,9 +131,16 @@ func (db *DB) Tx(ctx context.Context) TxRepos {
 			Accounts: AccountsTxRepos{
 				Profiles: &accounts.TxProfileRepository{TxRepository: drel.NewTxRepository(tx, accounts.ProfileMeta)},
 			},
+			Feed: FeedTxRepos{
+				Entries:   &feed.TxEntryRepository{TxRepository: drel.NewTxRepository(tx, feed.EntryMeta)},
+				Interests: &feed.TxInterestRepository{TxRepository: drel.NewTxRepository(tx, feed.InterestMeta)},
+			},
 			Ingest: IngestTxRepos{
 				Items:     &ingest.TxItemRepository{TxRepository: drel.NewTxRepository(tx, ingest.ItemMeta)},
 				Sightings: &ingest.TxSightingRepository{TxRepository: drel.NewTxRepository(tx, ingest.SightingMeta)},
+			},
+			Learning: LearningTxRepos{
+				Events: &learning.TxEventRepository{TxRepository: drel.NewTxRepository(tx, learning.EventMeta)},
 			},
 			Sources: SourcesTxRepos{
 				Sources: &sources.TxSourceRepository{TxRepository: drel.NewTxRepository(tx, sources.SourceMeta)},
@@ -142,6 +170,18 @@ type AccountsTxRepos struct {
 	Profiles *accounts.TxProfileRepository
 }
 
+// FeedRepos holds the untracked repositories of the "feed" module.
+type FeedRepos struct {
+	Entries   *feed.EntryRepository
+	Interests *feed.InterestRepository
+}
+
+// FeedTxRepos holds the tracked repositories of the "feed" module.
+type FeedTxRepos struct {
+	Entries   *feed.TxEntryRepository
+	Interests *feed.TxInterestRepository
+}
+
 // IngestRepos holds the untracked repositories of the "ingest" module.
 type IngestRepos struct {
 	Items     *ingest.ItemRepository
@@ -152,6 +192,16 @@ type IngestRepos struct {
 type IngestTxRepos struct {
 	Items     *ingest.TxItemRepository
 	Sightings *ingest.TxSightingRepository
+}
+
+// LearningRepos holds the untracked repositories of the "learning" module.
+type LearningRepos struct {
+	Events *learning.EventRepository
+}
+
+// LearningTxRepos holds the tracked repositories of the "learning" module.
+type LearningTxRepos struct {
+	Events *learning.TxEventRepository
 }
 
 // SourcesRepos holds the untracked repositories of the "sources" module.
@@ -198,7 +248,9 @@ type WriteTxRepos struct {
 // reaches only its own models.
 type Modules struct {
 	Accounts AccountsRepos
+	Feed     FeedRepos
 	Ingest   IngestRepos
+	Learning LearningRepos
 	Sources  SourcesRepos
 	Stories  StoriesRepos
 	Write    WriteRepos
@@ -208,7 +260,9 @@ type Modules struct {
 // bound to the same transaction.
 type TxModules struct {
 	Accounts AccountsTxRepos
+	Feed     FeedTxRepos
 	Ingest   IngestTxRepos
+	Learning LearningTxRepos
 	Sources  SourcesTxRepos
 	Stories  StoriesTxRepos
 	Write    WriteTxRepos

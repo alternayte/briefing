@@ -1,0 +1,176 @@
+{
+  "tables": [
+    {
+      "name": "feed_entries",
+      "columns": [
+        {
+          "name": "id",
+          "type": "BIGSERIAL PRIMARY KEY",
+          "notNull": true,
+          "pk": true
+        },
+        {
+          "name": "user_id",
+          "type": "uuid",
+          "notNull": true,
+          "ref": "auth_users",
+          "refColumn": "id",
+          "onDelete": "CASCADE"
+        },
+        {
+          "name": "story_id",
+          "type": "bigint",
+          "notNull": true,
+          "ref": "stories",
+          "refColumn": "id",
+          "onDelete": "CASCADE"
+        },
+        {
+          "name": "relevance",
+          "type": "double precision",
+          "notNull": true
+        },
+        {
+          "name": "excluded",
+          "type": "double precision",
+          "notNull": true
+        },
+        {
+          "name": "score",
+          "type": "double precision",
+          "notNull": true
+        },
+        {
+          "name": "reason",
+          "type": "text",
+          "notNull": true,
+          "default": "''"
+        },
+        {
+          "name": "shown_revision",
+          "type": "integer",
+          "notNull": true,
+          "default": "0"
+        },
+        {
+          "name": "delivered_on",
+          "type": "date",
+          "notNull": false
+        },
+        {
+          "name": "state",
+          "type": "\"entrystate\"",
+          "notNull": true,
+          "default": "'candidate'"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamptz",
+          "notNull": true,
+          "default": "NOW()"
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "notNull": true,
+          "default": "NOW()"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "idx_feed_entries_user_state",
+          "columns": [
+            "user_id",
+            "state"
+          ]
+        },
+        {
+          "name": "uq_feed_entries",
+          "columns": [
+            "user_id",
+            "story_id"
+          ],
+          "unique": true
+        }
+      ]
+    },
+    {
+      "name": "interests",
+      "columns": [
+        {
+          "name": "id",
+          "type": "BIGSERIAL PRIMARY KEY",
+          "notNull": true,
+          "pk": true
+        },
+        {
+          "name": "user_id",
+          "type": "uuid",
+          "notNull": true,
+          "ref": "auth_users",
+          "refColumn": "id",
+          "onDelete": "CASCADE"
+        },
+        {
+          "name": "text",
+          "type": "text",
+          "notNull": true
+        },
+        {
+          "name": "negative",
+          "type": "boolean",
+          "notNull": true,
+          "default": "false"
+        },
+        {
+          "name": "weight",
+          "type": "double precision",
+          "notNull": true,
+          "default": "1"
+        },
+        {
+          "name": "embedding",
+          "type": "vector",
+          "notNull": false
+        },
+        {
+          "name": "embed_model",
+          "type": "text",
+          "notNull": true,
+          "default": "''"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamptz",
+          "notNull": true,
+          "default": "NOW()"
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "notNull": true,
+          "default": "NOW()"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "idx_interests_user",
+          "columns": [
+            "user_id"
+          ]
+        }
+      ]
+    }
+  ],
+  "enums": [
+    {
+      "name": "entrystate",
+      "values": [
+        "candidate",
+        "delivered",
+        "seen"
+      ],
+      "baseType": "string"
+    }
+  ]
+}

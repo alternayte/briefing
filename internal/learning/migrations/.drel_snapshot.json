@@ -1,0 +1,87 @@
+{
+  "tables": [
+    {
+      "name": "learning_events",
+      "columns": [
+        {
+          "name": "id",
+          "type": "BIGSERIAL PRIMARY KEY",
+          "notNull": true,
+          "pk": true
+        },
+        {
+          "name": "user_id",
+          "type": "uuid",
+          "notNull": true,
+          "ref": "auth_users",
+          "refColumn": "id",
+          "onDelete": "CASCADE"
+        },
+        {
+          "name": "story_id",
+          "type": "bigint",
+          "notNull": false,
+          "ref": "stories",
+          "refColumn": "id",
+          "onDelete": "CASCADE"
+        },
+        {
+          "name": "concept_id",
+          "type": "bigint",
+          "notNull": false,
+          "ref": "concepts",
+          "refColumn": "id",
+          "onDelete": "CASCADE"
+        },
+        {
+          "name": "kind",
+          "type": "\"eventkind\"",
+          "notNull": true
+        },
+        {
+          "name": "payload",
+          "type": "jsonb",
+          "notNull": true
+        },
+        {
+          "name": "created_at",
+          "type": "timestamptz",
+          "notNull": true,
+          "default": "NOW()"
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "notNull": true,
+          "default": "NOW()"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "idx_learning_events_user_kind",
+          "columns": [
+            "user_id",
+            "kind",
+            "created_at"
+          ]
+        }
+      ]
+    }
+  ],
+  "enums": [
+    {
+      "name": "eventkind",
+      "values": [
+        "opened",
+        "useful",
+        "knew",
+        "irrelevant",
+        "misleading",
+        "explained",
+        "reviewed_correct",
+        "reviewed_wrong"
+      ],
+      "baseType": "string"
+    }
+  ]
+}
