@@ -38,6 +38,11 @@ type PollTuning struct {
 	RSS     time.Duration
 	HN      time.Duration
 	Bluesky time.Duration
+	// Timeout and MaxBytes bound one poll request.
+	Timeout  time.Duration
+	MaxBytes int64
+	// SnippetChars caps the feed text kept as an item snippet.
+	SnippetChars int
 }
 
 type FilterTuning struct {
@@ -128,7 +133,14 @@ type LearningTuning struct {
 // DefaultTuning returns the tuning the app runs with.
 func DefaultTuning() Tuning {
 	return Tuning{
-		Poll:   PollTuning{RSS: 30 * time.Minute, HN: 10 * time.Minute, Bluesky: 15 * time.Minute},
+		Poll: PollTuning{
+			RSS:          30 * time.Minute,
+			HN:           10 * time.Minute,
+			Bluesky:      15 * time.Minute,
+			Timeout:      15 * time.Second,
+			MaxBytes:     5 << 20,
+			SnippetChars: 600,
+		},
 		Filter: FilterTuning{MaxItemAge: 72 * time.Hour},
 		Triage: TriageTuning{WorthMin: 0.5, MaxStateChars: 6000},
 		Cluster: ClusterTuning{

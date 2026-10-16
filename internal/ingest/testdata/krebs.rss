@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>Krebs on Security</title>
+	<atom:link href="https://krebsonsecurity.com/feed/" rel="self" type="application/rss+xml" />
+	<link>https://krebsonsecurity.com</link>
+	<description>In-depth security news and investigation</description>
+	<lastBuildDate>Wed, 14 Oct 2026 14:22:49 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=6.6.9</generator>
+	<item>
+		<title>U.K. Sanctions Cryptomus for RU Money Laundering</title>
+		<link>https://krebsonsecurity.com/2026/10/u-k-sanctions-cryptomus-for-ru-money-laundering/</link>
+					<comments>https://krebsonsecurity.com/2026/10/u-k-sanctions-cryptomus-for-ru-money-laundering/#comments</comments>
+		
+		<dc:creator><![CDATA[BrianKrebs]]></dc:creator>
+		<pubDate>Wed, 14 Oct 2026 14:22:49 +0000</pubDate>
+				<category><![CDATA[A Little Sunshine]]></category>
+		<category><![CDATA[Ne'er-Do-Well News]]></category>
+		<category><![CDATA[Russia's War on Ukraine]]></category>
+		<category><![CDATA[Web Fraud 2.0]]></category>
+		<category><![CDATA[Certa Payments]]></category>
+		<category><![CDATA[Chainalysis]]></category>
+		<category><![CDATA[Cryptomus]]></category>
+		<category><![CDATA[Heleket]]></category>
+		<category><![CDATA[Richard Sanders]]></category>
+		<category><![CDATA[TokenSpot]]></category>
+		<category><![CDATA[TRM Labs]]></category>
+		<category><![CDATA[Tsunami Payments]]></category>
+		<category><![CDATA[VexPay]]></category>
+		<category><![CDATA[WS Management and Advisory Corporation]]></category>
+		<category><![CDATA[Xeltox Enterprises]]></category>
+		<guid isPermaLink="false">https://krebsonsecurity.com/?p=74435</guid>
+
+					<description>The United Kingdom has issued economic sanctions against Cryptomus, a chameleonic cryptocurrency platform that experts say serves as a major conduit for payments related to ransomware, narcotics, darknet markets, fraud and cybercrime servic</description>
+										<content:encoded>The United Kingdom has issued economic sanctions against Cryptomus , a chameleonic cryptocurrency platform that experts say serves as a major conduit for payments related to ransomware, narcotics, darknet markets, fraud and cybercrime servi</content:encoded>
+					
+					<wfw:commentRss>https://krebsonsecurity.com/2026/10/u-k-sanctions-cryptomus-for-ru-money-laundering/feed/</wfw:commentRss>
+			<slash:comments>1</slash:comments>
+		
+		
+			</item>
+<item>
+		<title>Microsoft Patches More Than 1,400 Security Flaws</title>
+		<link>https://krebsonsecurity.com/2026/10/microsoft-patches-more-than-1400-security-flaws/</link>
+					<comments>https://krebsonsecurity.com/2026/10/microsoft-patches-more-than-1400-security-flaws/#comments</comments>
+		
+		<dc:creator><![CDATA[BrianKrebs]]></dc:creator>
+		<pubDate>Tue, 13 Oct 2026 23:24:53 +0000</pubDate>
+				<category><![CDATA[Security Tools]]></category>
+		<category><![CDATA[The Coming Storm]]></category>
+		<category><![CDATA[Time to Patch]]></category>
+		<category><![CDATA[.NET]]></category>
+		<category><![CDATA[Cisco Talos]]></category>
+		<category><![CDATA[CVE-2026-108398]]></category>
+		<category><![CDATA[CVE-2026-96951]]></category>
+		<category><![CDATA[Fortra]]></category>
+		<category><![CDATA[microsoft]]></category>
+		<category><![CDATA[Patch Tuesday October 2026]]></category>
+		<category><![CDATA[sans internet storm center]]></category>
+		<category><![CDATA[Satnam Narang]]></category>
+		<category><![CDATA[Tenable]]></category>
+		<category><![CDATA[Tyler Reguly]]></category>
+		<category><![CDATA[Windows 10 updates]]></category>
+		<category><![CDATA[Windows shell]]></category>
+		<guid isPermaLink="false">https://krebsonsecurity.com/?p=74474</guid>
+
+					<description>Microsoft today issued updates to fix more than 1,400 security vulnerabilities in its Windows operating systems and other software. Today&#x27;s epic patch batch dwarfs September&#x27;s record of nearly 1,000 fixes, which was already about ten times </description>
+										<content:encoded>Microsoft today issued updates to fix more than 1,400 security vulnerabilities in its Windows operating systems and other software. Today’s epic patch batch dwarfs September’s record of nearly 1,000 fixes, which was already about ten times </content:encoded>
+					
+					<wfw:commentRss>https://krebsonsecurity.com/2026/10/microsoft-patches-more-than-1400-security-flaws/feed/</wfw:commentRss>
+			<slash:comments>12</slash:comments>
+		
+		
+			</item>
+<item>
+		<title>FBI Arrests Executive at Ransomware Negotiation Firm</title>
+		<link>https://krebsonsecurity.com/2026/10/fbi-arrests-founder-of-ransomware-negotiation-firm/</link>
+					<comments>https://krebsonsecurity.com/2026/10/fbi-arrests-founder-of-ransomware-negotiation-firm/#comments</comments>
+		
+		<dc:creator><![CDATA[BrianKrebs]]></dc:creator>
+		<pubDate>Sat, 10 Oct 2026 00:17:42 +0000</pubDate>
+				<category><![CDATA[A Little Sunshine]]></category>
+		<category><![CDATA[Breadcrumbs]]></category>
+		<category><![CDATA[Ne'er-Do-Well News]]></category>
+		<category><![CDATA[The Coming Storm]]></category>
+		<category><![CDATA[Cyber Extortion Strategic Response]]></category>
+		<category><![CDATA[CyberSteward]]></category>
+		<category><![CDATA[Cypfer]]></category>
+		<category><![CDATA[Edward Dubrovsky]]></category>
+		<category><![CDATA[FBI Director Kash Patel]]></category>
+		<category><![CDATA[ShinyHunters]]></category>
+		<guid isPermaLink="false">https://krebsonsecurity.com/?p=74440</guid>
+
+					<description>Agents with the Federal Bureau of Investigation (FBI) on Thursday arrested the co-founder of a Canadian cybersecurity firm in connection with an investigation into the ShinyHunters hacking group that recently relieved the FBI of sensitive d</description>
+										<content:encoded>Agents with the Federal Bureau of Investigation (FBI) on Thursday arrested an executive at a Canadian cybersecurity firm in connection with an investigation into the ShinyHunters hacking group that recently relieved the FBI of sensitive dat</content:encoded>
+					
+					<wfw:commentRss>https://krebsonsecurity.com/2026/10/fbi-arrests-founder-of-ransomware-negotiation-firm/feed/</wfw:commentRss>
+			<slash:comments>27</slash:comments>
+		
+		
+			</item>
+	</channel>
+</rss>
+
+<!--
+Performance optimized by W3 Total Cache. Learn more: https://www.boldgrid.com/w3-total-cache/?utm_source=w3tc&utm_medium=footer_comment&utm_campaign=free_plugin
+
+Object Caching 19/21 objects using Memcached
+Page Caching using Memcached 
+Database Caching using Memcached
+
+Served from: krebsonsecurity.com @ 2026-10-15 21:08:46 by W3 Total Cache
+-->

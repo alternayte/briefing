@@ -1,0 +1,41 @@
+{
+ "hits": [
+  {
+   "objectID": "50107379",
+   "title": "Muse Spark Open",
+   "url": "https://research.meta.ai/blog/muse-spark-open",
+   "author": "bigwheels",
+   "points": 606,
+   "num_comments": 350,
+   "created_at": "2026-10-15T17:47:39Z",
+   "created_at_i": 1792086459,
+   "story_id": 50107379
+  },
+  {
+   "objectID": "50105647",
+   "title": "Neural networks are clean",
+   "url": "https://already-clean.goodfire.com/",
+   "author": "themgt",
+   "points": 497,
+   "num_comments": 190,
+   "created_at": "2026-10-15T16:04:01Z",
+   "created_at_i": 1792080241,
+   "story_id": 50105647
+  },
+  {
+   "objectID": "50103338",
+   "title": "Wayland desktop for Linux with skeuomorphic design",
+   "url": "https://github.com/fyzugx/DEsk",
+   "author": "FinalDestiny",
+   "points": 492,
+   "num_comments": 198,
+   "created_at": "2026-10-15T13:23:44Z",
+   "created_at_i": 1792070624,
+   "story_id": 50103338
+  }
+ ],
+ "nbHits": 30,
+ "page": 0,
+ "nbPages": 1,
+ "hitsPerPage": 3
+}

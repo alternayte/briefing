@@ -1,0 +1,403 @@
+{
+ "feed": [
+  {
+   "post": {
+    "uri": "at://did:plc:kft6lu4trxowqmter2b6vg6z/app.bsky.feed.post/3mxw5izz2gs2g",
+    "cid": "bafyreiefjlgd2p2vqlopvmkvzg2p6iu2ojrmkudtmwbrb5milvff7elr6e",
+    "author": {
+     "did": "did:plc:kft6lu4trxowqmter2b6vg6z",
+     "handle": "simonwillison.net",
+     "displayName": "Simon Willison"
+    },
+    "record": {
+     "$type": "app.bsky.feed.post",
+     "text": "\"Anthropic told investors on Wednesday distillation accounted for 5 per cent to 7 per cent of revenue\"\n\nIf true, and Q2 revenue was $11.5B, then that's more than half a billion dollars spent by other ",
+     "createdAt": "2026-10-15T13:17:18.829Z"
+    },
+    "replyCount": 7,
+    "repostCount": 11,
+    "likeCount": 63,
+    "quoteCount": 3,
+    "indexedAt": "2026-10-15T13:17:21.754Z",
+    "embed": {
+     "$type": "app.bsky.embed.images#view"
+    }
+   }
+  },
+  {
+   "post": {
+    "uri": "at://did:plc:kft6lu4trxowqmter2b6vg6z/app.bsky.feed.post/3mxp55chsbc2c",
+    "cid": "bafyreihfdkkc4z72azy3pmwpspxhuwu6oe4jj5maqkt7ao7bufm23qjlau",
+    "author": {
+     "did": "did:plc:kft6lu4trxowqmter2b6vg6z",
+     "handle": "simonwillison.net",
+     "displayName": "Simon Willison"
+    },
+    "record": {
+     "$type": "app.bsky.feed.post",
+     "text": "Shared some notes on Python 3.15, using it with uv, and features from Python 3.11 I'm excited to use now that 3.10 is no longer the minimum supported version for my own projects simonwillison.net/2026",
+     "createdAt": "2026-10-12T18:22:06.876Z"
+    },
+    "replyCount": 3,
+    "repostCount": 4,
+    "likeCount": 69,
+    "quoteCount": 0,
+    "indexedAt": "2026-10-12T18:22:23.361Z",
+    "embed": {
+     "$type": "app.bsky.embed.external#view",
+     "external": {
+      "uri": "https://simonwillison.net/2026/Oct/12/python-3-15/",
+      "title": "Hello Python 3.15, goodbye 3.10, and now I can use 3.11",
+      "description": "Python 3.15 is here! Here\u2019s the essential What\u2019s new in Python 3.15 guide, this year curated by 3.14 and 3.15 release manager Hugo van Kemenade. As someone who builds open \u2026"
+     }
+    }
+   }
+  },
+  {
+   "post": {
+    "uri": "at://did:plc:kft6lu4trxowqmter2b6vg6z/app.bsky.feed.post/3mxndkxxbhk24",
+    "cid": "bafyreif7gupukh7hidoybdhuupbmv43rvpxxp6n2if3tp23kb6eiv3dtj4",
+    "author": {
+     "did": "did:plc:kft6lu4trxowqmter2b6vg6z",
+     "handle": "simonwillison.net",
+     "displayName": "Simon Willison"
+    },
+    "record": {
+     "$type": "app.bsky.feed.post",
+     "text": "Found the YouTube music video by that pizza chain guy who was bribing Kimberley Guilfoyle to lobby the IRS and send his song to Kid Rock youtu.be/2B6uBfh7bjc",
+     "createdAt": "2026-10-12T01:11:48.586Z"
+    },
+    "replyCount": 2,
+    "repostCount": 0,
+    "likeCount": 35,
+    "quoteCount": 0,
+    "indexedAt": "2026-10-12T01:11:50.456Z",
+    "embed": {
+     "$type": "app.bsky.embed.images#view"
+    }
+   }
+  },
+  {
+   "post": {
+    "uri": "at://did:plc:kft6lu4trxowqmter2b6vg6z/app.bsky.feed.post/3mxh2nlvc7s26",
+    "cid": "bafyreiasuuot4zsay46tzxrng3o3msuhcqocgeavz6cnufx7hz6tfcp5b4",
+    "author": {
+     "did": "did:plc:kft6lu4trxowqmter2b6vg6z",
+     "handle": "simonwillison.net",
+     "displayName": "Simon Willison"
+    },
+    "record": {
+     "$type": "app.bsky.feed.post",
+     "text": "I built a new feature for my blog entirely by voice with Codex Desktop, while I was cooking dinner simonwillison.net/2026/Oct/9/b...",
+     "createdAt": "2026-10-09T13:16:14.499Z"
+    },
+    "replyCount": 19,
+    "repostCount": 3,
+    "likeCount": 63,
+    "quoteCount": 1,
+    "indexedAt": "2026-10-09T13:16:16.258Z",
+    "embed": {
+     "$type": "app.bsky.embed.external#view",
+     "external": {
+      "uri": "https://simonwillison.net/2026/Oct/9/built-using-my-voice/",
+      "title": "A new feature for my blog, built using my voice",
+      "description": "I shipped a new feature for my blog today: the Newsletters page, which offers an index of all of the newsletters I\u2019ve sent out, both my free weekly Substack and \u2026"
+     }
+    }
+   }
+  },
+  {
+   "post": {
+    "uri": "at://did:plc:kft6lu4trxowqmter2b6vg6z/app.bsky.feed.post/3mxctkjruk22c",
+    "cid": "bafyreifsromavvhqw4qopk3pfkaiqwffc627aatxg7sbicvapjah7x2roa",
+    "author": {
+     "did": "did:plc:kft6lu4trxowqmter2b6vg6z",
+     "handle": "simonwillison.net",
+     "displayName": "Simon Willison"
+    },
+    "record": {
+     "$type": "app.bsky.feed.post",
+     "text": "Pelicans and a bunch of notes on the pricing of the new Claude Haiku 5.5 simonwillison.net/2026/Oct/7/c...",
+     "createdAt": "2026-10-07T20:58:36.480Z"
+    },
+    "replyCount": 7,
+    "repostCount": 4,
+    "likeCount": 80,
+    "quoteCount": 0,
+    "indexedAt": "2026-10-07T20:58:38.180Z",
+    "embed": {
+     "$type": "app.bsky.embed.external#view",
+     "external": {
+      "uri": "https://simonwillison.net/2026/Oct/7/claude-haiku-5-5/",
+      "title": "Introducing Claude Haiku 5.5",
+      "description": "As previously promised, here\u2019s Anthropic\u2019s new fast, low cost model: Introducing Claude Haiku 5.5. The previous Haiku, 4.5, was very much showing its age. It came out almost a year \u2026"
+     }
+    }
+   }
+  },
+  {
+   "post": {
+    "uri": "at://did:plc:kft6lu4trxowqmter2b6vg6z/app.bsky.feed.post/3mxap2pofos2t",
+    "cid": "bafyreicfzqgtetolut3wcxd2nb4j6dijxodlofjbtgsacrgojgtdrj4mla",
+    "author": {
+     "did": "did:plc:kft6lu4trxowqmter2b6vg6z",
+     "handle": "simonwillison.net",
+     "displayName": "Simon Willison"
+    },
+    "record": {
+     "$type": "app.bsky.feed.post",
+     "text": "I released an LLM plugin for sending prompts to OpenAI's new Jev-clone decision model that's based on GPT-6 Luna simonwillison.net/2026/Oct/6/l...",
+     "createdAt": "2026-10-07T00:32:51.343Z"
+    },
+    "replyCount": 3,
+    "repostCount": 3,
+    "likeCount": 39,
+    "quoteCount": 0,
+    "indexedAt": "2026-10-07T00:32:52.330Z",
+    "embed": {
+     "$type": "app.bsky.embed.external#view",
+     "external": {
+      "uri": "https://simonwillison.net/2026/Oct/6/llm-openai-decisions/",
+      "title": "Release: llm-openai-decisions 0.1a0",
+      "description": "LLM plugin for the OpenAI Decisions API"
+     }
+    }
+   }
+  },
+  {
+   "post": {
+    "uri": "at://did:plc:tpg43qhh4lw4ksiffs4nbda3/app.bsky.feed.post/3mx5w7ttkm226",
+    "cid": "bafyreigdre4nwmpv67l6dagaq5offkmk5dv47nszxzbklbkf4jr457qw2m",
+    "author": {
+     "did": "did:plc:tpg43qhh4lw4ksiffs4nbda3",
+     "handle": "jacob.gold",
+     "displayName": "Jake Gold"
+    },
+    "record": {
+     "$type": "app.bsky.feed.post",
+     "text": "I've called this the 'The Kobayashi Maru' interview question for programmers.\n\nThere's no \"right\" answer only painful trade-offs which makes it very revealing.",
+     "createdAt": "2026-10-05T22:03:00.457Z"
+    },
+    "replyCount": 12,
+    "repostCount": 6,
+    "likeCount": 92,
+    "quoteCount": 1,
+    "indexedAt": "2026-10-05T22:03:00.868Z",
+    "embed": {
+     "$type": "app.bsky.embed.record#view"
+    }
+   },
+   "reason": {
+    "$type": "app.bsky.feed.defs#reasonRepost"
+   }
+  },
+  {
+   "post": {
+    "uri": "at://did:plc:kft6lu4trxowqmter2b6vg6z/app.bsky.feed.post/3mx5vpoesps2c",
+    "cid": "bafyreigiz37mzjkmr7ib4wcozib7nu7a3i5ts5tfkmokh2mip7jjba2uve",
+    "author": {
+     "did": "did:plc:kft6lu4trxowqmter2b6vg6z",
+     "handle": "simonwillison.net",
+     "displayName": "Simon Willison"
+    },
+    "record": {
+     "$type": "app.bsky.feed.post",
+     "text": "I need to decide if 1KB means 1,000 bytes or 1,024 bytes in all of my software\n\nI was leaning 1,024 but it looks like macOS and Windows both define KB as 1,000 these days\n\nI want whatever people are m",
+     "createdAt": "2026-10-05T21:53:57.855Z"
+    },
+    "replyCount": 48,
+    "repostCount": 1,
+    "likeCount": 144,
+    "quoteCount": 9,
+    "indexedAt": "2026-10-05T21:53:58.162Z"
+   }
+  },
+  {
+   "post": {
+    "uri": "at://did:plc:kft6lu4trxowqmter2b6vg6z/app.bsky.feed.post/3mwz2hvy5ys2j",
+    "cid": "bafyreibpdl4ujjuzdztcyjp6unksemrlpdttxuh2h624zdzrkeo7cjgzvu",
+    "author": {
+     "did": "did:plc:kft6lu4trxowqmter2b6vg6z",
+     "handle": "simonwillison.net",
+     "displayName": "Simon Willison"
+    },
+    "record": {
+     "$type": "app.bsky.feed.post",
+     "text": "Just published this post about how we\u2019re going to need default hard budget caps on pretty much everything simonwillison.net/2026/Oct/3/d...",
+     "createdAt": "2026-10-03T23:35:47.414Z"
+    },
+    "replyCount": 21,
+    "repostCount": 14,
+    "likeCount": 142,
+    "quoteCount": 9,
+    "indexedAt": "2026-10-03T23:35:47.959Z",
+    "embed": {
+     "$type": "app.bsky.embed.external#view",
+     "external": {
+      "uri": "https://simonwillison.net/2026/Oct/3/default-hard-budget-caps/",
+      "title": "We\u2019re going to need default hard budget caps on pretty much everything",
+      "description": "Here\u2019s a product feature which the world is going to need a whole lot more of over the coming months and years: default hard budget caps. I\u2019m talking about the \u2026"
+     }
+    }
+   }
+  },
+  {
+   "post": {
+    "uri": "at://did:plc:kft6lu4trxowqmter2b6vg6z/app.bsky.feed.post/3mwvldzjzqk2z",
+    "cid": "bafyreia3xbsekj5y6x77ugoz62h4gr2re2jbibyuqjnrxxvjbk7bvpy7ne",
+    "author": {
+     "did": "did:plc:kft6lu4trxowqmter2b6vg6z",
+     "handle": "simonwillison.net",
+     "displayName": "Simon Willison"
+    },
+    "record": {
+     "$type": "app.bsky.feed.post",
+     "text": "If you have not yet been to see the scale model of NYC built by Joe Macken out of cardboard and balsa wood over a period of 21 years you only have until the 12th of October to see it!\n\nIt's at the Mus",
+     "createdAt": "2026-10-02T14:27:11.573Z"
+    },
+    "replyCount": 12,
+    "repostCount": 27,
+    "likeCount": 251,
+    "quoteCount": 10,
+    "indexedAt": "2026-10-02T14:27:12.557Z",
+    "embed": {
+     "$type": "app.bsky.embed.video#view"
+    }
+   }
+  },
+  {
+   "post": {
+    "uri": "at://did:plc:vwckmevncj5haiaisaip76kq/app.bsky.feed.post/3mwqunn3hws2t",
+    "cid": "bafyreifsgkyvcjog6y4hekfr7ycdeiyoor4xhfux6nihgxqrvrljdfj2ie",
+    "author": {
+     "did": "did:plc:vwckmevncj5haiaisaip76kq",
+     "handle": "urbanbohemian.com",
+     "displayName": "Brian G. aka urbanbohemian \ud83e\udea9\ud83e\udd42\ud83d\udc96"
+    },
+    "record": {
+     "$type": "app.bsky.feed.post",
+     "text": "We're on Bluesky, put the link in your post.\n\nPut the link in your post.\n\nPut. The. Link. In. Your. Post.\n\nLinks in posts aren't buried or de-prioritized here. This is one of the last platforms you do",
+     "createdAt": "2026-09-30T17:30:19.056Z"
+    },
+    "replyCount": 8,
+    "repostCount": 654,
+    "likeCount": 2067,
+    "quoteCount": 7,
+    "indexedAt": "2026-09-30T17:30:19.259Z"
+   },
+   "reason": {
+    "$type": "app.bsky.feed.defs#reasonRepost"
+   }
+  },
+  {
+   "post": {
+    "uri": "at://did:plc:7bhzt33apansyf24a772y72f/app.bsky.feed.post/3mwqsedpxis2i",
+    "cid": "bafyreibyciytzn5a77fwlbw5cv5ypkmz6hh2nkvikgvvojlqtzz2bfi7vq",
+    "author": {
+     "did": "did:plc:7bhzt33apansyf24a772y72f",
+     "handle": "dracos.co.uk",
+     "displayName": "Matthew Somerville"
+    },
+    "record": {
+     "$type": "app.bsky.feed.post",
+     "text": "Very excited to announce that I will be speaking at @ffconf.org in mid November, on 25 years (!) of the traintimes.org.uk concept. URLs, performance, millions of PWAs; why and how you can do a lot wit",
+     "createdAt": "2026-09-30T16:49:19.765Z"
+    },
+    "replyCount": 1,
+    "repostCount": 7,
+    "likeCount": 30,
+    "quoteCount": 0,
+    "indexedAt": "2026-09-30T16:49:28.262Z",
+    "embed": {
+     "$type": "app.bsky.embed.images#view"
+    }
+   },
+   "reason": {
+    "$type": "app.bsky.feed.defs#reasonRepost"
+   }
+  },
+  {
+   "post": {
+    "uri": "at://did:plc:kft6lu4trxowqmter2b6vg6z/app.bsky.feed.post/3mwoc6wab4s2d",
+    "cid": "bafyreigscagilictvbe65jv7a3z27g3ulw6v5xct74taj62mlzlo3gcuci",
+    "author": {
+     "did": "did:plc:kft6lu4trxowqmter2b6vg6z",
+     "handle": "simonwillison.net",
+     "displayName": "Simon Willison"
+    },
+    "record": {
+     "$type": "app.bsky.feed.post",
+     "text": "I'm at OpenAI's DevDay event in San Francisco today - as I have for the past three DevDay events, I'm running a live blog where I'll be posting updates during the keynote, which starts in five minutes",
+     "createdAt": "2026-09-29T16:54:38.502Z"
+    },
+    "replyCount": 5,
+    "repostCount": 12,
+    "likeCount": 95,
+    "quoteCount": 0,
+    "indexedAt": "2026-09-29T16:54:42.075Z",
+    "embed": {
+     "$type": "app.bsky.embed.external#view",
+     "external": {
+      "uri": "https://simonwillison.net/2026/Sep/29/openai-devday-2026-live-blog/",
+      "title": "OpenAI DevDay 2026 live blog",
+      "description": "I\u2019m at OpenAI DevDay today, in Fort Mason, San Francisco. Same as last year I\u2019ll be live blogging the keynote and some other notes during the day. OpenAI gave me \u2026"
+     }
+    }
+   }
+  },
+  {
+   "post": {
+    "uri": "at://did:plc:kft6lu4trxowqmter2b6vg6z/app.bsky.feed.post/3mwm5kkl5e22s",
+    "cid": "bafyreihqmihnjcix7dkt3xvs3tupiemhncbvue67nex4goyzrerzd5pz3m",
+    "author": {
+     "did": "did:plc:kft6lu4trxowqmter2b6vg6z",
+     "handle": "simonwillison.net",
+     "displayName": "Simon Willison"
+    },
+    "record": {
+     "$type": "app.bsky.feed.post",
+     "text": "I really like how @reckless.bsky.social described this: \"The people do not yearn for automation\" www.theverge.com/podcast/9170...",
+     "createdAt": "2026-09-28T20:26:20.741Z"
+    },
+    "replyCount": 5,
+    "repostCount": 8,
+    "likeCount": 80,
+    "quoteCount": 1,
+    "indexedAt": "2026-09-28T20:26:22.670Z",
+    "embed": {
+     "$type": "app.bsky.embed.recordWithMedia#view"
+    }
+   }
+  },
+  {
+   "post": {
+    "uri": "at://did:plc:kft6lu4trxowqmter2b6vg6z/app.bsky.feed.post/3mwluv7t57k2q",
+    "cid": "bafyreicbivps4upbxbxtyazh3wzz7uszbnjr4gt5rqjvcpraliuzr2vk4e",
+    "author": {
+     "did": "did:plc:kft6lu4trxowqmter2b6vg6z",
+     "handle": "simonwillison.net",
+     "displayName": "Simon Willison"
+    },
+    "record": {
+     "$type": "app.bsky.feed.post",
+     "text": "I've published detailed notes and an annotated transcript to accompany the video of the keynote I gave at @wearedevelopers.bsky.social World Congress North America in San Jose on Friday - here's my ru",
+     "createdAt": "2026-09-28T17:51:14.894Z"
+    },
+    "replyCount": 3,
+    "repostCount": 26,
+    "likeCount": 113,
+    "quoteCount": 2,
+    "indexedAt": "2026-09-28T17:51:17.161Z",
+    "embed": {
+     "$type": "app.bsky.embed.external#view",
+     "external": {
+      "uri": "https://simonwillison.net/2026/Sep/27/2026-in-llms-so-far/",
+      "title": "2026 in LLMs (so far)",
+      "description": "On Friday I gave the closing keynote at the WeAreDevelopers World Congress North America in San Jose. I tied together the key trends from the past year into a chronological \u2026"
+     }
+    }
+   }
+  }
+ ],
+ "cursor": "2026-09-28T17:51:14.894Z"
+}
