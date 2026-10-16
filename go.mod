@@ -5,6 +5,7 @@ go 1.26.2
 tool github.com/alternayte/drel/cmd/drel
 
 require (
+	codeberg.org/readeck/go-readability/v2 v2.1.3
 	github.com/alternayte/auth-all v0.5.1
 	github.com/alternayte/drel v0.10.2
 	github.com/alternayte/gx v0.4.1
@@ -23,6 +24,7 @@ require (
 	github.com/CAFxX/httpcompression v0.0.9 // indirect
 	github.com/alecthomas/chroma/v2 v2.27.0 // indirect
 	github.com/andybalholm/brotli v1.2.0 // indirect
+	github.com/andybalholm/cascadia v1.3.3 // indirect
 	github.com/antlr4-go/antlr/v4 v4.13.0 // indirect
 	github.com/chromedp/cdproto v0.0.0-20250724212937-08a3db8b4327 // indirect
 	github.com/chromedp/chromedp v0.14.2 // indirect
@@ -32,10 +34,13 @@ require (
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/evanw/esbuild v0.28.2 // indirect
 	github.com/go-json-experiment/json v0.0.0-20250725192818-e39067aee2d2 // indirect
+	github.com/go-shiori/dom v0.0.0-20230515143342-73569d674e1c // indirect
 	github.com/gobwas/httphead v0.1.0 // indirect
 	github.com/gobwas/pool v0.2.1 // indirect
 	github.com/gobwas/ws v1.4.0 // indirect
+	github.com/gogs/chardet v0.0.0-20211120154057-b7413eaefb8f // indirect
 	github.com/google/jsonschema-go v0.4.3 // indirect
+	github.com/itlightning/dateparse v0.2.1 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
 	github.com/jackc/puddle/v2 v2.2.2 // indirect

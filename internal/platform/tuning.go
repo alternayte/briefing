@@ -80,6 +80,10 @@ type FetchTuning struct {
 }
 
 type WriteTuning struct {
+	// ShortlistSignificance is the story significance (a level index, 2 =
+	// notable) at which a story gets fetched and written for everyone; 1.5
+	// is the nearest-level boundary between minor and notable.
+	ShortlistSignificance float64
 	// EvidenceFloorChars is the text length at least one item needs before
 	// a story gets a summary.
 	EvidenceFloorChars int
@@ -171,16 +175,17 @@ func DefaultTuning() Tuning {
 			RenderBelowChars: 800,
 		},
 		Write: WriteTuning{
-			EvidenceFloorChars:  1500,
-			SummaryMinWords:     40,
-			SummaryMaxWords:     100,
-			SummaryRejectWords:  120,
-			MinConcepts:         2,
-			MaxConcepts:         5,
-			ReviewQuestions:     2,
-			ReviewChoices:       4,
-			MaxRevisionsPerDay:  3,
-			SynthesisPublishers: 2,
+			ShortlistSignificance: 1.5,
+			EvidenceFloorChars:    1500,
+			SummaryMinWords:       40,
+			SummaryMaxWords:       100,
+			SummaryRejectWords:    120,
+			MinConcepts:           2,
+			MaxConcepts:           5,
+			ReviewQuestions:       2,
+			ReviewChoices:         4,
+			MaxRevisionsPerDay:    3,
+			SynthesisPublishers:   2,
 		},
 		Rank: RankTuning{
 			RelevanceMin:     0.30,

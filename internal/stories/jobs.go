@@ -137,8 +137,11 @@ func (SweepArgs) Kind() string { return "stories.sweep" }
 
 type SweepWorker struct {
 	river.WorkerDefaults[SweepArgs]
-	Engine *drel.Engine
-	Now    func() time.Time
+	Engine          *drel.Engine
+	Now             func() time.Time
+	MinSignificance float64
+	// FetchArgs builds the job that fills a story's texts; content owns it.
+	FetchArgs func(storyID int64) river.JobArgs
 }
 
 const (
@@ -147,7 +150,7 @@ const (
 )
 
 func (w *SweepWorker) Work(ctx context.Context, _ *river.Job[SweepArgs]) error {
-	s, err := FindStalled(ctx, w.Engine, w.Now(), sweepGrace, sweepBatch)
+	s, err := FindStalled(ctx, w.Engine, w.Now(), sweepGrace, sweepBatch, w.MinSignificance)
 	if err != nil {
 		return err
 	}
@@ -161,6 +164,9 @@ func (w *SweepWorker) Work(ctx context.Context, _ *river.Job[SweepArgs]) error {
 	add(s.Passed, func(ids []int64) river.JobArgs { return TriageArgs{ItemIDs: ids} })
 	add(s.Kept, func(ids []int64) river.JobArgs { return EmbedArgs{ItemIDs: ids} })
 	add(s.Unplaced, func(ids []int64) river.JobArgs { return ClusterArgs{ItemIDs: ids} })
+	for _, id := range s.Unfetched {
+		params = append(params, river.InsertManyParams{Args: w.FetchArgs(id)})
+	}
 	if len(params) == 0 {
 		return nil
 	}

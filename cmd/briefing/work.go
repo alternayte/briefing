@@ -12,6 +12,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/riverqueue/river"
 
+	"github.com/alternayte/briefing/internal/content"
 	"github.com/alternayte/briefing/internal/decide"
 	"github.com/alternayte/briefing/internal/embed"
 	"github.com/alternayte/briefing/internal/ingest"
@@ -26,6 +27,7 @@ type pipeline struct {
 	openrouter *platform.OpenRouter
 	tuning     platform.Tuning
 	feeds      *http.Client
+	pages      *http.Client
 	userAgent  string
 	blueskyAPI string
 	now        func() time.Time
@@ -56,10 +58,37 @@ func (p pipeline) workers() (*river.Workers, []*river.PeriodicJob, error) {
 		Embedder:   stories.NewItemEmbedder(p.engine, embed.New(p.openrouter, p.cfg)),
 		OnEmbedded: enqueue(func(ids []int64) river.JobArgs { return stories.ClusterArgs{ItemIDs: ids} }),
 	})
-	river.AddWorker(w, &stories.ClusterWorker{Clusterer: clusterer})
+	minSig := p.tuning.Write.ShortlistSignificance
+	fetchArgs := func(storyID int64) river.JobArgs { return content.FetchArgs{StoryID: storyID} }
+	river.AddWorker(w, &stories.ClusterWorker{
+		Clusterer: clusterer,
+		OnClustered: func(ctx context.Context, ids []int64) error {
+			shortlisted, err := stories.Shortlist(ctx, p.engine, ids, minSig)
+			if err != nil || len(shortlisted) == 0 {
+				return err
+			}
+			params := make([]river.InsertManyParams, len(shortlisted))
+			for i, id := range shortlisted {
+				params[i] = river.InsertManyParams{Args: fetchArgs(id)}
+			}
+			_, err = river.ClientFromContext[pgx.Tx](ctx).InsertMany(ctx, params)
+			return err
+		},
+	})
+	river.AddWorker(w, &content.FetchWorker{Texts: p.texts()})
 	river.AddWorker(w, &stories.CloseStaleWorker{Clusterer: clusterer})
-	river.AddWorker(w, &stories.SweepWorker{Engine: p.engine, Now: p.now})
+	river.AddWorker(w, &stories.SweepWorker{Engine: p.engine, Now: p.now, MinSignificance: minSig, FetchArgs: fetchArgs})
 	return w, []*river.PeriodicJob{ingest.SweepEveryMinute(), stories.SweepEveryFiveMinutes(), stories.CloseStaleHourly()}, nil
+}
+
+// texts builds the fetch step; rendering is on when Cloudflare is configured.
+func (p pipeline) texts() *content.Texts {
+	fetcher := content.NewFetcher(p.pages, p.tuning, p.userAgent)
+	var renderer *content.Renderer
+	if p.cfg.RenderingEnabled() {
+		renderer = content.NewRenderer(&http.Client{Timeout: 60 * time.Second}, content.CloudflareAPI, p.cfg.CFAccountID, p.cfg.CFAPIToken)
+	}
+	return content.NewTexts(p.engine, fetcher, renderer, p.tuning)
 }
 
 // enqueue returns a step hook that inserts the next job for the given ids.

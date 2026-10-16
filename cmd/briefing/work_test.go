@@ -95,6 +95,7 @@ func TestPipelineRunsFromPollToStory(t *testing.T) {
 		openrouter: platform.NewOpenRouter(models.URL, "k", models.Client(), engine, func() time.Time { return now }),
 		tuning:     platform.DefaultTuning(),
 		feeds:      feed.Client(),
+		pages:      feed.Client(),
 		userAgent:  "test",
 		now:        func() time.Time { return now },
 	}
