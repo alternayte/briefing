@@ -196,7 +196,7 @@ func DefaultTuning() Tuning {
 			MaxSources:            6,
 			MaxCharsPerSource:     6000,
 			MaxOutputTokens:       2500,
-			ConceptMatchMin:       0.88,
+			ConceptMatchMin:       0.83,
 		},
 		Rank: RankTuning{
 			RelevanceMin:     0.30,

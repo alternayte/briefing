@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"regexp"
 	"strings"
 	"unicode"
 
@@ -118,12 +119,15 @@ func confidence(publishers, textItems int) Confidence {
 	return ConfidenceLow
 }
 
+var parenthetical = regexp.MustCompile(`\s*\([^)]*\)`)
+
 // slug is the stable key of a concept name: lower case ASCII words joined by
-// hyphens.
+// hyphens, without parenthetical acronyms, and with a plural last word made
+// singular, so "AI agents" and "AI agent (AIA)" share a key.
 func slug(name string) string {
 	var b strings.Builder
 	dash := false
-	for _, r := range norm.NFKD.String(strings.ToLower(name)) {
+	for _, r := range norm.NFKD.String(strings.ToLower(parenthetical.ReplaceAllString(name, ""))) {
 		switch {
 		case unicode.Is(unicode.Mn, r):
 		case r < unicode.MaxASCII && (unicode.IsLetter(r) || unicode.IsDigit(r)):
@@ -136,5 +140,25 @@ func slug(name string) string {
 			dash = true
 		}
 	}
-	return b.String()
+	return singular(b.String())
 }
+
+// singular makes the last word singular for the common English plurals and
+// leaves words that only look plural alone.
+func singular(s string) string {
+	cut := strings.LastIndexByte(s, '-') + 1
+	last := s[cut:]
+	switch {
+	case len(last) <= 3, invariantPlural[last],
+		strings.HasSuffix(last, "ss"), strings.HasSuffix(last, "us"),
+		strings.HasSuffix(last, "is"), strings.HasSuffix(last, "ics"):
+		return s
+	case strings.HasSuffix(last, "ies"):
+		return s[:len(s)-3] + "y"
+	case strings.HasSuffix(last, "s"):
+		return s[:len(s)-1]
+	}
+	return s
+}
+
+var invariantPlural = map[string]bool{"species": true, "series": true, "news": true, "means": true}

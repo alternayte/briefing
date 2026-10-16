@@ -65,6 +65,7 @@ func (w *Writer) Write(ctx context.Context, storyID int64) (bool, error) {
 		supplied[s.ID] = true
 	}
 	var out Output
+	var previous, problems string
 	for attempt := 0; ; attempt++ {
 		if st.attemptsToday+attempt >= w.tuning.MaxRevisionsPerDay {
 			return false, nil
@@ -75,10 +76,12 @@ func (w *Writer) Write(ctx context.Context, storyID int64) (bool, error) {
 		if err := w.countAttempt(ctx, storyID, now); err != nil {
 			return false, err
 		}
-		out, err = w.call(ctx, st.sources)
+		var content string
+		content, out, err = w.call(ctx, st.sources, previous, problems)
 		if err == nil {
 			err = validate(out, supplied, w.tuning)
 		}
+		previous = content
 		if err == nil {
 			break
 		}
@@ -90,6 +93,7 @@ func (w *Writer) Write(ctx context.Context, storyID int64) (bool, error) {
 			slog.WarnContext(ctx, "writer output rejected twice", "story", storyID, "error", err)
 			return false, nil
 		}
+		problems = err.Error()
 	}
 
 	concepts, err := w.matchConcepts(ctx, out.Concepts)
@@ -164,13 +168,21 @@ func (w *Writer) countAttempt(ctx context.Context, storyID int64, now time.Time)
 	})
 }
 
-func (w *Writer) call(ctx context.Context, sources []Source) (Output, error) {
+// call asks the writer model. After a rejected answer, previous and problems
+// carry that answer and the rules it broke, so the model can fix it.
+func (w *Writer) call(ctx context.Context, sources []Source, previous, problems string) (string, Output, error) {
+	messages := []map[string]string{
+		{"role": "system", "content": systemPrompt},
+		{"role": "user", "content": userPrompt(sources, w.tuning.MaxCharsPerSource)},
+	}
+	if problems != "" && previous != "" {
+		messages = append(messages,
+			map[string]string{"role": "assistant", "content": previous},
+			map[string]string{"role": "user", "content": "Your answer broke these rules:\n" + problems + "\nAnswer again with the corrected JSON object only."})
+	}
 	req := map[string]any{
-		"model": w.model,
-		"messages": []map[string]string{
-			{"role": "system", "content": systemPrompt},
-			{"role": "user", "content": userPrompt(sources, w.tuning.MaxCharsPerSource)},
-		},
+		"model":           w.model,
+		"messages":        messages,
 		"response_format": map[string]string{"type": "json_object"},
 		"temperature":     0.2,
 		"max_tokens":      w.tuning.MaxOutputTokens,
@@ -187,15 +199,17 @@ func (w *Writer) call(ctx context.Context, sources []Source) (Output, error) {
 		} `json:"choices"`
 	}
 	if err := w.or.Post(ctx, "/api/v1/chat/completions", "write", w.model, req, &resp); err != nil {
-		return Output{}, err
+		return "", Output{}, err
 	}
 	if len(resp.Choices) == 0 {
-		return Output{}, errors.New("writer returned no choice")
+		return "", Output{}, errors.New("writer returned no choice")
 	}
+	content := resp.Choices[0].Message.Content
 	if resp.Choices[0].FinishReason == "length" {
-		return Output{}, errors.New("writer output was cut at the token limit")
+		return content, Output{}, errors.New("writer output was cut at the token limit")
 	}
-	return parseOutput(resp.Choices[0].Message.Content)
+	out, err := parseOutput(content)
+	return content, out, err
 }
 
 // conceptRef is a concept of the new entry, matched to an existing row or

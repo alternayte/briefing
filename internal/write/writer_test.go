@@ -186,6 +186,31 @@ func TestWriteStopsAtTheSpendCap(t *testing.T) {
 	})
 }
 
+func TestRetryTellsTheModelWhatWasWrong(t *testing.T) {
+	var second string
+	calls := 0
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		var req struct {
+			Messages []struct{ Role, Content string } `json:"messages"`
+		}
+		_ = json.NewDecoder(r.Body).Decode(&req)
+		calls++
+		if calls == 2 {
+			second = req.Messages[len(req.Messages)-1].Content
+		}
+		_ = json.NewEncoder(w).Encode(map[string]any{
+			"choices": []map[string]any{{"finish_reason": "stop", "message": map[string]string{"content": `{"headline":"H"}`}}},
+		})
+	}))
+	defer srv.Close()
+	w := &Writer{or: platform.NewOpenRouter(srv.URL, "k", srv.Client(), nil, time.Now), tuning: platform.DefaultTuning().Write}
+	_, _, _ = w.call(context.Background(), nil, "", "")
+	_, _, _ = w.call(context.Background(), nil, `{"headline":"H"}`, "no claims")
+	if !strings.Contains(second, "no claims") {
+		t.Errorf("retry message = %q", second)
+	}
+}
+
 func TestWriteGivesUpAfterTwoInvalidAnswers(t *testing.T) {
 	t.Parallel()
 	e := pgtest.Engine(t)

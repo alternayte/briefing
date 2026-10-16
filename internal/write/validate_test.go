@@ -82,10 +82,18 @@ func TestParseOutputToleratesCodeFences(t *testing.T) {
 
 func TestSlug(t *testing.T) {
 	for in, want := range map[string]string{
-		"Soft landing":            "soft-landing",
-		"  Heavy-water ratio ":    "heavy-water-ratio",
-		"Retrieval-Augmented Gen": "retrieval-augmented-gen",
-		"Café au lait (1999)":     "cafe-au-lait-1999",
+		"Soft landing":                  "soft-landing",
+		"  Heavy-water ratio ":          "heavy-water-ratio",
+		"Retrieval-Augmented Gen":       "retrieval-augmented-gen",
+		"Café au lait (1999)":           "cafe-au-lait",
+		"Reactive oxygen species (ROS)": "reactive-oxygen-species",
+		"AI agents":                     "ai-agent",
+		"Frontier AI models":            "frontier-ai-model",
+		"Business process":              "business-process",
+		"Gas":                           "gas",
+		"Quantum technologies":          "quantum-technology",
+		"Robotics":                      "robotics",
+		"Time series":                   "time-series",
 	} {
 		if got := slug(in); got != want {
 			t.Errorf("%q: %q", in, got)
