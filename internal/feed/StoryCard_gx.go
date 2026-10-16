@@ -51,8 +51,8 @@ func StoryCard(p StoryCardProps) gx.Node {
 //line StoryCard.gx:24:3
 		gx.Open("h2", gx.Attrs{gx.Attr{Key: "class", Value: gx.Classes("text-deck leading-tight font-semibold", gx.When("text-muted-foreground", p.Card.Seen)), Kind: gx.AttrText}, gx.Attr{Key: "id", Value: "story-" + gx.TextValue(p.Card.StoryID), Kind: gx.AttrText}}),
 //line StoryCard.gx:24:140
-		gx.Open("a", gx.Attrs{gx.Attr{Key: "class", Value: "hover:text-accent", Kind: gx.AttrText}, gx.Attr{Key: "href", Value: route.Story{ID: p.Card.StoryID}.URL(), Kind: gx.AttrURL, Active: "page"}}),
-//line StoryCard.gx:24:208
+		gx.Open("a", gx.Attrs{gx.Attr{Key: "class", Value: "hover:text-accent", Kind: gx.AttrText}, gx.Attr{Key: "href", Value: route.Read{ID: p.Card.StoryID}.URL(), Kind: gx.AttrURL, Active: "page"}}),
+//line StoryCard.gx:24:207
 		gx.Text(p.Card.Headline),
 	))
 //line StoryCard.gx:25:3

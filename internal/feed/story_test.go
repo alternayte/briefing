@@ -3,6 +3,7 @@ package feed
 import (
 	"context"
 	"net/http/httptest"
+	"slices"
 	"strconv"
 	"strings"
 	"testing"
@@ -123,6 +124,30 @@ func TestFrenchReadersSeeTheTranslationOrAMarker(t *testing.T) {
 		body := rec.Body.String()
 		if !strings.Contains(body, "La sonde se pose") || !strings.Contains(body, "Rover drives") || !strings.Contains(body, i18n.For(i18n.FR).FeedTranslating) {
 			t.Error("the feed does not mix the translation and the marked English entry")
+		}
+	})
+}
+
+func TestSearchFindsTheNearestStoriesInTheWindow(t *testing.T) {
+	t.Parallel()
+	e := pgtest.Engine(t)
+	now := time.Date(2031, 8, 10, 12, 0, 0, 0, time.UTC)
+	dreltest.WithRollback(t, e, func(ctx context.Context) {
+		tx := drel.MustFromContext(ctx)
+		mk := func(centroid string, at time.Time) int64 {
+			var id int64
+			_ = tx.QueryRow(ctx, `INSERT INTO stories (opened_at, last_item_at, category, centroid) VALUES ($1, $1, 'x', $2::vector) RETURNING id`, at, centroid).Scan(&id)
+			return id
+		}
+		near := mk("[0.99,0.1,0,0,0]", now.Add(-24*time.Hour))
+		far := mk("[0,1,0,0,0]", now.Add(-24*time.Hour))
+		old := mk("[1,0,0,0,0]", now.Add(-60*24*time.Hour))
+		ids, err := nearestStories(ctx, tx, "[1,0,0,0,0]", now.Add(-30*24*time.Hour), now)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if len(ids) != 2 || ids[0] != near || ids[1] != far || slices.Contains(ids, old) {
+			t.Errorf("ids = %v; near %d far %d old %d", ids, near, far, old)
 		}
 	})
 }

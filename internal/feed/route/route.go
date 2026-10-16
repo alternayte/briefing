@@ -52,9 +52,9 @@ type Finish struct {
 
 func (in *Finish) Rules() gx.Rules { return gx.Rules{} }
 
-// Story is the full view of one story. Explain carries a notice code from
+// Read is the full view of one story. Explain carries a notice code from
 // the Explain form.
-type Story struct {
+type Read struct {
 	gx.Route `GET /s/{ID}`
 	ID       int64
 	Explain  string `query:"explain"`
@@ -136,3 +136,26 @@ type TranslateArticle struct {
 }
 
 func (in *TranslateArticle) Rules() gx.Rules { return gx.Rules{} }
+
+// Today is today's brief.
+type Today struct {
+	gx.Route `GET /api/today`
+}
+
+// Story is one full story.
+type Story struct {
+	gx.Route `GET /api/stories/{ID}`
+	ID       int64
+}
+
+// Search finds stories by meaning. From and To bound the date, as YYYY-MM-DD.
+type Search struct {
+	gx.Route `GET /api/search`
+	Q        string `query:"q"`
+	From     string `query:"from"`
+	To       string `query:"to"`
+}
+
+func (in *Search) Rules() gx.Rules {
+	return gx.Rules{gx.Field(&in.Q, gx.Required, gx.MaxLen(200))}
+}

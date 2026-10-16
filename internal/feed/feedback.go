@@ -27,7 +27,7 @@ var Feedback = gx.Form(func(c *gx.Ctx, in *route.Feedback) error {
 	}
 	gx.ToolResult(c, FeedbackResult{StoryID: in.StoryID, Kind: in.Kind})
 	if in.From == "story" {
-		return c.Redirect(route.Story{ID: in.StoryID})
+		return c.Redirect(route.Read{ID: in.StoryID})
 	}
 	return c.Redirect(route.Home{})
 }, FeedbackButton).Tool()

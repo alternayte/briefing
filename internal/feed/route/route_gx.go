@@ -628,6 +628,48 @@ func (in *Rate) GxRunForm(ctx *gx.Ctx, fn any) error {
 	return fn.(func(*gx.Ctx, *Rate) error)(ctx, in)
 }
 
+// Pattern returns the method and pattern of Read.
+func (Read) Pattern() string { return "GET /s/{ID}" }
+
+// Bind fills Read from the request.
+func (in *Read) Bind(r *http.Request) error {
+	if v := gx.PathValue(r, "ID"); v != "" {
+		x, err := strconv.ParseInt(v, 10, 64)
+		if err != nil {
+			return fmt.Errorf("gx: ID: %w", err)
+		}
+		in.ID = int64(x)
+	}
+	if v := r.URL.Query().Get("explain"); v != "" {
+		in.Explain = string(v)
+	}
+	if v := r.URL.Query().Get("article"); v != "" {
+		in.Article = string(v)
+	}
+	return nil
+}
+
+// URL returns the path of Read.
+func (in Read) URL() string {
+	var b strings.Builder
+	b.WriteString("/")
+	b.WriteString("s")
+	b.WriteString("/")
+	b.WriteString(url.PathEscape(strconv.FormatInt(int64(in.ID), 10)))
+	q := url.Values{}
+	if in.Explain != "" {
+		q.Set("explain", in.Explain)
+	}
+	if in.Article != "" {
+		q.Set("article", in.Article)
+	}
+	if s := q.Encode(); s != "" {
+		b.WriteString("?")
+		b.WriteString(s)
+	}
+	return gx.BasePath() + b.String()
+}
+
 // Pattern returns the method and pattern of SaveInterests.
 func (SaveInterests) Pattern() string { return "POST /onboarding" }
 
@@ -709,6 +751,109 @@ func (in *SaveInterests) GxNewForm() gx.FormInput { return &SaveInterests{} }
 // GxRunForm calls the form handler with the concrete input type (REQ-FRM-02).
 func (in *SaveInterests) GxRunForm(ctx *gx.Ctx, fn any) error {
 	return fn.(func(*gx.Ctx, *SaveInterests) error)(ctx, in)
+}
+
+// Pattern returns the method and pattern of Search.
+func (Search) Pattern() string { return "GET /api/search" }
+
+// GxBindForm fills Search and returns one message key per field
+// that did not convert (REQ-FRM-07).
+func (in *Search) GxBindForm(r *http.Request) (map[string]string, error) {
+	errs := map[string]string{}
+	if v := r.URL.Query().Get("q"); v != "" {
+		in.Q = string(v)
+	}
+	if v := r.URL.Query().Get("from"); v != "" {
+		in.From = string(v)
+	}
+	if v := r.URL.Query().Get("to"); v != "" {
+		in.To = string(v)
+	}
+	return errs, nil
+}
+
+// Bind fills Search from the request.
+func (in *Search) Bind(r *http.Request) error {
+	errs, err := in.GxBindForm(r)
+	if err != nil {
+		return err
+	}
+	for _, name := range gx.FieldNames(errs) {
+		return fmt.Errorf("gx: %s: %s", name, errs[name])
+	}
+	return nil
+}
+
+// URL returns the path of Search.
+func (in Search) URL() string {
+	var b strings.Builder
+	b.WriteString("/")
+	b.WriteString("api")
+	b.WriteString("/")
+	b.WriteString("search")
+	q := url.Values{}
+	if in.Q != "" {
+		q.Set("q", in.Q)
+	}
+	if in.From != "" {
+		q.Set("from", in.From)
+	}
+	if in.To != "" {
+		q.Set("to", in.To)
+	}
+	if s := q.Encode(); s != "" {
+		b.WriteString("?")
+		b.WriteString(s)
+	}
+	return gx.BasePath() + b.String()
+}
+
+// SearchForm is the generated form value of Search (REQ-FRM-03).
+type SearchForm struct {
+	gx.FormMeta
+	Q    gx.FormField[string]
+	From gx.FormField[string]
+	To   gx.FormField[string]
+}
+
+// GxFormValue fills the form value of Search (REQ-FRM-03).
+func (in *Search) GxFormValue(errs map[string]string) gx.FormValue {
+	f := SearchForm{FormMeta: gx.FormMeta{Name: "search", ID: "search-form", Action: in.URL(), Method: "GET", Enctype: "", Tool: "feed_search"}}
+	f.Q = gx.FormField[string]{Name: "", ID: gx.FieldID("search", ""), Value: in.Q, ErrorKey: errs[""], Error: gx.Translate(errs[""], gx.DefaultMessage(errs[""])), Constraints: gx.Attrs{gx.Bool("required", true), gx.Attr{Key: "maxlength", Value: "200", Kind: gx.AttrText}}, ValidateURL: gx.ValidateURL(in.URL(), "")}
+	f.From = gx.FormField[string]{Name: "", ID: gx.FieldID("search", ""), Value: in.From, ErrorKey: errs[""], Error: gx.Translate(errs[""], gx.DefaultMessage(errs[""])), Constraints: nil, ValidateURL: gx.ValidateURL(in.URL(), "")}
+	f.To = gx.FormField[string]{Name: "", ID: gx.FieldID("search", ""), Value: in.To, ErrorKey: errs[""], Error: gx.Translate(errs[""], gx.DefaultMessage(errs[""])), Constraints: nil, ValidateURL: gx.ValidateURL(in.URL(), "")}
+	return f
+}
+
+// GxFieldName returns the form field name of a field pointer (REQ-FRM-02).
+func (in *Search) GxFieldName(ptr any) string {
+	switch ptr {
+	case any(&in.Q):
+		return ""
+	case any(&in.From):
+		return ""
+	case any(&in.To):
+		return ""
+	}
+	return ""
+}
+
+// GxNewForm returns a fresh Search (REQ-FRM-02).
+func (in *Search) GxNewForm() gx.FormInput { return &Search{} }
+
+// GxRunForm calls the form handler with the concrete input type (REQ-FRM-02).
+func (in *Search) GxRunForm(ctx *gx.Ctx, fn any) error {
+	return fn.(func(*gx.Ctx, *Search) error)(ctx, in)
+}
+
+// GxTool describes Search as a tool.
+func (Search) GxTool() gx.ToolInfo {
+	return gx.ToolInfo{
+		Name:        "feed_search",
+		Description: "Finds stories by meaning, not only by words, between two dates (from and to as YYYY-MM-DD; by default the last 30 days). Returns up to 10 stories, best match first, in the same shape as feed_today. Use it when the reader asks about a topic, a company or an event.",
+		Schema:      "{\"additionalProperties\":false,\"properties\":{\"from\":{\"type\":\"string\"},\"q\":{\"maxLength\":200,\"type\":\"string\"},\"to\":{\"type\":\"string\"}},\"required\":[\"q\"],\"type\":\"object\"}",
+		Fields:      []gx.ToolField{{Name: "q", In: "query"}, {Name: "from", In: "query"}, {Name: "to", In: "query"}},
+	}
 }
 
 // Pattern returns the method and pattern of SetBudget.
@@ -888,7 +1033,7 @@ func (in Settings) URL() string {
 }
 
 // Pattern returns the method and pattern of Story.
-func (Story) Pattern() string { return "GET /s/{ID}" }
+func (Story) Pattern() string { return "GET /api/stories/{ID}" }
 
 // Bind fills Story from the request.
 func (in *Story) Bind(r *http.Request) error {
@@ -899,12 +1044,6 @@ func (in *Story) Bind(r *http.Request) error {
 		}
 		in.ID = int64(x)
 	}
-	if v := r.URL.Query().Get("explain"); v != "" {
-		in.Explain = string(v)
-	}
-	if v := r.URL.Query().Get("article"); v != "" {
-		in.Article = string(v)
-	}
 	return nil
 }
 
@@ -912,21 +1051,50 @@ func (in *Story) Bind(r *http.Request) error {
 func (in Story) URL() string {
 	var b strings.Builder
 	b.WriteString("/")
-	b.WriteString("s")
+	b.WriteString("api")
+	b.WriteString("/")
+	b.WriteString("stories")
 	b.WriteString("/")
 	b.WriteString(url.PathEscape(strconv.FormatInt(int64(in.ID), 10)))
-	q := url.Values{}
-	if in.Explain != "" {
-		q.Set("explain", in.Explain)
-	}
-	if in.Article != "" {
-		q.Set("article", in.Article)
-	}
-	if s := q.Encode(); s != "" {
-		b.WriteString("?")
-		b.WriteString(s)
-	}
 	return gx.BasePath() + b.String()
+}
+
+// GxTool describes Story as a tool.
+func (Story) GxTool() gx.ToolInfo {
+	return gx.ToolInfo{
+		Name:        "feed_story",
+		Description: "Returns one story in full by its id: headline, summary, why it matters, what is new, each claim with the source URLs that state it, its concepts with definitions and how well the reader knows each, its sources, and the reader's explanation when they asked for one. Counts as the reader opening the story. Use it after feed_today or feed_search to go deeper.",
+		Schema:      "{\"additionalProperties\":false,\"properties\":{\"ID\":{\"type\":\"integer\"}},\"required\":[\"ID\"],\"type\":\"object\"}",
+		Fields:      []gx.ToolField{{Name: "ID", In: "path"}},
+	}
+}
+
+// Pattern returns the method and pattern of Today.
+func (Today) Pattern() string { return "GET /api/today" }
+
+// Bind fills Today from the request.
+func (in *Today) Bind(r *http.Request) error {
+	return nil
+}
+
+// URL returns the path of Today.
+func (in Today) URL() string {
+	var b strings.Builder
+	b.WriteString("/")
+	b.WriteString("api")
+	b.WriteString("/")
+	b.WriteString("today")
+	return gx.BasePath() + b.String()
+}
+
+// GxTool describes Today as a tool.
+func (Today) GxTool() gx.ToolInfo {
+	return gx.ToolInfo{
+		Name:        "feed_today",
+		Description: "Returns the reader's brief for today: the stories delivered today, best first, then more stories that did not fit the daily budget. Each story has its id, a link, the headline and summary in the reader's language, its concepts, its sources and why it was chosen. reviews_due counts the review questions waiting. Use it for a morning briefing or \"what's new\".",
+		Schema:      "{\"additionalProperties\":false,\"properties\":{},\"type\":\"object\"}",
+		Fields:      []gx.ToolField{},
+	}
 }
 
 // Pattern returns the method and pattern of TranslateArticle.

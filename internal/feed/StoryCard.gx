@@ -21,7 +21,7 @@ props {
   if p.Card.Translating {
     <p class="label text-muted-foreground" lang="en">{p.Msg.FeedTranslating}</p>
   }
-  <h2 id={"story-" + gx.TextValue(p.Card.StoryID)} class="text-deck leading-tight font-semibold" class:text-muted-foreground={p.Card.Seen}><a href={route.Story{ID: p.Card.StoryID}} class="hover:text-accent">{p.Card.Headline}</a></h2>
+  <h2 id={"story-" + gx.TextValue(p.Card.StoryID)} class="text-deck leading-tight font-semibold" class:text-muted-foreground={p.Card.Seen}><a href={route.Read{ID: p.Card.StoryID}} class="hover:text-accent">{p.Card.Headline}</a></h2>
   if p.Card.LinkCard {
     <p class="mt-quarter text-small text-muted-foreground">{p.Card.Summary}</p>
     <p class="mt-quarter text-small">{p.Msg.FeedLinkCard} <a href={p.Card.LinkURL} rel="noopener" class="text-accent underline underline-offset-2">{p.Card.Sources[0].Domain}</a></p>

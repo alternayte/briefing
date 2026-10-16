@@ -111,7 +111,7 @@ func TestMCPNeedsAValidAccessToken(t *testing.T) {
 	for _, tool := range tools.Tools {
 		names[tool.Name] = true
 	}
-	for _, want := range []string{"accounts_me", "feed_feedback", "feed_explain", "feed_interests_list", "feed_interests_add", "feed_interests_remove", "sources_list", "sources_subscribe", "sources_add_rss", "learning_review_due", "learning_review_answer", "learning_learned"} {
+	for _, want := range []string{"accounts_me", "feed_today", "feed_search", "feed_story", "feed_feedback", "feed_explain", "feed_interests_list", "feed_interests_add", "feed_interests_remove", "sources_list", "sources_subscribe", "sources_add_rss", "learning_review_due", "learning_review_answer", "learning_learned"} {
 		if !names[want] {
 			t.Errorf("%s missing from the tools %v", want, names)
 		}
@@ -124,6 +124,18 @@ func TestMCPNeedsAValidAccessToken(t *testing.T) {
 	var id accounts.Identity
 	if err := json.Unmarshal(raw, &id); err != nil || id.UserID != user.ID || id.DisplayName != "Mcp Tester" {
 		t.Errorf("whoami = %s (err %v, error result %v)", raw, err, res.IsError)
+	}
+	brief, err := session.CallTool(ctx, &mcp.CallToolParams{Name: "feed_today", Arguments: map[string]any{}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	raw, _ = json.Marshal(brief.StructuredContent)
+	var b struct {
+		Date  string            `json:"date"`
+		Today []json.RawMessage `json:"today"`
+	}
+	if err := json.Unmarshal(raw, &b); err != nil || b.Date == "" || b.Today == nil || brief.IsError {
+		t.Errorf("feed_today = %s (err %v)", raw, err)
 	}
 	_ = session.Close()
 

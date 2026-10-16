@@ -2,9 +2,11 @@ package feed
 
 import (
 	"context"
+	"time"
 
 	"github.com/alternayte/drel"
 	"github.com/alternayte/gx"
+	"github.com/google/uuid"
 
 	"github.com/alternayte/briefing/internal/accounts"
 	"github.com/alternayte/briefing/internal/feed/route"
@@ -29,7 +31,7 @@ var HomePage = gx.Page(func(c *gx.Ctx, _ route.Home) (HomeProps, error) {
 		if p.Today, err = todayCards(ctx, tx, profile.ID(), now, i18n.FromContext(ctx)); err != nil {
 			return err
 		}
-		due, err := learning.Due(ctx, tx, profile.ID(), now, w.tuning.Review)
+		due, err := learningDue(ctx, tx, profile.ID(), now, w)
 		if err != nil {
 			return err
 		}
@@ -66,4 +68,8 @@ var FreshAction = gx.Action(func(c *gx.Ctx, in route.Fresh) error {
 })
 
 // Routes lists every page, action and form of the slice.
-var Routes = gx.Collect(HomePage, FreshAction, StoryPage, Feedback, Explain, TranslateArticle, SettingsPage, SetLocale, SetBudget, InterestsList, InterestsAdd, InterestsRemove, OnboardingPage, SaveInterests, CalibratePage, Rate, Finish)
+var Routes = gx.Collect(HomePage, FreshAction, StoryPage, TodayAction, StoryAction, SearchAction, Feedback, Explain, TranslateArticle, SettingsPage, SetLocale, SetBudget, InterestsList, InterestsAdd, InterestsRemove, OnboardingPage, SaveInterests, CalibratePage, Rate, Finish)
+
+func learningDue(ctx context.Context, tx *drel.Tx, userID uuid.UUID, now time.Time, w *Web) ([]learning.DueItem, error) {
+	return learning.Due(ctx, tx, userID, now, w.tuning.Review)
+}

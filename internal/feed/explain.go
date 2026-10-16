@@ -38,12 +38,12 @@ var Explain = gx.Form(func(c *gx.Ctx, in *route.Explain) error {
 			code = "limit"
 		}
 		gx.ToolResult(c, ExplainResult{StoryID: in.StoryID, Language: string(locale), Notice: err.Error()})
-		return c.Redirect(route.Story{ID: in.StoryID, Explain: code})
+		return c.Redirect(route.Read{ID: in.StoryID, Explain: code})
 	case errors.Is(err, write.ErrNoEntry):
 		return gx.NotFound()
 	case err != nil:
 		return err
 	}
 	gx.ToolResult(c, ExplainResult{StoryID: in.StoryID, Language: string(locale), Explanation: text})
-	return c.Redirect(route.Story{ID: in.StoryID})
+	return c.Redirect(route.Read{ID: in.StoryID})
 }, ExplainButton).Tool()

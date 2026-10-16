@@ -53,7 +53,7 @@ type SourceView struct {
 }
 
 // StoryPage is the full story view.
-var StoryPage = gx.Page(func(c *gx.Ctx, in route.Story) (StoryViewProps, error) {
+var StoryPage = gx.Page(func(c *gx.Ctx, in route.Read) (StoryViewProps, error) {
 	ctx := c.R.Context()
 	w, profile := webFrom(ctx), accounts.CurrentProfile(ctx)
 	msg := i18n.For(i18n.FromContext(ctx))

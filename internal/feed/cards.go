@@ -3,6 +3,7 @@ package feed
 import (
 	"context"
 	"fmt"
+	"slices"
 	"time"
 
 	"github.com/alternayte/drel"
@@ -28,6 +29,8 @@ type Card struct {
 	// new revision since.
 	Seen    bool
 	Updated bool
+	// Level is the confidence level: high, medium, low, or empty.
+	Level string
 	// Translating marks an English entry whose translation is not ready.
 	Translating bool
 	// Feedback holds the four feedback forms.
@@ -44,16 +47,19 @@ type SourceLink struct {
 	Favicon gx.URL
 }
 
+// cardSelect loads stories as cards for the reader $1, whether or not the
+// stories are in their feed.
 const cardSelect = `
-	SELECT s.id, f.reason, s.publisher_count, f.state = 'seen', f.shown_revision > 0 AND f.shown_revision < s.revision,
+	SELECT s.id, COALESCE(f.reason, ''), s.publisher_count, COALESCE(f.state = 'seen', false),
+		COALESCE(f.shown_revision > 0 AND f.shown_revision < s.revision, false),
 		COALESCE(m.headline, ''), COALESCE(m.summary, ''), COALESCE(m.confidence::text, ''),
 		COALESCE((SELECT array_agg(c.name ORDER BY c.name) FROM story_concepts sc JOIN concepts c ON c.id = sc.concept_id WHERE sc.story_id = s.id), '{}'),
 		(SELECT array_agg(i.canonical_url ORDER BY i.text_len DESC, i.id) FROM story_items si JOIN items i ON i.id = si.item_id WHERE si.story_id = s.id),
 		COALESCE(top.title, ''), COALESCE(top.snippet, ''),
-		COALESCE((SELECT array_agg(DISTINCT e.kind::text) FROM learning_events e WHERE e.user_id = f.user_id AND e.story_id = s.id
+		COALESCE((SELECT array_agg(DISTINCT e.kind::text) FROM learning_events e WHERE e.user_id = $1 AND e.story_id = s.id
 			AND e.kind IN ('useful', 'knew', 'irrelevant', 'misleading')), '{}')
-	FROM feed_entries f
-	JOIN stories s ON s.id = f.story_id
+	FROM stories s
+	LEFT JOIN feed_entries f ON f.story_id = s.id AND f.user_id = $1
 	LEFT JOIN LATERAL (SELECT headline, summary, confidence FROM summaries WHERE story_id = s.id ORDER BY revision DESC LIMIT 1) m ON true
 	LEFT JOIN LATERAL (
 		SELECT i.title, i.snippet FROM story_items si JOIN items i ON i.id = si.item_id
@@ -63,14 +69,14 @@ const cardSelect = `
 // todayCards returns the stories delivered to the reader today, best first.
 func todayCards(ctx context.Context, tx *drel.Tx, userID uuid.UUID, today time.Time, l i18n.Locale) ([]Card, error) {
 	return queryCards(ctx, tx, l, cardSelect+`
-		WHERE f.user_id = $1 AND f.delivered_on = $2::date
+		WHERE f.delivered_on = $2::date
 		ORDER BY f.score DESC, f.id`, userID, today.Format(time.DateOnly))
 }
 
 // moreCards returns the best candidates that did not fit today's budget.
 func moreCards(ctx context.Context, tx *drel.Tx, userID uuid.UUID, since time.Time, limit int, l i18n.Locale) ([]Card, error) {
 	return queryCards(ctx, tx, l, cardSelect+`
-		WHERE f.user_id = $1 AND f.state = 'candidate' AND s.last_item_at >= $2 AND f.score > 0
+		WHERE f.state = 'candidate' AND s.last_item_at >= $2 AND f.score > 0
 		ORDER BY f.score DESC, f.id LIMIT $3`, userID, since, limit)
 }
 
@@ -90,6 +96,7 @@ func queryCards(ctx context.Context, tx *drel.Tx, l i18n.Locale, sql string, arg
 			return nil, err
 		}
 		c.Sources = sourceLinks(urls)
+		c.Level = confidence
 		if c.Headline == "" {
 			// Below the evidence floor: a link card with the best item.
 			c.LinkCard, c.Headline, c.Summary = true, title, snippet
@@ -134,6 +141,21 @@ func queryCards(ctx context.Context, tx *drel.Tx, l i18n.Locale, sql string, arg
 		}
 	}
 	return out, nil
+}
+
+// cardsByIDs loads the given stories as cards, in the order of ids.
+func cardsByIDs(ctx context.Context, tx *drel.Tx, userID uuid.UUID, ids []int64, l i18n.Locale) ([]Card, error) {
+	cards, err := queryCards(ctx, tx, l, cardSelect+`
+		WHERE s.id = ANY($2)`, userID, ids)
+	if err != nil {
+		return nil, err
+	}
+	at := map[int64]int{}
+	for i, id := range ids {
+		at[id] = i
+	}
+	slices.SortFunc(cards, func(a, b Card) int { return at[a.StoryID] - at[b.StoryID] })
+	return cards, nil
 }
 
 // sourceLinks keeps the first URL of each publisher, at most four.
