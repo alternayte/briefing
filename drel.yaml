@@ -5,6 +5,8 @@ modules:
     packages: [./internal/sources]
   - name: ingest
     packages: [./internal/ingest]
+  - name: write
+    packages: [./internal/write]
   # workaround: alternayte/drel#13
   - name: stories
     packages: [./internal/stories/model]

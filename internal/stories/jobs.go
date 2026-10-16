@@ -137,11 +137,13 @@ func (SweepArgs) Kind() string { return "stories.sweep" }
 
 type SweepWorker struct {
 	river.WorkerDefaults[SweepArgs]
-	Engine          *drel.Engine
-	Now             func() time.Time
-	MinSignificance float64
-	// FetchArgs builds the job that fills a story's texts; content owns it.
+	Engine *drel.Engine
+	Now    func() time.Time
+	Tuning platform.WriteTuning
+	// FetchArgs and WriteArgs build the jobs of the later steps, which
+	// other slices own.
 	FetchArgs func(storyID int64) river.JobArgs
+	WriteArgs func(storyID int64) river.JobArgs
 }
 
 const (
@@ -150,7 +152,7 @@ const (
 )
 
 func (w *SweepWorker) Work(ctx context.Context, _ *river.Job[SweepArgs]) error {
-	s, err := FindStalled(ctx, w.Engine, w.Now(), sweepGrace, sweepBatch, w.MinSignificance)
+	s, err := FindStalled(ctx, w.Engine, w.Now(), sweepGrace, sweepBatch, w.Tuning)
 	if err != nil {
 		return err
 	}
@@ -166,6 +168,9 @@ func (w *SweepWorker) Work(ctx context.Context, _ *river.Job[SweepArgs]) error {
 	add(s.Unplaced, func(ids []int64) river.JobArgs { return ClusterArgs{ItemIDs: ids} })
 	for _, id := range s.Unfetched {
 		params = append(params, river.InsertManyParams{Args: w.FetchArgs(id)})
+	}
+	for _, id := range s.Unwritten {
+		params = append(params, river.InsertManyParams{Args: w.WriteArgs(id)})
 	}
 	if len(params) == 0 {
 		return nil

@@ -1,0 +1,342 @@
+{
+  "tables": [
+    {
+      "name": "concepts",
+      "columns": [
+        {
+          "name": "id",
+          "type": "BIGSERIAL PRIMARY KEY",
+          "notNull": true,
+          "pk": true
+        },
+        {
+          "name": "slug",
+          "type": "text",
+          "notNull": true
+        },
+        {
+          "name": "name",
+          "type": "text",
+          "notNull": true
+        },
+        {
+          "name": "definition",
+          "type": "text",
+          "notNull": true
+        },
+        {
+          "name": "embedding",
+          "type": "vector",
+          "notNull": false
+        },
+        {
+          "name": "embed_model",
+          "type": "text",
+          "notNull": true,
+          "default": "''"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamptz",
+          "notNull": true,
+          "default": "NOW()"
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "notNull": true,
+          "default": "NOW()"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "uq_concepts_slug",
+          "columns": [
+            "slug"
+          ],
+          "unique": true
+        }
+      ]
+    },
+    {
+      "name": "review_items",
+      "columns": [
+        {
+          "name": "id",
+          "type": "BIGSERIAL PRIMARY KEY",
+          "notNull": true,
+          "pk": true
+        },
+        {
+          "name": "story_id",
+          "type": "bigint",
+          "notNull": true,
+          "ref": "stories",
+          "refColumn": "id",
+          "onDelete": "CASCADE"
+        },
+        {
+          "name": "revision",
+          "type": "integer",
+          "notNull": true
+        },
+        {
+          "name": "question",
+          "type": "text",
+          "notNull": true
+        },
+        {
+          "name": "choices",
+          "type": "jsonb",
+          "notNull": true
+        },
+        {
+          "name": "answer_index",
+          "type": "integer",
+          "notNull": true
+        },
+        {
+          "name": "explanation",
+          "type": "text",
+          "notNull": true
+        },
+        {
+          "name": "created_at",
+          "type": "timestamptz",
+          "notNull": true,
+          "default": "NOW()"
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "notNull": true,
+          "default": "NOW()"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "uq_review_items",
+          "columns": [
+            "story_id",
+            "revision",
+            "question"
+          ],
+          "unique": true
+        }
+      ]
+    },
+    {
+      "name": "story_concepts",
+      "columns": [
+        {
+          "name": "id",
+          "type": "BIGSERIAL PRIMARY KEY",
+          "notNull": true,
+          "pk": true
+        },
+        {
+          "name": "story_id",
+          "type": "bigint",
+          "notNull": true,
+          "ref": "stories",
+          "refColumn": "id",
+          "onDelete": "CASCADE"
+        },
+        {
+          "name": "concept_id",
+          "type": "bigint",
+          "notNull": true,
+          "ref": "concepts",
+          "refColumn": "id",
+          "onDelete": "CASCADE"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamptz",
+          "notNull": true,
+          "default": "NOW()"
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "notNull": true,
+          "default": "NOW()"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "idx_story_concepts_concept",
+          "columns": [
+            "concept_id"
+          ]
+        },
+        {
+          "name": "uq_story_concepts",
+          "columns": [
+            "story_id",
+            "concept_id"
+          ],
+          "unique": true
+        }
+      ]
+    },
+    {
+      "name": "summaries",
+      "columns": [
+        {
+          "name": "id",
+          "type": "BIGSERIAL PRIMARY KEY",
+          "notNull": true,
+          "pk": true
+        },
+        {
+          "name": "story_id",
+          "type": "bigint",
+          "notNull": true,
+          "ref": "stories",
+          "refColumn": "id",
+          "onDelete": "CASCADE"
+        },
+        {
+          "name": "revision",
+          "type": "integer",
+          "notNull": true
+        },
+        {
+          "name": "headline",
+          "type": "text",
+          "notNull": true
+        },
+        {
+          "name": "summary",
+          "type": "text",
+          "notNull": true
+        },
+        {
+          "name": "why_it_matters",
+          "type": "text",
+          "notNull": true
+        },
+        {
+          "name": "what_is_new",
+          "type": "text",
+          "notNull": true
+        },
+        {
+          "name": "claims",
+          "type": "jsonb",
+          "notNull": true
+        },
+        {
+          "name": "confidence",
+          "type": "\"confidence\"",
+          "notNull": true
+        },
+        {
+          "name": "model",
+          "type": "text",
+          "notNull": true
+        },
+        {
+          "name": "prompt_version",
+          "type": "text",
+          "notNull": true
+        },
+        {
+          "name": "publisher_count",
+          "type": "integer",
+          "notNull": true
+        },
+        {
+          "name": "text_items",
+          "type": "integer",
+          "notNull": true
+        },
+        {
+          "name": "created_at",
+          "type": "timestamptz",
+          "notNull": true,
+          "default": "NOW()"
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "notNull": true,
+          "default": "NOW()"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "uq_summaries_story_revision",
+          "columns": [
+            "story_id",
+            "revision"
+          ],
+          "unique": true
+        }
+      ]
+    },
+    {
+      "name": "write_attempts",
+      "columns": [
+        {
+          "name": "id",
+          "type": "BIGSERIAL PRIMARY KEY",
+          "notNull": true,
+          "pk": true
+        },
+        {
+          "name": "story_id",
+          "type": "bigint",
+          "notNull": true,
+          "ref": "stories",
+          "refColumn": "id",
+          "onDelete": "CASCADE"
+        },
+        {
+          "name": "day",
+          "type": "date",
+          "notNull": true
+        },
+        {
+          "name": "attempts",
+          "type": "integer",
+          "notNull": true
+        },
+        {
+          "name": "created_at",
+          "type": "timestamptz",
+          "notNull": true,
+          "default": "NOW()"
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "notNull": true,
+          "default": "NOW()"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "uq_write_attempts",
+          "columns": [
+            "story_id",
+            "day"
+          ],
+          "unique": true
+        }
+      ]
+    }
+  ],
+  "enums": [
+    {
+      "name": "confidence",
+      "values": [
+        "high",
+        "medium",
+        "low"
+      ],
+      "baseType": "string"
+    }
+  ]
+}

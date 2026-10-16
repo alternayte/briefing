@@ -9,6 +9,7 @@ import (
 	"github.com/alternayte/drel/dreltest"
 
 	"github.com/alternayte/briefing/internal/ingest"
+	"github.com/alternayte/briefing/internal/platform"
 	"github.com/alternayte/briefing/internal/platform/pgtest"
 )
 
@@ -40,7 +41,7 @@ func TestFindStalledListsItemsWaitingAtEachStep(t *testing.T) {
 		_ = tx.QueryRow(ctx, `INSERT INTO stories (opened_at, last_item_at, category) VALUES (now(), now(), 'x') RETURNING id`).Scan(&story)
 		_, _ = tx.Exec(ctx, `INSERT INTO story_items (story_id, item_id) VALUES ($1, $2)`, story, placed)
 
-		s, err := FindStalled(ctx, e, now, 5*time.Minute, 100, 1.5)
+		s, err := FindStalled(ctx, e, now, 5*time.Minute, 100, platform.DefaultTuning().Write)
 		if err != nil {
 			t.Fatal(err)
 		}

@@ -97,6 +97,13 @@ type WriteTuning struct {
 	ReviewChoices       int
 	MaxRevisionsPerDay  int
 	SynthesisPublishers float64
+	// MaxSources and MaxCharsPerSource bound the text sent to the writer.
+	MaxSources        int
+	MaxCharsPerSource int
+	MaxOutputTokens   int
+	// ConceptMatchMin is the cosine at which a new concept is taken to be an
+	// existing one.
+	ConceptMatchMin float64
 }
 
 type RankTuning struct {
@@ -186,6 +193,10 @@ func DefaultTuning() Tuning {
 			ReviewChoices:         4,
 			MaxRevisionsPerDay:    3,
 			SynthesisPublishers:   2,
+			MaxSources:            6,
+			MaxCharsPerSource:     6000,
+			MaxOutputTokens:       2500,
+			ConceptMatchMin:       0.88,
 		},
 		Rank: RankTuning{
 			RelevanceMin:     0.30,
@@ -250,6 +261,12 @@ func (t Tuning) Validate() error {
 	w := t.Write
 	if !(0 < w.MinConcepts && w.MinConcepts <= w.MaxConcepts) {
 		fail("concepts range must satisfy 0 < min <= max, got %d..%d", w.MinConcepts, w.MaxConcepts)
+	}
+	if w.MaxSources < 1 || w.MaxCharsPerSource < 1 || w.MaxOutputTokens < 1 || w.EvidenceFloorChars < 1 {
+		fail("writer limits must be positive")
+	}
+	if !(0 < w.ConceptMatchMin && w.ConceptMatchMin <= 1) {
+		fail("concept match must be in (0, 1], got %v", w.ConceptMatchMin)
 	}
 	if !(w.SummaryMinWords < w.SummaryMaxWords && w.SummaryMaxWords <= w.SummaryRejectWords) {
 		fail("summary words must satisfy min < max <= reject")

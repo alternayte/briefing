@@ -18,6 +18,7 @@ import (
 	"github.com/alternayte/briefing/internal/ingest"
 	"github.com/alternayte/briefing/internal/platform"
 	"github.com/alternayte/briefing/internal/stories"
+	"github.com/alternayte/briefing/internal/write"
 )
 
 // pipeline holds what the job graph needs.
@@ -75,9 +76,17 @@ func (p pipeline) workers() (*river.Workers, []*river.PeriodicJob, error) {
 			return err
 		},
 	})
-	river.AddWorker(w, &content.FetchWorker{Texts: p.texts()})
+	writeArgs := func(storyID int64) river.JobArgs { return write.WriteArgs{StoryID: storyID} }
+	river.AddWorker(w, &content.FetchWorker{
+		Texts: p.texts(),
+		OnFetched: func(ctx context.Context, storyID int64) error {
+			_, err := river.ClientFromContext[pgx.Tx](ctx).Insert(ctx, writeArgs(storyID), nil)
+			return err
+		},
+	})
+	river.AddWorker(w, &write.WriteWorker{Writer: write.NewWriter(p.engine, p.openrouter, embed.New(p.openrouter, p.cfg), p.cfg, p.tuning, p.now)})
 	river.AddWorker(w, &stories.CloseStaleWorker{Clusterer: clusterer})
-	river.AddWorker(w, &stories.SweepWorker{Engine: p.engine, Now: p.now, MinSignificance: minSig, FetchArgs: fetchArgs})
+	river.AddWorker(w, &stories.SweepWorker{Engine: p.engine, Now: p.now, Tuning: p.tuning.Write, FetchArgs: fetchArgs, WriteArgs: writeArgs})
 	return w, []*river.PeriodicJob{ingest.SweepEveryMinute(), stories.SweepEveryFiveMinutes(), stories.CloseStaleHourly()}, nil
 }
 
