@@ -33,10 +33,10 @@ props {
     <p class="mt-quarter text-small text-muted-foreground">{p.Msg.AdminNoSpendToday}</p>
   } else {
     <table class="mt-half w-full text-small tabular-nums">
-      <thead class="label text-muted-foreground"><tr class="border-b border-border"><th class="py-quarter text-left font-normal">{p.Msg.AdminStage}</th><th class="text-right font-normal">{p.Msg.AdminCalls}</th><th class="text-right font-normal">{p.Msg.AdminCost}</th></tr></thead>
+      <thead class="label text-muted-foreground"><tr class="border-b border-border"><th class="py-quarter text-left font-normal">{p.Msg.AdminStage}</th><th class="pl-half text-right font-normal">{p.Msg.AdminCalls}</th><th class="pl-half text-right font-normal">{p.Msg.AdminCost}</th></tr></thead>
       <tbody>
         for _, r := range p.Spend {
-          <tr class="border-b border-border"><td class="py-quarter">{r.Stage} <span class="text-muted-foreground">· {r.Model}</span></td><td class="text-right">{r.Calls}</td><td class="text-right">{r.Cost}</td></tr>
+          <tr class="border-b border-border"><td class="py-quarter">{r.Stage} <span class="text-muted-foreground">· {r.Model}</span></td><td class="pl-half text-right">{r.Calls}</td><td class="pl-half text-right">{r.Cost}</td></tr>
         }
       </tbody>
     </table>
@@ -50,9 +50,9 @@ props {
       <li class="flex items-start justify-between gap-half py-half" class:text-muted-foreground={!s.Enabled}>
         <div class="min-w-0">
           <p class="leading-tight">{s.Title} <span class="label text-muted-foreground">{s.Kind}</span></p>
-          <p class="text-small text-muted-foreground">{p.Msg.AdminLastSuccess}: {s.LastSuccess}</p>
+          <p class="text-small text-muted-foreground"><span class="label">{p.Msg.AdminLastSuccess}</span> {s.LastSuccess}</p>
           if s.LastError != "" {
-            <p class="text-small break-words text-destructive">{p.Msg.AdminLastError}: {s.LastError}</p>
+            <p class="text-small break-words text-destructive"><span class="label">{p.Msg.AdminLastError}</span> {s.LastError}</p>
           }
         </div>
         <ToggleButton f={s.Toggle.F} label={s.Toggle.Label} />
@@ -64,10 +64,10 @@ props {
 <section class="mt-line" aria-labelledby="jobs">
   <h2 id="jobs" class="label border-b border-foreground pb-quarter">{p.Msg.AdminJobs}</h2>
   <table class="mt-half w-full text-small tabular-nums">
-    <thead class="label text-muted-foreground"><tr class="border-b border-border"><th class="py-quarter text-left font-normal">{p.Msg.AdminJobKind}</th><th class="text-left font-normal">{p.Msg.AdminJobState}</th><th class="text-right font-normal">{p.Msg.AdminJobCount}</th></tr></thead>
+    <thead class="label text-muted-foreground"><tr class="border-b border-border"><th class="py-quarter text-left font-normal">{p.Msg.AdminJobKind}</th><th class="pl-half text-left font-normal">{p.Msg.AdminJobState}</th><th class="pl-half text-right font-normal">{p.Msg.AdminJobCount}</th></tr></thead>
     <tbody>
       for _, j := range p.Jobs {
-        <tr class="border-b border-border"><td class="py-quarter">{j.Kind}</td><td>{j.State}</td><td class="text-right">{j.Count}</td></tr>
+        <tr class="border-b border-border"><td class="py-quarter">{j.Kind}</td><td class="pl-half">{j.State}</td><td class="pl-half text-right">{j.Count}</td></tr>
       }
     </tbody>
   </table>

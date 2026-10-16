@@ -81,9 +81,9 @@ func Dashboard(p DashboardProps) gx.Node {
 		_b2.Add(_tDashboard6.With(
 //line Dashboard.gx:36:130
 			gx.Text(p.Msg.AdminStage),
-//line Dashboard.gx:36:188
+//line Dashboard.gx:36:196
 			gx.Text(p.Msg.AdminCalls),
-//line Dashboard.gx:36:246
+//line Dashboard.gx:36:262
 			gx.Text(p.Msg.AdminCost),
 		))
 //line Dashboard.gx:37:7
@@ -98,9 +98,9 @@ func Dashboard(p DashboardProps) gx.Node {
 				gx.Text(r.Stage),
 //line Dashboard.gx:39:118
 				gx.Text(r.Model),
-//line Dashboard.gx:39:162
+//line Dashboard.gx:39:170
 				gx.Text(r.Calls),
-//line Dashboard.gx:39:199
+//line Dashboard.gx:39:215
 				gx.Text(r.Cost),
 			))
 		}
@@ -153,18 +153,18 @@ func Dashboard(p DashboardProps) gx.Node {
 			gx.Text(s.Title),
 //line Dashboard.gx:52:88
 			gx.Text(s.Kind),
-//line Dashboard.gx:53:55
+//line Dashboard.gx:53:75
 			gx.Text(p.Msg.AdminLastSuccess),
-//line Dashboard.gx:53:81
+//line Dashboard.gx:53:107
 			gx.Text(s.LastSuccess),
 		))
 //line Dashboard.gx:54:11
 		if s.LastError != "" {
 //line Dashboard.gx:54:33
 			_b7.Add(_tDashboard15.With(
-//line Dashboard.gx:55:64
+//line Dashboard.gx:55:84
 				gx.Text(p.Msg.AdminLastError),
-//line Dashboard.gx:55:88
+//line Dashboard.gx:55:114
 				gx.Text(s.LastError),
 			))
 		}
@@ -212,9 +212,9 @@ func Dashboard(p DashboardProps) gx.Node {
 	_b9.Add(_tDashboard21.With(
 //line Dashboard.gx:67:128
 		gx.Text(p.Msg.AdminJobKind),
-//line Dashboard.gx:67:187
+//line Dashboard.gx:67:195
 		gx.Text(p.Msg.AdminJobState),
-//line Dashboard.gx:67:248
+//line Dashboard.gx:67:264
 		gx.Text(p.Msg.AdminJobCount),
 	))
 //line Dashboard.gx:68:5
@@ -227,9 +227,9 @@ func Dashboard(p DashboardProps) gx.Node {
 		_b10.Add(_tDashboard22.With(
 //line Dashboard.gx:70:67
 			gx.Text(j.Kind),
-//line Dashboard.gx:70:84
+//line Dashboard.gx:70:100
 			gx.Text(j.State),
-//line Dashboard.gx:70:121
+//line Dashboard.gx:70:145
 			gx.Text(j.Count),
 		))
 	}
@@ -331,7 +331,7 @@ var _tDashboard5 = gx.NewTemplate(
 ).With()
 
 var _tDashboard6 = gx.NewTemplate(
-	[]string{"\n      <thead class=\"label text-muted-foreground\"><tr class=\"border-b border-border\"><th class=\"py-quarter text-left font-normal\">", "</th><th class=\"text-right font-normal\">", "</th><th class=\"text-right font-normal\">", "</th></tr></thead>\n      "},
+	[]string{"\n      <thead class=\"label text-muted-foreground\"><tr class=\"border-b border-border\"><th class=\"py-quarter text-left font-normal\">", "</th><th class=\"pl-half text-right font-normal\">", "</th><th class=\"pl-half text-right font-normal\">", "</th></tr></thead>\n      "},
 	[]int{3, 3, 3},
 	nil,
 	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "thead"}, {El: -1, Slot: -1}},
@@ -345,7 +345,7 @@ var _tDashboard7 = gx.NewTemplate(
 ).With()
 
 var _tDashboard8 = gx.NewTemplate(
-	[]string{"\n          <tr class=\"border-b border-border\"><td class=\"py-quarter\">", " <span class=\"text-muted-foreground\">· ", "</span></td><td class=\"text-right\">", "</td><td class=\"text-right\">", "</td></tr>\n        "},
+	[]string{"\n          <tr class=\"border-b border-border\"><td class=\"py-quarter\">", " <span class=\"text-muted-foreground\">· ", "</span></td><td class=\"pl-half text-right\">", "</td><td class=\"pl-half text-right\">", "</td></tr>\n        "},
 	[]int{2, 3, 2, 2},
 	nil,
 	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "tr"}, {El: -1, Slot: -1}},
@@ -387,15 +387,15 @@ var _tDashboard13 = gx.NewTemplate(
 )
 
 var _tDashboard14 = gx.NewTemplate(
-	[]string{"\n          <p class=\"leading-tight\">", " <span class=\"label text-muted-foreground\">", "</span></p>\n          <p class=\"text-small text-muted-foreground\">", ": ", "</p>\n          "},
-	[]int{1, 2, 1, 1},
+	[]string{"\n          <p class=\"leading-tight\">", " <span class=\"label text-muted-foreground\">", "</span></p>\n          <p class=\"text-small text-muted-foreground\"><span class=\"label\">", "</span> ", "</p>\n          "},
+	[]int{1, 2, 2, 1},
 	nil,
 	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "p"}, {El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "p"}, {El: -1, Slot: -1}},
 )
 
 var _tDashboard15 = gx.NewTemplate(
-	[]string{"\n            <p class=\"text-small break-words text-destructive\">", ": ", "</p>\n          "},
-	[]int{1, 1},
+	[]string{"\n            <p class=\"text-small break-words text-destructive\"><span class=\"label\">", "</span> ", "</p>\n          "},
+	[]int{2, 1},
 	nil,
 	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "p"}, {El: -1, Slot: -1}},
 )
@@ -436,14 +436,14 @@ var _tDashboard20 = gx.NewTemplate(
 )
 
 var _tDashboard21 = gx.NewTemplate(
-	[]string{"\n    <thead class=\"label text-muted-foreground\"><tr class=\"border-b border-border\"><th class=\"py-quarter text-left font-normal\">", "</th><th class=\"text-left font-normal\">", "</th><th class=\"text-right font-normal\">", "</th></tr></thead>\n    "},
+	[]string{"\n    <thead class=\"label text-muted-foreground\"><tr class=\"border-b border-border\"><th class=\"py-quarter text-left font-normal\">", "</th><th class=\"pl-half text-left font-normal\">", "</th><th class=\"pl-half text-right font-normal\">", "</th></tr></thead>\n    "},
 	[]int{3, 3, 3},
 	nil,
 	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "thead"}, {El: -1, Slot: -1}},
 )
 
 var _tDashboard22 = gx.NewTemplate(
-	[]string{"\n        <tr class=\"border-b border-border\"><td class=\"py-quarter\">", "</td><td>", "</td><td class=\"text-right\">", "</td></tr>\n      "},
+	[]string{"\n        <tr class=\"border-b border-border\"><td class=\"py-quarter\">", "</td><td class=\"pl-half\">", "</td><td class=\"pl-half text-right\">", "</td></tr>\n      "},
 	[]int{2, 2, 2},
 	nil,
 	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "tr"}, {El: -1, Slot: -1}},
