@@ -122,6 +122,7 @@ func work(ctx context.Context, cfg platform.Config) error {
 		engine:     engine,
 		tuning:     t,
 		feeds:      platform.NewPublicClient(t.Poll.Timeout, t.Fetch.MaxRedirects),
+		pages:      platform.NewPublicClient(t.Fetch.Timeout, t.Fetch.MaxRedirects),
 		userAgent:  userAgent(cfg),
 		now:        time.Now,
 	}

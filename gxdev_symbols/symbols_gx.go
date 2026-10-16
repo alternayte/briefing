@@ -831,6 +831,7 @@ func Packages() []gx.DevPackage {
 				"CategoryOther":  gx.DevString("other"),
 				"OpenRouterBase": gx.DevString("https://openrouter.ai"),
 				"QueueCluster":   gx.DevString("cluster"),
+				"QueueFetch":     gx.DevString("fetch"),
 				"QueuePoll":      gx.DevString("poll"),
 			},
 			Types: map[string]reflect.Type{

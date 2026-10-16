@@ -17,6 +17,9 @@ const (
 	// QueueCluster has one worker: clustering reads the open stories and
 	// then writes, so two runs at once could open two stories for one event.
 	QueueCluster = "cluster"
+	// QueueFetch holds article fetches, which wait on other sites for
+	// seconds each, so they never take the workers of the model steps.
+	QueueFetch = "fetch"
 )
 
 // NewRiver returns a River client. With nil workers it only inserts jobs.
@@ -29,6 +32,7 @@ func NewRiver(pool *pgxpool.Pool, workers *river.Workers, periodic []*river.Peri
 			river.QueueDefault: {MaxWorkers: 10},
 			QueuePoll:          {MaxWorkers: 8},
 			QueueCluster:       {MaxWorkers: 1},
+			QueueFetch:         {MaxWorkers: 6},
 		}
 	}
 	c, err := river.NewClient(riverpgxv5.New(pool), cfg)
