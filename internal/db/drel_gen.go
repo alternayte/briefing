@@ -5,13 +5,13 @@ package db
 import (
 	"context"
 
-	accounts "github.com/alternayte/briefing/internal/accounts"
+	model "github.com/alternayte/briefing/internal/accounts/model"
 	"github.com/alternayte/drel"
 )
 
 type DB struct {
 	*drel.Engine
-	Profiles *accounts.ProfileRepository
+	Profiles *model.ProfileRepository
 	Modules  Modules
 }
 
@@ -22,10 +22,10 @@ func Open(dsn string, opts ...drel.Option) (*DB, error) {
 	}
 	return &DB{
 		Engine:   engine,
-		Profiles: &accounts.ProfileRepository{Repository: drel.NewRepository(engine, accounts.ProfileMeta)},
+		Profiles: &model.ProfileRepository{Repository: drel.NewRepository(engine, model.ProfileMeta)},
 		Modules: Modules{
 			Accounts: AccountsRepos{
-				Profiles: &accounts.ProfileRepository{Repository: drel.NewRepository(engine, accounts.ProfileMeta)},
+				Profiles: &model.ProfileRepository{Repository: drel.NewRepository(engine, model.ProfileMeta)},
 			},
 		},
 	}, nil
@@ -34,7 +34,7 @@ func Open(dsn string, opts ...drel.Option) (*DB, error) {
 // TxRepos holds the tracked repositories of one transaction. Load through
 // the fields, stage with Add and Remove, then let WithTx commit.
 type TxRepos struct {
-	Profiles *accounts.TxProfileRepository
+	Profiles *model.TxProfileRepository
 	Modules  TxModules
 }
 
@@ -43,10 +43,10 @@ type TxRepos struct {
 func (db *DB) Tx(ctx context.Context) TxRepos {
 	tx := drel.MustFromContext(ctx)
 	return TxRepos{
-		Profiles: &accounts.TxProfileRepository{TxRepository: drel.NewTxRepository(tx, accounts.ProfileMeta)},
+		Profiles: &model.TxProfileRepository{TxRepository: drel.NewTxRepository(tx, model.ProfileMeta)},
 		Modules: TxModules{
 			Accounts: AccountsTxRepos{
-				Profiles: &accounts.TxProfileRepository{TxRepository: drel.NewTxRepository(tx, accounts.ProfileMeta)},
+				Profiles: &model.TxProfileRepository{TxRepository: drel.NewTxRepository(tx, model.ProfileMeta)},
 			},
 		},
 	}
@@ -54,12 +54,12 @@ func (db *DB) Tx(ctx context.Context) TxRepos {
 
 // AccountsRepos holds the untracked repositories of the "accounts" module.
 type AccountsRepos struct {
-	Profiles *accounts.ProfileRepository
+	Profiles *model.ProfileRepository
 }
 
 // AccountsTxRepos holds the tracked repositories of the "accounts" module.
 type AccountsTxRepos struct {
-	Profiles *accounts.TxProfileRepository
+	Profiles *model.TxProfileRepository
 }
 
 // Modules groups the untracked repositories by feature slice, so a slice

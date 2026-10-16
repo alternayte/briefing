@@ -17,7 +17,7 @@ check:
     if echo "$changed" | grep -qE '^go\.(mod|sum)$'; then
         pkgs="./..."
     else
-        pkgs=$(echo "$changed" | grep -E '\.(go|gx)$' | while read -r f; do [ -e "$f" ] && echo "./$(dirname "$f")"; done | sort -u | tr '\n' ' ')
+        pkgs=$( { echo "$changed" | grep -E '\.(go|gx)$' || true; } | while read -r f; do if [ -e "$f" ]; then echo "./$(dirname "$f")"; fi; done | sort -u | tr '\n' ' ')
     fi
     if [ -z "${pkgs// }" ]; then echo "check: no Go changes"; exit 0; fi
     go vet $pkgs
