@@ -5,9 +5,12 @@ import (
 	"fmt"
 	"net"
 	"net/http"
+	"net/http/cookiejar"
 	"net/netip"
 	"syscall"
 	"time"
+
+	"golang.org/x/net/publicsuffix"
 )
 
 // ErrPrivateAddress reports a connection to an address that is not on the
@@ -37,9 +40,13 @@ func NewPublicClient(timeout time.Duration, maxRedirects int) *http.Client {
 	transport := http.DefaultTransport.(*http.Transport).Clone()
 	transport.Proxy = nil
 	transport.DialContext = dialer.DialContext
+	// Some publishers set a cookie and redirect back to the same URL; without
+	// a jar that loops until the redirect limit.
+	jar, _ := cookiejar.New(&cookiejar.Options{PublicSuffixList: publicsuffix.List})
 	return &http.Client{
 		Timeout:   timeout,
 		Transport: transport,
+		Jar:       jar,
 		CheckRedirect: func(_ *http.Request, via []*http.Request) error {
 			if len(via) >= maxRedirects {
 				return fmt.Errorf("stopped after %d redirects", maxRedirects)
