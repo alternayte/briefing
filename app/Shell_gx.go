@@ -39,7 +39,7 @@ func Shell(p ShellProps) gx.Node {
 	_b1.Add(_tShell1)
 //line Shell.gx:22:3
 	var _b2 gx.Builder
-//line Shell.gx:22:92
+//line Shell.gx:22:116
 	_b2.Add(_tShell2.With(
 //line Shell.gx:23:78
 		gx.Text(p.Msg.AppName),
@@ -101,14 +101,14 @@ var _tShell2 = gx.NewTemplate(
 )
 
 var _tShell3 = gx.NewTemplate(
-	[]string{"\n      <nav class=\"flex flex-wrap items-center justify-end gap-x-half\">\n        <a class=\"label min-h-target inline-flex items-center text-muted-foreground hover:text-foreground\" href=\"/\">", "</a>\n        <a class=\"label min-h-target inline-flex items-center text-muted-foreground hover:text-foreground\" href=\"/review\">", "</a>\n        <a class=\"label min-h-target inline-flex items-center text-muted-foreground hover:text-foreground\" href=\"/learned\">", "</a>\n        <a class=\"label min-h-target inline-flex items-center text-muted-foreground hover:text-foreground\" href=\"/settings\">", "</a>\n        ", "\n      </nav>\n    "},
+	[]string{"\n      <nav class=\"flex w-full flex-wrap items-center gap-x-half sm:w-auto sm:justify-end\">\n        <a class=\"label min-h-target inline-flex items-center text-muted-foreground hover:text-foreground\" href=\"/\">", "</a>\n        <a class=\"label min-h-target inline-flex items-center text-muted-foreground hover:text-foreground\" href=\"/review\">", "</a>\n        <a class=\"label min-h-target inline-flex items-center text-muted-foreground hover:text-foreground\" href=\"/learned\">", "</a>\n        <a class=\"label min-h-target inline-flex items-center text-muted-foreground hover:text-foreground\" href=\"/settings\">", "</a>\n        ", "\n      </nav>\n    "},
 	[]int{2, 2, 2, 2, 1},
 	nil,
 	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "nav"}, {El: -1, Slot: -1}},
 )
 
 var _tShell4 = gx.NewTemplate(
-	[]string{"<div class=\"flex items-baseline justify-between border-b-2 border-foreground pb-quarter\">", "</div>\n"},
+	[]string{"<div class=\"flex flex-wrap items-baseline justify-between gap-y-quarter border-b-2 border-foreground pb-quarter\">", "</div>\n"},
 	[]int{1},
 	nil,
 	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "div"}, {El: -1, Slot: -1}},

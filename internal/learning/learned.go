@@ -96,6 +96,19 @@ func learned(ctx context.Context, tx *drel.Tx, userID uuid.UUID, l i18n.Locale) 
 	if err := translateConcepts(ctx, tx, out, l); err != nil {
 		return nil, err
 	}
+	if l != i18n.Locales[0] {
+		for i := range out {
+			for j := range out[i].Stories {
+				f, ok, err := translate.Story(ctx, tx, out[i].Stories[j].ID, l)
+				if err != nil {
+					return nil, err
+				}
+				if ok {
+					out[i].Stories[j].Headline = f.Headline
+				}
+			}
+		}
+	}
 	slices.SortFunc(out, func(a, b LearnedConcept) int {
 		if a.state != b.state {
 			return int(b.state) - int(a.state)

@@ -19,10 +19,10 @@ props {
 <gx.Head title={p.Msg.AppName} lang={p.Lang} bodyClass="min-h-dvh" />
 <a href="#main" class="label sr-only focus:not-sr-only focus:absolute focus:left-half focus:top-half focus:bg-background focus:p-quarter">{p.Msg.SkipToContent}</a>
 <header class="mx-auto max-w-column px-half pt-line">
-  <div class="flex items-baseline justify-between border-b-2 border-foreground pb-quarter">
+  <div class="flex flex-wrap items-baseline justify-between gap-y-quarter border-b-2 border-foreground pb-quarter">
     <a href="/" class="text-masthead leading-tight font-bold tracking-tight">{p.Msg.AppName}</a>
     if p.SignOut != nil {
-      <nav class="flex flex-wrap items-center justify-end gap-x-half">
+      <nav class="flex w-full flex-wrap items-center gap-x-half sm:w-auto sm:justify-end">
         <a href="/" class="label min-h-target inline-flex items-center text-muted-foreground hover:text-foreground">{p.Msg.FeedTitle}</a>
         <a href="/review" class="label min-h-target inline-flex items-center text-muted-foreground hover:text-foreground">{p.Msg.ReviewTitle}</a>
         <a href="/learned" class="label min-h-target inline-flex items-center text-muted-foreground hover:text-foreground">{p.Msg.LearnedTitle}</a>
