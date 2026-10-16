@@ -139,7 +139,7 @@ var InterestsRemove = gx.Form(func(c *gx.Ctx, in *route.InterestsRemove) error {
 		return err
 	}
 	return c.Redirect(route.Settings{Saved: true})
-}, InterestRemoveButton).Tool()
+}, InterestRemoveButton).Tool(gx.Confirm)
 
 func rerank(ctx context.Context, w *Web, userID uuid.UUID) error {
 	if w.jobs == nil {
