@@ -30,6 +30,10 @@ props {
   Explanation []string = nil
   ExplainForm ExplainButtonProps
   ExplainNotice string = ""
+  // Translating marks an English entry whose translation is not ready;
+  // ArticleNotice says why an article was not translated.
+  Translating bool = false
+  ArticleNotice string = ""
 }
 
 <gx.Head title={p.Headline + " · " + p.Msg.AppName} />
@@ -37,6 +41,9 @@ props {
 <article class="pt-half" aria-labelledby="headline">
   if p.Updated {
     <p class="label text-accent">{p.Msg.StoryUpdated}</p>
+  }
+  if p.Translating {
+    <p class="label text-muted-foreground">{p.Msg.FeedTranslating}</p>
   }
   <h1 id="headline" class="text-headline leading-tight font-semibold">{p.Headline}</h1>
   if len(p.Meta) > 0 {
@@ -99,14 +106,30 @@ props {
       </dl>
     </section>
   }
-  <section class="mt-line" aria-labelledby="sources">
-    <h2 id="sources" class="label border-b border-foreground pb-quarter">{p.Msg.StorySources}</h2>
+  <section class="mt-line" aria-labelledby="sources-heading" id="sources">
+    <h2 id="sources-heading" class="label border-b border-foreground pb-quarter">{p.Msg.StorySources}</h2>
+    if p.ArticleNotice != "" {
+      <p role="status" class="mt-half text-small text-muted-foreground">{p.ArticleNotice}</p>
+    }
     <ol class="divide-y divide-border">
       for _, s := range p.Sources {
         <li class="py-half">
           <p><span class="label text-muted-foreground">[{gx.TextValue(s.N)}] {s.Domain}</span><br /><a href={s.URL} rel="noopener" class="underline underline-offset-2 hover:text-accent">{s.Title}</a></p>
+          if len(s.Translated) > 0 {
+            <details class="mt-quarter" open>
+              <summary class="label min-h-target cursor-pointer text-muted-foreground">{p.Msg.ArticleTranslated}</summary>
+              <div class="mt-quarter grid gap-half text-small">
+                for _, para := range s.Translated {
+                  <p>{para}</p>
+                }
+              </div>
+            </details>
+          }
+          if s.CanTranslate {
+            <TranslateArticleButton f={s.Translate.F} label={s.Translate.Label} />
+          }
           if len(s.Paragraphs) > 0 {
-            <details class="mt-quarter">
+            <details class="mt-quarter" lang="en">
               <summary class="label min-h-target cursor-pointer text-muted-foreground">{p.Msg.StoryReadText}</summary>
               <div class="mt-quarter grid gap-half text-small">
                 for _, para := range s.Paragraphs {

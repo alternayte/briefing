@@ -25,7 +25,7 @@ func TestExplainUsesWhatTheReaderKnowsAndCaches(t *testing.T) {
 	var system, user string
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		calls++
-		var req struct{ Messages []message }
+		var req struct{ Messages []platform.ChatMessage }
 		_ = json.NewDecoder(r.Body).Decode(&req)
 		system, user = req.Messages[0].Content, req.Messages[1].Content
 		_ = json.NewEncoder(w).Encode(map[string]any{

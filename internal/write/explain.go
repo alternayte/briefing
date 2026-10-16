@@ -129,8 +129,8 @@ func (e *Explainer) Explain(ctx context.Context, userID uuid.UUID, storyID int64
 	language := map[i18n.Locale]string{i18n.EN: "English", i18n.FR: "French"}[l]
 	user := fmt.Sprintf("<entry>\nHeadline: %s\nSummary: %s\nWhy it matters: %s\nWhat is new: %s\n</entry>\n\nKnown: %s\nNew: %s",
 		entry[0], entry[1], entry[2], entry[3], strings.Join(known, "; "), strings.Join(unknown, "; "))
-	text, err := chat(ctx, e.or, e.model, "explain", []message{{"system", fmt.Sprintf(explainPrompt, language)}, {"user", user}}, explainMaxTokens, false)
-	if err != nil && !errors.Is(err, errCut) {
+	text, err := e.or.Chat(ctx, e.model, "explain", []platform.ChatMessage{{Role: "system", Content: fmt.Sprintf(explainPrompt, language)}, {Role: "user", Content: user}}, explainMaxTokens, false)
+	if err != nil && !errors.Is(err, platform.ErrCut) {
 		return "", err
 	}
 	text = strings.TrimSpace(text)

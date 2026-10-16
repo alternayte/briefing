@@ -15,6 +15,7 @@ import (
 	"github.com/alternayte/briefing/internal/i18n"
 	"github.com/alternayte/briefing/internal/ingest"
 	"github.com/alternayte/briefing/internal/learning"
+	"github.com/alternayte/briefing/internal/translate"
 )
 
 // maxShownText caps the extracted text the page shows for one source.
@@ -31,6 +32,7 @@ type SourceRef struct {
 }
 
 type ConceptView struct {
+	ID         int64
 	Name       string
 	Definition string
 	State      string
@@ -38,11 +40,16 @@ type ConceptView struct {
 }
 
 type SourceView struct {
+	ItemID     int64
 	N          int
 	Domain     string
 	Title      string
 	URL        gx.URL
 	Paragraphs []string
+	// Translated is the cached machine translation; Translate offers one.
+	Translated   []string
+	Translate    TranslateArticleButtonProps
+	CanTranslate bool
 }
 
 // StoryPage is the full story view.
@@ -53,7 +60,7 @@ var StoryPage = gx.Page(func(c *gx.Ctx, in route.Story) (StoryViewProps, error) 
 	p := StoryViewProps{Msg: msg, StoryID: in.ID}
 	err := w.engine.WithTx(ctx, func(ctx context.Context) error {
 		tx := drel.MustFromContext(ctx)
-		found, err := loadStory(ctx, tx, in.ID, profile.ID(), msg, &p)
+		found, err := loadStory(ctx, tx, in.ID, profile.ID(), i18n.FromContext(ctx), &p)
 		if err != nil || !found {
 			return err
 		}
@@ -76,10 +83,12 @@ var StoryPage = gx.Page(func(c *gx.Ctx, in route.Story) (StoryViewProps, error) 
 	case "limit":
 		p.ExplainNotice = msg.ExplainLimit
 	}
+	p.ArticleNotice = map[string]string{"cap": msg.ArticleCap, "limit": msg.ArticleLimit}[in.Article]
 	return p, err
 }, StoryView)
 
-func loadStory(ctx context.Context, tx *drel.Tx, storyID int64, userID uuid.UUID, msg i18n.Messages, p *StoryViewProps) (bool, error) {
+func loadStory(ctx context.Context, tx *drel.Tx, storyID int64, userID uuid.UUID, locale i18n.Locale, p *StoryViewProps) (bool, error) {
+	msg := i18n.For(locale)
 	var revision, publishers int
 	var shown *int
 	err := tx.QueryRow(ctx, `
@@ -109,7 +118,7 @@ func loadStory(ctx context.Context, tx *drel.Tx, storyID int64, userID uuid.UUID
 		}
 		n := len(p.Sources) + 1
 		refOf[id] = SourceRef{N: n, URL: gx.URL(u)}
-		p.Sources = append(p.Sources, SourceView{N: n, Domain: ingest.RegistrableDomain(u), Title: title, URL: gx.URL(u), Paragraphs: paragraphs(text)})
+		p.Sources = append(p.Sources, SourceView{ItemID: id, N: n, Domain: ingest.RegistrableDomain(u), Title: title, URL: gx.URL(u), Paragraphs: paragraphs(text)})
 	}
 	rows.Close()
 	if err := rows.Err(); err != nil {
@@ -170,6 +179,7 @@ func loadStory(ctx context.Context, tx *drel.Tx, storyID int64, userID uuid.UUID
 		if err := crow.Scan(&id, &cv.Name, &cv.Definition); err != nil {
 			return false, err
 		}
+		cv.ID = id
 		cv.State, cv.Mastered = conceptLabel(states[id], msg), states[id] == learning.StateMastered
 		p.Concepts = append(p.Concepts, cv)
 	}
@@ -182,7 +192,53 @@ func loadStory(ctx context.Context, tx *drel.Tx, storyID int64, userID uuid.UUID
 		return false, err
 	}
 	p.Feedback = feedbackButtons(storyID, "story", given, feedbackLabels(msg))
-	return true, nil
+	return true, translateStory(ctx, tx, storyID, locale, msg, p)
+}
+
+// translateStory puts the reader's language into the view: the cached
+// translation of the entry and of each source, or a marker and the forms
+// that ask for them.
+func translateStory(ctx context.Context, tx *drel.Tx, storyID int64, l i18n.Locale, msg i18n.Messages, p *StoryViewProps) error {
+	if l == i18n.Locales[0] {
+		return nil
+	}
+	for i := range p.Sources {
+		s := &p.Sources[i]
+		paras, err := translate.Article(ctx, tx, s.ItemID, l)
+		if err != nil {
+			return err
+		}
+		s.Translated = paras
+		if len(paras) == 0 && len(s.Paragraphs) > 0 {
+			s.CanTranslate = true
+			s.Translate = TranslateArticle.Props(&route.TranslateArticle{StoryID: storyID, ItemID: s.ItemID})
+			s.Translate.Label = msg.ArticleTranslate
+		}
+	}
+	if p.LinkCard {
+		return nil
+	}
+	f, ok, err := translate.Story(ctx, tx, storyID, l)
+	if err != nil || !ok {
+		p.Translating = err == nil
+		return err
+	}
+	p.Headline, p.Summary, p.Why, p.New = f.Headline, f.Summary, f.Why, f.New
+	for i := range p.Claims {
+		if i < len(f.Claims) {
+			p.Claims[i].Text = f.Claims[i]
+		}
+	}
+	byID := map[int64]translate.ConceptText{}
+	for _, c := range f.Concepts {
+		byID[c.ID] = c
+	}
+	for i := range p.Concepts {
+		if c, ok := byID[p.Concepts[i].ID]; ok {
+			p.Concepts[i].Name, p.Concepts[i].Definition = c.Name, c.Definition
+		}
+	}
+	return nil
 }
 
 func conceptLabel(s learning.ConceptState, msg i18n.Messages) string {

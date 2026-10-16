@@ -30,6 +30,8 @@ type RankWorker struct {
 	Ranker *Ranker
 	// OnRelevant gets the stories that cleared the reader's prefilter.
 	OnRelevant func(ctx context.Context, storyIDs []int64) error
+	// OnRanked runs after every successful rank.
+	OnRanked func(ctx context.Context) error
 }
 
 func (w *RankWorker) Timeout(*river.Job[RankArgs]) time.Duration { return 10 * time.Minute }
@@ -41,7 +43,10 @@ func (w *RankWorker) Work(ctx context.Context, job *river.Job[RankArgs]) error {
 			return nextErr
 		}
 	}
-	return err
+	if err != nil || w.OnRanked == nil {
+		return err
+	}
+	return w.OnRanked(ctx)
 }
 
 // RankAllArgs ranks the feed of every onboarded reader.

@@ -19,6 +19,7 @@ import (
 	"github.com/alternayte/briefing/internal/platform"
 	"github.com/alternayte/briefing/internal/ranking"
 	"github.com/alternayte/briefing/internal/stories"
+	"github.com/alternayte/briefing/internal/translate"
 	"github.com/alternayte/briefing/internal/write"
 )
 
@@ -102,11 +103,22 @@ func (p pipeline) workers() (*river.Workers, []*river.PeriodicJob, error) {
 			_, err := river.ClientFromContext[pgx.Tx](ctx).InsertMany(ctx, params)
 			return err
 		},
+		OnRanked: func(ctx context.Context) error {
+			_, err := river.ClientFromContext[pgx.Tx](ctx).Insert(ctx, translate.SweepArgs{}, nil)
+			return err
+		},
 	})
 	river.AddWorker(w, &ranking.RankAllWorker{Engine: p.engine})
+	river.AddWorker(w, &translate.TranslateWorker{Translator: p.translator()})
+	river.AddWorker(w, &translate.SweepWorker{Engine: p.engine, Now: p.now})
 	river.AddWorker(w, &stories.CloseStaleWorker{Clusterer: clusterer})
 	river.AddWorker(w, &stories.SweepWorker{Engine: p.engine, Now: p.now, Tuning: p.tuning.Write, FetchArgs: fetchArgs, WriteArgs: writeArgs})
-	return w, []*river.PeriodicJob{ingest.SweepEveryMinute(), stories.SweepEveryFiveMinutes(), stories.CloseStaleHourly(), ranking.RankAllHourly()}, nil
+	return w, []*river.PeriodicJob{ingest.SweepEveryMinute(), stories.SweepEveryFiveMinutes(), stories.CloseStaleHourly(), ranking.RankAllHourly(), translate.SweepEveryQuarterHour()}, nil
+}
+
+// translator builds the story and article translator.
+func (p pipeline) translator() *translate.Translator {
+	return translate.New(p.engine, p.openrouter, p.cfg, articlesPerDay, p.now)
 }
 
 // texts builds the fetch step; rendering is on when Cloudflare is configured.

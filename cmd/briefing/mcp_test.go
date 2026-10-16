@@ -79,7 +79,7 @@ func TestMCPNeedsAValidAccessToken(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	feedWeb := feed.NewWeb(engine, nil, nil, accounts.NewProfileStore(engine, platform.DefaultTuning()), jobs, platform.DefaultTuning(), cfg.BaseURL.String(), time.Now)
+	feedWeb := feed.NewWeb(engine, nil, nil, nil, accounts.NewProfileStore(engine, platform.DefaultTuning()), jobs, platform.DefaultTuning(), cfg.BaseURL.String(), time.Now)
 	srv.Config.Handler = newHandler(web, feedWeb, sources.NewWeb(engine, http.DefaultClient, platform.DefaultTuning()), admin.NewWeb(engine, cfg, time.Now), pool.Ping)
 
 	email := fmt.Sprintf("mcp-%d@example.com", time.Now().UnixNano())

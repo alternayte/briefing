@@ -23,7 +23,7 @@ func TestStoryViewShowsTheEntryAndMarksItSeen(t *testing.T) {
 	e := pgtest.Engine(t)
 	now := time.Date(2031, 8, 2, 12, 0, 0, 0, time.UTC)
 	tu := platform.DefaultTuning()
-	w := NewWeb(e, nil, write.NewExplainer(e, nil, platform.Config{}, 0, time.Now), accounts.NewProfileStore(e, tu), nil, tu, "https://briefing.test", func() time.Time { return now })
+	w := NewWeb(e, nil, write.NewExplainer(e, nil, platform.Config{}, 0, time.Now), nil, accounts.NewProfileStore(e, tu), nil, tu, "https://briefing.test", func() time.Time { return now })
 	dreltest.WithRollback(t, e, func(ctx context.Context) {
 		tx := drel.MustFromContext(ctx)
 		user := pgtest.User(t, ctx, "story@example.com")
@@ -77,3 +77,52 @@ Second paragraph.', 40) RETURNING id`).Scan(&a)
 }
 
 func itoa(n int64) string { return strconv.FormatInt(n, 10) }
+
+func TestFrenchReadersSeeTheTranslationOrAMarker(t *testing.T) {
+	t.Parallel()
+	e := pgtest.Engine(t)
+	now := time.Date(2031, 8, 3, 12, 0, 0, 0, time.UTC)
+	tu := platform.DefaultTuning()
+	w := NewWeb(e, nil, write.NewExplainer(e, nil, platform.Config{}, 0, time.Now), nil, accounts.NewProfileStore(e, tu), nil, tu, "https://briefing.test", func() time.Time { return now })
+	dreltest.WithRollback(t, e, func(ctx context.Context) {
+		tx := drel.MustFromContext(ctx)
+		user := pgtest.User(t, ctx, "lecteur@example.com")
+		profile, _ := accounts.NewProfileStore(e, tu).Ensure(ctx, user, "L", i18n.FR)
+		profile.OnboardedAt = &now
+		mk := func(headline string) int64 {
+			var story, concept int64
+			_ = tx.QueryRow(ctx, `INSERT INTO stories (opened_at, last_item_at, category, revision) VALUES ($1, $1, 'space', 1) RETURNING id`, now).Scan(&story)
+			_, _ = tx.Exec(ctx, `INSERT INTO summaries (story_id, revision, headline, summary, why_it_matters, what_is_new, claims, confidence, model, prompt_version, publisher_count, text_items)
+				VALUES ($1, 1, $2, 'It landed.', 'w', 'n', '[{"text":"It landed on Tuesday.","item_ids":[]}]', 'medium', 'm', 'v', 1, 1)`, story, headline)
+			_ = tx.QueryRow(ctx, `INSERT INTO concepts (slug, name, definition) VALUES ($1, 'Soft landing', 'Slow landing.') RETURNING id`, headline).Scan(&concept)
+			_, _ = tx.Exec(ctx, `INSERT INTO story_concepts (story_id, concept_id) VALUES ($1, $2)`, story, concept)
+			_, _ = tx.Exec(ctx, `INSERT INTO feed_entries (user_id, story_id, relevance, excluded, score, state, delivered_on) VALUES ($1, $2, 3, 0, 0.5, 'delivered', '2031-08-03')`, user, story)
+			return story
+		}
+		done := mk("Probe lands")
+		mk("Rover drives")
+		var concept int64
+		_ = tx.QueryRow(ctx, `SELECT concept_id FROM story_concepts WHERE story_id = $1`, done).Scan(&concept)
+		_, err := tx.Exec(ctx, `INSERT INTO translations (kind, object_id, revision, locale, fields, model) VALUES ('story', $1, 1, 'fr', $2::jsonb, 'm')`, done,
+			`{"headline":"La sonde se pose","summary":"Elle s’est posée.","why_it_matters":"p","what_is_new":"n","claims":["Elle s’est posée mardi."],"concepts":[{"id":`+itoa(concept)+`,"name":"Atterrissage en douceur","definition":"Lent."}]}`)
+		if err != nil {
+			t.Fatal(err)
+		}
+		rctx := i18n.WithLocale(accounts.WithProfile(context.WithValue(ctx, webKey{}, w), profile), i18n.FR)
+		rec := httptest.NewRecorder()
+		req := httptest.NewRequest("GET", "/s/"+itoa(done), nil).WithContext(rctx)
+		req.SetPathValue("ID", itoa(done))
+		StoryPage.ServeHTTP(rec, req)
+		for _, want := range []string{"La sonde se pose", "Elle s’est posée mardi.", "Atterrissage en douceur"} {
+			if !strings.Contains(rec.Body.String(), want) {
+				t.Errorf("story lacks %q", want)
+			}
+		}
+		rec = httptest.NewRecorder()
+		HomePage.ServeHTTP(rec, httptest.NewRequest("GET", "/", nil).WithContext(rctx))
+		body := rec.Body.String()
+		if !strings.Contains(body, "La sonde se pose") || !strings.Contains(body, "Rover drives") || !strings.Contains(body, i18n.For(i18n.FR).FeedTranslating) {
+			t.Error("the feed does not mix the translation and the marked English entry")
+		}
+	})
+}

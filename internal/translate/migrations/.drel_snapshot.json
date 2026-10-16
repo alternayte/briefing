@@ -1,0 +1,87 @@
+{
+  "tables": [
+    {
+      "name": "translations",
+      "columns": [
+        {
+          "name": "id",
+          "type": "BIGSERIAL PRIMARY KEY",
+          "notNull": true,
+          "pk": true
+        },
+        {
+          "name": "kind",
+          "type": "\"translationkind\"",
+          "notNull": true
+        },
+        {
+          "name": "object_id",
+          "type": "bigint",
+          "notNull": true
+        },
+        {
+          "name": "revision",
+          "type": "integer",
+          "notNull": true
+        },
+        {
+          "name": "locale",
+          "type": "text",
+          "notNull": true
+        },
+        {
+          "name": "fields",
+          "type": "jsonb",
+          "notNull": true
+        },
+        {
+          "name": "model",
+          "type": "text",
+          "notNull": true
+        },
+        {
+          "name": "requested_by",
+          "type": "uuid",
+          "notNull": false,
+          "ref": "auth_users",
+          "refColumn": "id",
+          "onDelete": "SET NULL"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamptz",
+          "notNull": true,
+          "default": "NOW()"
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "notNull": true,
+          "default": "NOW()"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "uq_translations",
+          "columns": [
+            "kind",
+            "object_id",
+            "revision",
+            "locale"
+          ],
+          "unique": true
+        }
+      ]
+    }
+  ],
+  "enums": [
+    {
+      "name": "translationkind",
+      "values": [
+        "story",
+        "article"
+      ],
+      "baseType": "string"
+    }
+  ]
+}

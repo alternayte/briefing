@@ -33,6 +33,10 @@ type StoryViewProps struct {
 	Explanation   []string
 	ExplainForm   ExplainButtonProps
 	ExplainNotice string
+	// Translating marks an English entry whose translation is not ready;
+	// ArticleNotice says why an article was not translated.
+	Translating   bool
+	ArticleNotice string
 }
 
 func StoryView(p StoryViewProps) gx.Node {
@@ -42,343 +46,413 @@ func StoryView(p StoryViewProps) gx.Node {
 		}
 	}
 	var _b gx.Builder
-//line StoryView.gx:35:1
+//line StoryView.gx:39:1
 	_b.Add(_tStoryView0.With(
-//line StoryView.gx:35:1
+//line StoryView.gx:39:1
 		gx.Head(gx.HeadProps{Title: p.Headline + " · " + p.Msg.AppName, Meta: nil, Links: nil, Lang: "", HtmlClass: "", BodyClass: ""}),
-//line StoryView.gx:36:22
+//line StoryView.gx:40:22
 		gx.Open("a", gx.Attrs{gx.Attr{Key: "class", Value: "label min-h-target inline-flex items-center text-muted-foreground hover:text-foreground", Kind: gx.AttrText}, gx.Attr{Key: "href", Value: route.Home{}.URL(), Kind: gx.AttrURL, Active: "page"}}),
-//line StoryView.gx:36:145
+//line StoryView.gx:40:145
 		gx.Text(p.Msg.StoryBack),
 	))
-//line StoryView.gx:37:1
+//line StoryView.gx:41:1
 	var _b1 gx.Builder
-//line StoryView.gx:37:53
+//line StoryView.gx:41:53
 	_b1.Add(_tStoryView1)
-//line StoryView.gx:38:3
-	if p.Updated {
-//line StoryView.gx:38:17
-		_b1.Add(_tStoryView2.With(
-//line StoryView.gx:39:34
-			gx.Text(p.Msg.StoryUpdated),
-		))
-	}
-//line StoryView.gx:40:4
-	_b1.Add(_tStoryView3.With(
-//line StoryView.gx:41:3
-		gx.Open("h1", gx.Attrs{gx.Attr{Key: "class", Value: "text-headline leading-tight font-semibold", Kind: gx.AttrText}, gx.Attr{Key: "id", Value: "headline", Kind: gx.AttrText}}),
-//line StoryView.gx:41:71
-		gx.Text(p.Headline),
-	))
 //line StoryView.gx:42:3
-	if len(p.Meta) > 0 {
-//line StoryView.gx:42:23
-		_b1.Add(_tStoryView4.With(
-//line StoryView.gx:43:60
-			gx.Text(strings.Join(p.Meta, " · ")),
+	if p.Updated {
+//line StoryView.gx:42:17
+		_b1.Add(_tStoryView2.With(
+//line StoryView.gx:43:34
+			gx.Text(p.Msg.StoryUpdated),
 		))
 	}
 //line StoryView.gx:44:4
 	_b1.Add(_tStoryView1)
 //line StoryView.gx:45:3
+	if p.Translating {
+//line StoryView.gx:45:21
+		_b1.Add(_tStoryView3.With(
+//line StoryView.gx:46:44
+			gx.Text(p.Msg.FeedTranslating),
+		))
+	}
+//line StoryView.gx:47:4
+	_b1.Add(_tStoryView4.With(
+//line StoryView.gx:48:3
+		gx.Open("h1", gx.Attrs{gx.Attr{Key: "class", Value: "text-headline leading-tight font-semibold", Kind: gx.AttrText}, gx.Attr{Key: "id", Value: "headline", Kind: gx.AttrText}}),
+//line StoryView.gx:48:71
+		gx.Text(p.Headline),
+	))
+//line StoryView.gx:49:3
+	if len(p.Meta) > 0 {
+//line StoryView.gx:49:23
+		_b1.Add(_tStoryView5.With(
+//line StoryView.gx:50:60
+			gx.Text(strings.Join(p.Meta, " · ")),
+		))
+	}
+//line StoryView.gx:51:4
+	_b1.Add(_tStoryView1)
+//line StoryView.gx:52:3
 	var _b2 gx.Builder
-//line StoryView.gx:45:97
-	_b2.Add(_tStoryView5)
-//line StoryView.gx:46:5
+//line StoryView.gx:52:97
+	_b2.Add(_tStoryView6)
+//line StoryView.gx:53:5
 	for _, b := range p.Feedback {
-//line StoryView.gx:46:35
-		_b2.Add(_tStoryView6.With(
-//line StoryView.gx:47:7
+//line StoryView.gx:53:35
+		_b2.Add(_tStoryView7.With(
+//line StoryView.gx:54:7
 			FeedbackButton(FeedbackButtonProps{F: b.F, Label: b.Label, Kind: b.Kind, From: b.From, Chosen: b.Chosen}),
 		))
 	}
-//line StoryView.gx:48:6
+//line StoryView.gx:55:6
 	_b2.Add(_tStoryView1)
-//line StoryView.gx:45:3
-	_b1.Add(_tStoryView7.With(
-//line StoryView.gx:45:3
+//line StoryView.gx:52:3
+	_b1.Add(_tStoryView8.With(
+//line StoryView.gx:52:3
 		gx.Open("div", gx.Attrs{gx.Attr{Key: "class", Value: "mt-half flex flex-wrap gap-quarter", Kind: gx.AttrText}, gx.Attr{Key: "role", Value: "group", Kind: gx.AttrText}, gx.Attr{Key: "aria-label", Value: p.Msg.FeedbackLabel, Kind: gx.AttrText}}),
-//line StoryView.gx:45:3
+//line StoryView.gx:52:3
 		_b2.Node(),
 	))
-//line StoryView.gx:50:3
+//line StoryView.gx:57:3
 	if !p.LinkCard {
-//line StoryView.gx:50:19
-		_b1.Add(_tStoryView8.With(
-//line StoryView.gx:51:24
+//line StoryView.gx:57:19
+		_b1.Add(_tStoryView9.With(
+//line StoryView.gx:58:24
 			gx.Text(p.Summary),
-//line StoryView.gx:53:7
+//line StoryView.gx:60:7
 			gx.Open("h2", gx.Attrs{gx.Attr{Key: "class", Value: "label border-b border-foreground pb-quarter", Kind: gx.AttrText}, gx.Attr{Key: "id", Value: "why", Kind: gx.AttrText}}),
-//line StoryView.gx:53:72
+//line StoryView.gx:60:72
 			gx.Text(p.Msg.StoryWhy),
-//line StoryView.gx:54:29
+//line StoryView.gx:61:29
 			gx.Text(p.Why),
-//line StoryView.gx:57:7
+//line StoryView.gx:64:7
 			gx.Open("h2", gx.Attrs{gx.Attr{Key: "class", Value: "label border-b border-foreground pb-quarter", Kind: gx.AttrText}, gx.Attr{Key: "id", Value: "new", Kind: gx.AttrText}}),
-//line StoryView.gx:57:72
+//line StoryView.gx:64:72
 			gx.Text(p.Msg.StoryWhatIsNew),
-//line StoryView.gx:58:29
+//line StoryView.gx:65:29
 			gx.Text(p.New),
 		))
-//line StoryView.gx:60:5
+//line StoryView.gx:67:5
 		var _b3 gx.Builder
-//line StoryView.gx:60:73
-		_b3.Add(_tStoryView9.With(
-//line StoryView.gx:61:7
+//line StoryView.gx:67:73
+		_b3.Add(_tStoryView10.With(
+//line StoryView.gx:68:7
 			gx.Open("h2", gx.Attrs{gx.Attr{Key: "class", Value: "label border-b border-foreground pb-quarter", Kind: gx.AttrText}, gx.Attr{Key: "id", Value: "explain", Kind: gx.AttrText}}),
-//line StoryView.gx:61:76
+//line StoryView.gx:68:76
 			gx.Text(p.Msg.ExplainHeading),
 		))
-//line StoryView.gx:62:7
+//line StoryView.gx:69:7
 		if len(p.Explanation) > 0 {
-//line StoryView.gx:62:34
-			_b3.Add(_tStoryView10)
-//line StoryView.gx:63:9
+//line StoryView.gx:69:34
+			_b3.Add(_tStoryView11)
+//line StoryView.gx:70:9
 			var _b4 gx.Builder
-//line StoryView.gx:63:47
-			_b4.Add(_tStoryView11)
-//line StoryView.gx:64:11
+//line StoryView.gx:70:47
+			_b4.Add(_tStoryView12)
+//line StoryView.gx:71:11
 			for _, para := range p.Explanation {
-//line StoryView.gx:64:47
-				_b4.Add(_tStoryView12.With(
-//line StoryView.gx:65:16
+//line StoryView.gx:71:47
+				_b4.Add(_tStoryView13.With(
+//line StoryView.gx:72:16
 					gx.Text(para),
 				))
 			}
-//line StoryView.gx:66:12
-			_b4.Add(_tStoryView10)
-//line StoryView.gx:63:9
-			_b3.Add(_tStoryView13.With(
-//line StoryView.gx:63:9
+//line StoryView.gx:73:12
+			_b4.Add(_tStoryView11)
+//line StoryView.gx:70:9
+			_b3.Add(_tStoryView14.With(
+//line StoryView.gx:70:9
 				_b4.Node(),
 			))
 		} else {
-//line StoryView.gx:68:15
-			_b3.Add(_tStoryView10)
-//line StoryView.gx:69:9
+//line StoryView.gx:75:15
+			_b3.Add(_tStoryView11)
+//line StoryView.gx:76:9
 			if p.ExplainNotice != "" {
-//line StoryView.gx:69:35
-				_b3.Add(_tStoryView14.With(
-//line StoryView.gx:70:80
+//line StoryView.gx:76:35
+				_b3.Add(_tStoryView15.With(
+//line StoryView.gx:77:80
 					gx.Text(p.ExplainNotice),
 				))
 			} else {
-//line StoryView.gx:71:17
-				_b3.Add(_tStoryView15.With(
-//line StoryView.gx:72:35
+//line StoryView.gx:78:17
+				_b3.Add(_tStoryView16.With(
+//line StoryView.gx:79:35
 					ExplainButton(ExplainButtonProps{F: p.ExplainForm.F, Label: p.ExplainForm.Label}),
 				))
 			}
-//line StoryView.gx:73:10
-			_b3.Add(_tStoryView16)
+//line StoryView.gx:80:10
+			_b3.Add(_tStoryView17)
 		}
-//line StoryView.gx:74:8
-		_b3.Add(_tStoryView5)
-//line StoryView.gx:60:5
-		_b1.Add(_tStoryView17.With(
-//line StoryView.gx:60:5
+//line StoryView.gx:81:8
+		_b3.Add(_tStoryView6)
+//line StoryView.gx:67:5
+		_b1.Add(_tStoryView18.With(
+//line StoryView.gx:67:5
 			gx.Open("section", gx.Attrs{gx.Attr{Key: "class", Value: "mt-line", Kind: gx.AttrText}, gx.Attr{Key: "aria-labelledby", Value: "explain", Kind: gx.AttrText}, gx.Attr{Key: "id", Value: "explanation", Kind: gx.AttrText}}),
-//line StoryView.gx:60:5
+//line StoryView.gx:67:5
 			_b3.Node(),
 		))
-//line StoryView.gx:76:5
+//line StoryView.gx:83:5
 		var _b5 gx.Builder
-//line StoryView.gx:76:55
-		_b5.Add(_tStoryView9.With(
-//line StoryView.gx:77:7
+//line StoryView.gx:83:55
+		_b5.Add(_tStoryView10.With(
+//line StoryView.gx:84:7
 			gx.Open("h2", gx.Attrs{gx.Attr{Key: "class", Value: "label border-b border-foreground pb-quarter", Kind: gx.AttrText}, gx.Attr{Key: "id", Value: "claims", Kind: gx.AttrText}}),
-//line StoryView.gx:77:75
+//line StoryView.gx:84:75
 			gx.Text(p.Msg.StoryClaims),
 		))
-//line StoryView.gx:78:7
+//line StoryView.gx:85:7
 		var _b6 gx.Builder
-//line StoryView.gx:78:47
-		_b6.Add(_tStoryView10)
-//line StoryView.gx:79:9
+//line StoryView.gx:85:47
+		_b6.Add(_tStoryView11)
+//line StoryView.gx:86:9
 		for _, c := range p.Claims {
-//line StoryView.gx:79:37
-			_b6.Add(_tStoryView11)
-//line StoryView.gx:80:11
+//line StoryView.gx:86:37
+			_b6.Add(_tStoryView12)
+//line StoryView.gx:87:11
 			var _b7 gx.Builder
-//line StoryView.gx:80:15
-			_b7.Add(_tStoryView18.With(
-//line StoryView.gx:80:15
+//line StoryView.gx:87:15
+			_b7.Add(_tStoryView19.With(
+//line StoryView.gx:87:15
 				gx.Text(c.Text),
 			))
-//line StoryView.gx:81:13
+//line StoryView.gx:88:13
 			for _, r := range c.Refs {
-//line StoryView.gx:81:39
-				_b7.Add(_tStoryView19.With(
-//line StoryView.gx:82:15
+//line StoryView.gx:88:39
+				_b7.Add(_tStoryView20.With(
+//line StoryView.gx:89:15
 					gx.Open("a", gx.Attrs{gx.Attr{Key: "class", Value: "ml-quarter align-super text-label text-accent", Kind: gx.AttrText}, gx.Attr{Key: "href", Value: string(r.URL), Kind: gx.AttrURL, Active: "page"}, gx.Attr{Key: "rel", Value: "noopener", Kind: gx.AttrText}}),
-//line StoryView.gx:82:101
+//line StoryView.gx:89:101
 					gx.Text(gx.TextValue(r.N)),
 				))
 			}
-//line StoryView.gx:83:14
-			_b7.Add(_tStoryView11)
-//line StoryView.gx:80:11
-			_b6.Add(_tStoryView20.With(
-//line StoryView.gx:80:11
+//line StoryView.gx:90:14
+			_b7.Add(_tStoryView12)
+//line StoryView.gx:87:11
+			_b6.Add(_tStoryView21.With(
+//line StoryView.gx:87:11
 				_b7.Node(),
 			))
 		}
-//line StoryView.gx:85:10
-		_b6.Add(_tStoryView16)
-//line StoryView.gx:78:7
-		_b5.Add(_tStoryView21.With(
-//line StoryView.gx:78:7
+//line StoryView.gx:92:10
+		_b6.Add(_tStoryView17)
+//line StoryView.gx:85:7
+		_b5.Add(_tStoryView22.With(
+//line StoryView.gx:85:7
 			_b6.Node(),
 		))
-//line StoryView.gx:76:5
-		_b1.Add(_tStoryView22.With(
-//line StoryView.gx:76:5
+//line StoryView.gx:83:5
+		_b1.Add(_tStoryView23.With(
+//line StoryView.gx:83:5
 			_b5.Node(),
 		))
 	}
-//line StoryView.gx:88:4
+//line StoryView.gx:95:4
 	_b1.Add(_tStoryView1)
-//line StoryView.gx:89:3
+//line StoryView.gx:96:3
 	if len(p.Concepts) > 0 {
-//line StoryView.gx:89:27
-		_b1.Add(_tStoryView5)
-//line StoryView.gx:90:5
+//line StoryView.gx:96:27
+		_b1.Add(_tStoryView6)
+//line StoryView.gx:97:5
 		var _b8 gx.Builder
-//line StoryView.gx:90:57
-		_b8.Add(_tStoryView9.With(
-//line StoryView.gx:91:7
+//line StoryView.gx:97:57
+		_b8.Add(_tStoryView10.With(
+//line StoryView.gx:98:7
 			gx.Open("h2", gx.Attrs{gx.Attr{Key: "class", Value: "label border-b border-foreground pb-quarter", Kind: gx.AttrText}, gx.Attr{Key: "id", Value: "concepts", Kind: gx.AttrText}}),
-//line StoryView.gx:91:77
+//line StoryView.gx:98:77
 			gx.Text(p.Msg.StoryConcepts),
 		))
-//line StoryView.gx:92:7
+//line StoryView.gx:99:7
 		var _b9 gx.Builder
-//line StoryView.gx:92:44
-		_b9.Add(_tStoryView10)
-//line StoryView.gx:93:9
+//line StoryView.gx:99:44
+		_b9.Add(_tStoryView11)
+//line StoryView.gx:100:9
 		for _, c := range p.Concepts {
-//line StoryView.gx:93:39
-			_b9.Add(_tStoryView23.With(
-//line StoryView.gx:95:39
+//line StoryView.gx:100:39
+			_b9.Add(_tStoryView24.With(
+//line StoryView.gx:102:39
 				gx.Text(c.Name),
-//line StoryView.gx:95:48
+//line StoryView.gx:102:48
 				gx.Open("span", gx.Attrs{gx.Attr{Key: "class", Value: gx.Classes("label font-normal text-muted-foreground", gx.When("text-accent", c.Mastered)), Kind: gx.AttrText}}),
-//line StoryView.gx:95:133
+//line StoryView.gx:102:133
 				gx.Text(c.State),
-//line StoryView.gx:96:58
+//line StoryView.gx:103:58
 				gx.Text(c.Definition),
 			))
 		}
-//line StoryView.gx:98:10
-		_b9.Add(_tStoryView16)
-//line StoryView.gx:92:7
-		_b8.Add(_tStoryView24.With(
-//line StoryView.gx:92:7
+//line StoryView.gx:105:10
+		_b9.Add(_tStoryView17)
+//line StoryView.gx:99:7
+		_b8.Add(_tStoryView25.With(
+//line StoryView.gx:99:7
 			_b9.Node(),
 		))
-//line StoryView.gx:90:5
-		_b1.Add(_tStoryView25.With(
-//line StoryView.gx:90:5
+//line StoryView.gx:97:5
+		_b1.Add(_tStoryView26.With(
+//line StoryView.gx:97:5
 			_b8.Node(),
 		))
 	}
-//line StoryView.gx:101:4
+//line StoryView.gx:108:4
 	_b1.Add(_tStoryView1)
-//line StoryView.gx:102:3
+//line StoryView.gx:109:3
 	var _b10 gx.Builder
-//line StoryView.gx:102:54
-	_b10.Add(_tStoryView26.With(
-//line StoryView.gx:103:5
-		gx.Open("h2", gx.Attrs{gx.Attr{Key: "class", Value: "label border-b border-foreground pb-quarter", Kind: gx.AttrText}, gx.Attr{Key: "id", Value: "sources", Kind: gx.AttrText}}),
-//line StoryView.gx:103:74
+//line StoryView.gx:109:75
+	_b10.Add(_tStoryView27.With(
+//line StoryView.gx:110:5
+		gx.Open("h2", gx.Attrs{gx.Attr{Key: "class", Value: "label border-b border-foreground pb-quarter", Kind: gx.AttrText}, gx.Attr{Key: "id", Value: "sources-heading", Kind: gx.AttrText}}),
+//line StoryView.gx:110:82
 		gx.Text(p.Msg.StorySources),
 	))
-//line StoryView.gx:104:5
+//line StoryView.gx:111:5
+	if p.ArticleNotice != "" {
+//line StoryView.gx:111:31
+		_b10.Add(_tStoryView28.With(
+//line StoryView.gx:112:73
+			gx.Text(p.ArticleNotice),
+		))
+	}
+//line StoryView.gx:113:6
+	_b10.Add(_tStoryView6)
+//line StoryView.gx:114:5
 	var _b11 gx.Builder
-//line StoryView.gx:104:40
-	_b11.Add(_tStoryView16)
-//line StoryView.gx:105:7
+//line StoryView.gx:114:40
+	_b11.Add(_tStoryView17)
+//line StoryView.gx:115:7
 	for _, s := range p.Sources {
-//line StoryView.gx:105:36
-		_b11.Add(_tStoryView10)
-//line StoryView.gx:106:9
+//line StoryView.gx:115:36
+		_b11.Add(_tStoryView11)
+//line StoryView.gx:116:9
 		var _b12 gx.Builder
-//line StoryView.gx:106:29
-		_b12.Add(_tStoryView27.With(
-//line StoryView.gx:107:57
+//line StoryView.gx:116:29
+		_b12.Add(_tStoryView29.With(
+//line StoryView.gx:117:57
 			gx.Text(gx.TextValue(s.N)),
-//line StoryView.gx:107:78
+//line StoryView.gx:117:78
 			gx.Text(s.Domain),
-//line StoryView.gx:107:101
+//line StoryView.gx:117:101
 			gx.Open("a", gx.Attrs{gx.Attr{Key: "class", Value: "underline underline-offset-2 hover:text-accent", Kind: gx.AttrText}, gx.Attr{Key: "href", Value: string(s.URL), Kind: gx.AttrURL, Active: "page"}, gx.Attr{Key: "rel", Value: "noopener", Kind: gx.AttrText}}),
-//line StoryView.gx:107:187
+//line StoryView.gx:117:187
 			gx.Text(s.Title),
 		))
-//line StoryView.gx:108:11
-		if len(s.Paragraphs) > 0 {
-//line StoryView.gx:108:37
-			_b12.Add(_tStoryView28)
-//line StoryView.gx:109:13
+//line StoryView.gx:118:11
+		if len(s.Translated) > 0 {
+//line StoryView.gx:118:37
+			_b12.Add(_tStoryView30)
+//line StoryView.gx:119:13
 			var _b13 gx.Builder
-//line StoryView.gx:109:41
-			_b13.Add(_tStoryView29.With(
-//line StoryView.gx:110:88
-				gx.Text(p.Msg.StoryReadText),
+//line StoryView.gx:119:46
+			_b13.Add(_tStoryView31.With(
+//line StoryView.gx:120:88
+				gx.Text(p.Msg.ArticleTranslated),
 			))
-//line StoryView.gx:111:15
+//line StoryView.gx:121:15
 			var _b14 gx.Builder
-//line StoryView.gx:111:64
-			_b14.Add(_tStoryView30)
-//line StoryView.gx:112:17
-			for _, para := range s.Paragraphs {
-//line StoryView.gx:112:52
-				_b14.Add(_tStoryView31.With(
-//line StoryView.gx:113:22
+//line StoryView.gx:121:64
+			_b14.Add(_tStoryView32)
+//line StoryView.gx:122:17
+			for _, para := range s.Translated {
+//line StoryView.gx:122:52
+				_b14.Add(_tStoryView33.With(
+//line StoryView.gx:123:22
 					gx.Text(para),
 				))
 			}
-//line StoryView.gx:114:18
-			_b14.Add(_tStoryView32)
-//line StoryView.gx:111:15
-			_b13.Add(_tStoryView33.With(
-//line StoryView.gx:111:15
+//line StoryView.gx:124:18
+			_b14.Add(_tStoryView34)
+//line StoryView.gx:121:15
+			_b13.Add(_tStoryView35.With(
+//line StoryView.gx:121:15
 				_b14.Node(),
 			))
-//line StoryView.gx:109:13
-			_b12.Add(_tStoryView34.With(
-//line StoryView.gx:109:13
+//line StoryView.gx:119:13
+			_b12.Add(_tStoryView36.With(
+//line StoryView.gx:119:13
 				_b13.Node(),
 			))
+		}
+//line StoryView.gx:127:12
+		_b12.Add(_tStoryView12)
+//line StoryView.gx:128:11
+		if s.CanTranslate {
+//line StoryView.gx:128:30
+			_b12.Add(_tStoryView37.With(
+//line StoryView.gx:129:13
+				TranslateArticleButton(TranslateArticleButtonProps{F: s.Translate.F, Label: s.Translate.Label}),
+			))
+		}
+//line StoryView.gx:130:12
+		_b12.Add(_tStoryView12)
+//line StoryView.gx:131:11
+		if len(s.Paragraphs) > 0 {
+//line StoryView.gx:131:37
+			_b12.Add(_tStoryView30)
+//line StoryView.gx:132:13
+			var _b15 gx.Builder
+//line StoryView.gx:132:51
+			_b15.Add(_tStoryView31.With(
+//line StoryView.gx:133:88
+				gx.Text(p.Msg.StoryReadText),
+			))
+//line StoryView.gx:134:15
+			var _b16 gx.Builder
+//line StoryView.gx:134:64
+			_b16.Add(_tStoryView32)
+//line StoryView.gx:135:17
+			for _, para := range s.Paragraphs {
+//line StoryView.gx:135:52
+				_b16.Add(_tStoryView33.With(
+//line StoryView.gx:136:22
+					gx.Text(para),
+				))
+			}
+//line StoryView.gx:137:18
+			_b16.Add(_tStoryView34)
+//line StoryView.gx:134:15
+			_b15.Add(_tStoryView35.With(
+//line StoryView.gx:134:15
+				_b16.Node(),
+			))
+//line StoryView.gx:132:13
+			_b12.Add(_tStoryView38.With(
+//line StoryView.gx:132:13
+				_b15.Node(),
+			))
 		} else {
-//line StoryView.gx:117:19
-			_b12.Add(_tStoryView35.With(
-//line StoryView.gx:118:75
+//line StoryView.gx:140:19
+			_b12.Add(_tStoryView39.With(
+//line StoryView.gx:141:75
 				gx.Text(p.Msg.StoryNoText),
 			))
 		}
-//line StoryView.gx:119:12
-		_b12.Add(_tStoryView10)
-//line StoryView.gx:106:9
-		_b11.Add(_tStoryView36.With(
-//line StoryView.gx:106:9
+//line StoryView.gx:142:12
+		_b12.Add(_tStoryView11)
+//line StoryView.gx:116:9
+		_b11.Add(_tStoryView40.With(
+//line StoryView.gx:116:9
 			_b12.Node(),
 		))
 	}
-//line StoryView.gx:121:8
-	_b11.Add(_tStoryView5)
-//line StoryView.gx:104:5
-	_b10.Add(_tStoryView37.With(
-//line StoryView.gx:104:5
+//line StoryView.gx:144:8
+	_b11.Add(_tStoryView6)
+//line StoryView.gx:114:5
+	_b10.Add(_tStoryView41.With(
+//line StoryView.gx:114:5
 		_b11.Node(),
 	))
-//line StoryView.gx:102:3
-	_b1.Add(_tStoryView38.With(
-//line StoryView.gx:102:3
+//line StoryView.gx:109:3
+	_b1.Add(_tStoryView42.With(
+//line StoryView.gx:109:3
+		gx.Open("section", gx.Attrs{gx.Attr{Key: "class", Value: "mt-line", Kind: gx.AttrText}, gx.Attr{Key: "aria-labelledby", Value: "sources-heading", Kind: gx.AttrText}, gx.Attr{Key: "id", Value: "sources", Kind: gx.AttrText}}),
+//line StoryView.gx:109:3
 		_b10.Node(),
 	))
-//line StoryView.gx:37:1
-	_b.Add(_tStoryView39.With(
-//line StoryView.gx:37:1
+//line StoryView.gx:41:1
+	_b.Add(_tStoryView43.With(
+//line StoryView.gx:41:1
 		_b1.Node(),
 	))
 	return _b.Node()
@@ -406,258 +480,286 @@ var _tStoryView2 = gx.NewTemplate(
 )
 
 var _tStoryView3 = gx.NewTemplate(
+	[]string{"\n    <p class=\"label text-muted-foreground\">", "</p>\n  "},
+	[]int{1},
+	nil,
+	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "p"}, {El: -1, Slot: -1}},
+)
+
+var _tStoryView4 = gx.NewTemplate(
 	[]string{"\n  <h1", ">", "</h1>\n  "},
 	[]int{0, 1},
 	[]gx.TemplateEl{{Slot: 0, Start: 3, EndStatic: 2, End: 5}},
 	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: 0, Slot: -1}, {El: -1, Slot: -1}},
 )
 
-var _tStoryView4 = gx.NewTemplate(
+var _tStoryView5 = gx.NewTemplate(
 	[]string{"\n    <p class=\"mt-quarter text-small text-muted-foreground\">", "</p>\n  "},
 	[]int{1},
 	nil,
 	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "p"}, {El: -1, Slot: -1}},
 )
 
-var _tStoryView5 = gx.NewTemplate(
+var _tStoryView6 = gx.NewTemplate(
 	[]string{"\n    "},
 	[]int{},
 	nil,
 	[]gx.TemplateRoot{{El: -1, Slot: -1}},
 ).With()
 
-var _tStoryView6 = gx.NewTemplate(
+var _tStoryView7 = gx.NewTemplate(
 	[]string{"\n      ", "\n    "},
 	[]int{0},
 	nil,
 	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: 0}, {El: -1, Slot: -1}},
 )
 
-var _tStoryView7 = gx.NewTemplate(
+var _tStoryView8 = gx.NewTemplate(
 	[]string{"<div", ">", "</div>\n  "},
 	[]int{0, 1},
 	[]gx.TemplateEl{{Slot: 0, Start: 0, EndStatic: 2, End: 6}},
 	[]gx.TemplateRoot{{El: 0, Slot: -1}, {El: -1, Slot: -1}},
 )
 
-var _tStoryView8 = gx.NewTemplate(
+var _tStoryView9 = gx.NewTemplate(
 	[]string{"\n    <p class=\"mt-half\">", "</p>\n    <section class=\"mt-line\" aria-labelledby=\"why\">\n      <h2", ">", "</h2>\n      <p class=\"mt-quarter\">", "</p>\n    </section>\n    <section class=\"mt-line\" aria-labelledby=\"new\">\n      <h2", ">", "</h2>\n      <p class=\"mt-quarter\">", "</p>\n    </section>\n    "},
 	[]int{1, 1, 2, 2, 1, 2, 2},
 	[]gx.TemplateEl{{Slot: 1, Start: 63, EndStatic: 3, End: 5}, {Slot: 4, Start: 78, EndStatic: 6, End: 5}},
 	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "p"}, {El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "section"}, {El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "section"}, {El: -1, Slot: -1}},
 )
 
-var _tStoryView9 = gx.NewTemplate(
+var _tStoryView10 = gx.NewTemplate(
 	[]string{"\n      <h2", ">", "</h2>\n      "},
 	[]int{0, 1},
 	[]gx.TemplateEl{{Slot: 0, Start: 7, EndStatic: 2, End: 5}},
 	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: 0, Slot: -1}, {El: -1, Slot: -1}},
 )
 
-var _tStoryView10 = gx.NewTemplate(
+var _tStoryView11 = gx.NewTemplate(
 	[]string{"\n        "},
 	[]int{},
 	nil,
 	[]gx.TemplateRoot{{El: -1, Slot: -1}},
 ).With()
 
-var _tStoryView11 = gx.NewTemplate(
+var _tStoryView12 = gx.NewTemplate(
 	[]string{"\n          "},
 	[]int{},
 	nil,
 	[]gx.TemplateRoot{{El: -1, Slot: -1}},
 ).With()
 
-var _tStoryView12 = gx.NewTemplate(
+var _tStoryView13 = gx.NewTemplate(
 	[]string{"\n            <p>", "</p>\n          "},
 	[]int{1},
 	nil,
 	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "p"}, {El: -1, Slot: -1}},
 )
 
-var _tStoryView13 = gx.NewTemplate(
+var _tStoryView14 = gx.NewTemplate(
 	[]string{"<div class=\"mt-quarter grid gap-half\">", "</div>\n      "},
 	[]int{1},
 	nil,
 	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "div"}, {El: -1, Slot: -1}},
 )
 
-var _tStoryView14 = gx.NewTemplate(
+var _tStoryView15 = gx.NewTemplate(
 	[]string{"\n          <p class=\"mt-quarter text-small text-muted-foreground\" role=\"status\">", "</p>\n        "},
 	[]int{1},
 	nil,
 	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "p"}, {El: -1, Slot: -1}},
 )
 
-var _tStoryView15 = gx.NewTemplate(
+var _tStoryView16 = gx.NewTemplate(
 	[]string{"\n          <div class=\"mt-quarter\">", "</div>\n        "},
 	[]int{1},
 	nil,
 	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "div"}, {El: -1, Slot: -1}},
 )
 
-var _tStoryView16 = gx.NewTemplate(
+var _tStoryView17 = gx.NewTemplate(
 	[]string{"\n      "},
 	[]int{},
 	nil,
 	[]gx.TemplateRoot{{El: -1, Slot: -1}},
 ).With()
 
-var _tStoryView17 = gx.NewTemplate(
+var _tStoryView18 = gx.NewTemplate(
 	[]string{"<section", ">", "</section>\n    "},
 	[]int{0, 1},
 	[]gx.TemplateEl{{Slot: 0, Start: 0, EndStatic: 2, End: 10}},
 	[]gx.TemplateRoot{{El: 0, Slot: -1}, {El: -1, Slot: -1}},
 )
 
-var _tStoryView18 = gx.NewTemplate(
+var _tStoryView19 = gx.NewTemplate(
 	[]string{"", "\n            "},
 	[]int{0},
 	nil,
 	[]gx.TemplateRoot{{El: -1, Slot: 0}, {El: -1, Slot: -1}},
 )
 
-var _tStoryView19 = gx.NewTemplate(
+var _tStoryView20 = gx.NewTemplate(
 	[]string{"\n              <a", ">[", "]</a>\n            "},
 	[]int{0, 1},
 	[]gx.TemplateEl{{Slot: 0, Start: 15, EndStatic: 2, End: 5}},
 	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: 0, Slot: -1}, {El: -1, Slot: -1}},
 )
 
-var _tStoryView20 = gx.NewTemplate(
+var _tStoryView21 = gx.NewTemplate(
 	[]string{"<li>", "</li>\n        "},
 	[]int{1},
 	nil,
 	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "li"}, {El: -1, Slot: -1}},
 )
 
-var _tStoryView21 = gx.NewTemplate(
+var _tStoryView22 = gx.NewTemplate(
 	[]string{"<ul class=\"mt-quarter grid gap-quarter\">", "</ul>\n    "},
 	[]int{1},
 	nil,
 	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "ul"}, {El: -1, Slot: -1}},
 )
 
-var _tStoryView22 = gx.NewTemplate(
+var _tStoryView23 = gx.NewTemplate(
 	[]string{"<section class=\"mt-line\" aria-labelledby=\"claims\">", "</section>\n  "},
 	[]int{1},
 	nil,
 	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "section"}, {El: -1, Slot: -1}},
 )
 
-var _tStoryView23 = gx.NewTemplate(
+var _tStoryView24 = gx.NewTemplate(
 	[]string{"\n          <div>\n            <dt class=\"font-semibold\">", " <span", ">", "</span></dt>\n            <dd class=\"text-small text-muted-foreground\">", "</dd>\n          </div>\n        "},
 	[]int{2, 2, 3, 2},
 	[]gx.TemplateEl{{Slot: 1, Start: 1, EndStatic: 3, End: 7}},
 	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "div"}, {El: -1, Slot: -1}},
 )
 
-var _tStoryView24 = gx.NewTemplate(
+var _tStoryView25 = gx.NewTemplate(
 	[]string{"<dl class=\"mt-quarter grid gap-half\">", "</dl>\n    "},
 	[]int{1},
 	nil,
 	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "dl"}, {El: -1, Slot: -1}},
 )
 
-var _tStoryView25 = gx.NewTemplate(
+var _tStoryView26 = gx.NewTemplate(
 	[]string{"<section class=\"mt-line\" aria-labelledby=\"concepts\">", "</section>\n  "},
 	[]int{1},
 	nil,
 	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "section"}, {El: -1, Slot: -1}},
 )
 
-var _tStoryView26 = gx.NewTemplate(
+var _tStoryView27 = gx.NewTemplate(
 	[]string{"\n    <h2", ">", "</h2>\n    "},
 	[]int{0, 1},
 	[]gx.TemplateEl{{Slot: 0, Start: 5, EndStatic: 2, End: 5}},
 	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: 0, Slot: -1}, {El: -1, Slot: -1}},
 )
 
-var _tStoryView27 = gx.NewTemplate(
+var _tStoryView28 = gx.NewTemplate(
+	[]string{"\n      <p class=\"mt-half text-small text-muted-foreground\" role=\"status\">", "</p>\n    "},
+	[]int{1},
+	nil,
+	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "p"}, {El: -1, Slot: -1}},
+)
+
+var _tStoryView29 = gx.NewTemplate(
 	[]string{"\n          <p><span class=\"label text-muted-foreground\">[", "] ", "</span><br><a", ">", "</a></p>\n          "},
 	[]int{2, 2, 1, 2},
 	[]gx.TemplateEl{{Slot: 2, Start: 11, EndStatic: 4, End: 4}},
 	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "p"}, {El: -1, Slot: -1}},
 )
 
-var _tStoryView28 = gx.NewTemplate(
+var _tStoryView30 = gx.NewTemplate(
 	[]string{"\n            "},
 	[]int{},
 	nil,
 	[]gx.TemplateRoot{{El: -1, Slot: -1}},
 ).With()
 
-var _tStoryView29 = gx.NewTemplate(
+var _tStoryView31 = gx.NewTemplate(
 	[]string{"\n              <summary class=\"label min-h-target cursor-pointer text-muted-foreground\">", "</summary>\n              "},
 	[]int{1},
 	nil,
 	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "summary"}, {El: -1, Slot: -1}},
 )
 
-var _tStoryView30 = gx.NewTemplate(
+var _tStoryView32 = gx.NewTemplate(
 	[]string{"\n                "},
 	[]int{},
 	nil,
 	[]gx.TemplateRoot{{El: -1, Slot: -1}},
 ).With()
 
-var _tStoryView31 = gx.NewTemplate(
+var _tStoryView33 = gx.NewTemplate(
 	[]string{"\n                  <p>", "</p>\n                "},
 	[]int{1},
 	nil,
 	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "p"}, {El: -1, Slot: -1}},
 )
 
-var _tStoryView32 = gx.NewTemplate(
+var _tStoryView34 = gx.NewTemplate(
 	[]string{"\n              "},
 	[]int{},
 	nil,
 	[]gx.TemplateRoot{{El: -1, Slot: -1}},
 ).With()
 
-var _tStoryView33 = gx.NewTemplate(
+var _tStoryView35 = gx.NewTemplate(
 	[]string{"<div class=\"mt-quarter grid gap-half text-small\">", "</div>\n            "},
 	[]int{1},
 	nil,
 	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "div"}, {El: -1, Slot: -1}},
 )
 
-var _tStoryView34 = gx.NewTemplate(
-	[]string{"<details class=\"mt-quarter\">", "</details>\n          "},
+var _tStoryView36 = gx.NewTemplate(
+	[]string{"<details class=\"mt-quarter\" open>", "</details>\n          "},
 	[]int{1},
 	nil,
 	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "details"}, {El: -1, Slot: -1}},
 )
 
-var _tStoryView35 = gx.NewTemplate(
+var _tStoryView37 = gx.NewTemplate(
+	[]string{"\n            ", "\n          "},
+	[]int{0},
+	nil,
+	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: 0}, {El: -1, Slot: -1}},
+)
+
+var _tStoryView38 = gx.NewTemplate(
+	[]string{"<details class=\"mt-quarter\" lang=\"en\">", "</details>\n          "},
+	[]int{1},
+	nil,
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "details"}, {El: -1, Slot: -1}},
+)
+
+var _tStoryView39 = gx.NewTemplate(
 	[]string{"\n            <p class=\"mt-quarter text-small text-muted-foreground italic\">", "</p>\n          "},
 	[]int{1},
 	nil,
 	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "p"}, {El: -1, Slot: -1}},
 )
 
-var _tStoryView36 = gx.NewTemplate(
+var _tStoryView40 = gx.NewTemplate(
 	[]string{"<li class=\"py-half\">", "</li>\n      "},
 	[]int{1},
 	nil,
 	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "li"}, {El: -1, Slot: -1}},
 )
 
-var _tStoryView37 = gx.NewTemplate(
+var _tStoryView41 = gx.NewTemplate(
 	[]string{"<ol class=\"divide-y divide-border\">", "</ol>\n  "},
 	[]int{1},
 	nil,
 	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "ol"}, {El: -1, Slot: -1}},
 )
 
-var _tStoryView38 = gx.NewTemplate(
-	[]string{"<section class=\"mt-line\" aria-labelledby=\"sources\">", "</section>\n"},
-	[]int{1},
-	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "section"}, {El: -1, Slot: -1}},
+var _tStoryView42 = gx.NewTemplate(
+	[]string{"<section", ">", "</section>\n"},
+	[]int{0, 1},
+	[]gx.TemplateEl{{Slot: 0, Start: 0, EndStatic: 2, End: 10}},
+	[]gx.TemplateRoot{{El: 0, Slot: -1}, {El: -1, Slot: -1}},
 )
 
-var _tStoryView39 = gx.NewTemplate(
+var _tStoryView43 = gx.NewTemplate(
 	[]string{"<article class=\"pt-half\" aria-labelledby=\"headline\">", "</article>\n"},
 	[]int{1},
 	nil,

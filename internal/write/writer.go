@@ -171,16 +171,16 @@ func (w *Writer) countAttempt(ctx context.Context, storyID int64, now time.Time)
 // call asks the writer model. After a rejected answer, previous and problems
 // carry that answer and the rules it broke, so the model can fix it.
 func (w *Writer) call(ctx context.Context, sources []Source, previous, problems string) (string, Output, error) {
-	messages := []message{
-		{"system", systemPrompt},
-		{"user", userPrompt(sources, w.tuning.MaxCharsPerSource)},
+	messages := []platform.ChatMessage{
+		{Role: "system", Content: systemPrompt},
+		{Role: "user", Content: userPrompt(sources, w.tuning.MaxCharsPerSource)},
 	}
 	if problems != "" && previous != "" {
 		messages = append(messages,
-			message{"assistant", previous},
-			message{"user", "Your answer broke these rules:\n" + problems + "\nAnswer again with the corrected JSON object only."})
+			platform.ChatMessage{Role: "assistant", Content: previous},
+			platform.ChatMessage{Role: "user", Content: "Your answer broke these rules:\n" + problems + "\nAnswer again with the corrected JSON object only."})
 	}
-	content, err := chat(ctx, w.or, w.model, "write", messages, w.tuning.MaxOutputTokens, true)
+	content, err := w.or.Chat(ctx, w.model, "write", messages, w.tuning.MaxOutputTokens, true)
 	if err != nil {
 		return content, Output{}, err
 	}

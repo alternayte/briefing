@@ -19,7 +19,7 @@ import (
 )
 
 func TestSignedOutVisitorsGoToLogin(t *testing.T) {
-	w := NewWeb(nil, nil, nil, nil, nil, platform.DefaultTuning(), "", time.Now)
+	w := NewWeb(nil, nil, nil, nil, nil, nil, platform.DefaultTuning(), "", time.Now)
 	rec := httptest.NewRecorder()
 	w.Middleware(http.NotFoundHandler()).ServeHTTP(rec, httptest.NewRequest("GET", "/", nil))
 	if rec.Code != http.StatusSeeOther || rec.Header().Get("Location") != "/login" {
@@ -32,7 +32,7 @@ func TestHomeShowsTodaysStoriesAndSendsNewReadersToOnboarding(t *testing.T) {
 	e := pgtest.Engine(t)
 	now := time.Date(2031, 8, 1, 12, 0, 0, 0, time.UTC)
 	tu := platform.DefaultTuning()
-	w := NewWeb(e, nil, write.NewExplainer(e, nil, platform.Config{}, 0, time.Now), accounts.NewProfileStore(e, tu), nil, tu, "https://briefing.test", func() time.Time { return now })
+	w := NewWeb(e, nil, write.NewExplainer(e, nil, platform.Config{}, 0, time.Now), nil, accounts.NewProfileStore(e, tu), nil, tu, "https://briefing.test", func() time.Time { return now })
 	dreltest.WithRollback(t, e, func(ctx context.Context) {
 		tx := drel.MustFromContext(ctx)
 		user := pgtest.User(t, ctx, "home@example.com")

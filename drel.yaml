@@ -11,6 +11,8 @@ modules:
     packages: [./internal/learning]
   - name: feed
     packages: [./internal/feed]
+  - name: translate
+    packages: [./internal/translate]
   # workaround: alternayte/drel#13
   - name: stories
     packages: [./internal/stories/model]

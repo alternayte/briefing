@@ -71,7 +71,7 @@ func TestMigrateCreatesEverySchemaAndIsRepeatable(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer conn.Close(ctx)
-	for _, table := range []string{"auth_users", "auth_api_keys", "auth_rate_limits", "river_job", "drel_migrations", "profiles", "sources", "items", "sightings", "stories", "story_items", "llm_usage", "summaries", "concepts", "story_concepts", "review_items", "write_attempts", "learning_events", "interests", "feed_entries", "explanations", "subscriptions"} {
+	for _, table := range []string{"auth_users", "auth_api_keys", "auth_rate_limits", "river_job", "drel_migrations", "profiles", "sources", "items", "sightings", "stories", "story_items", "llm_usage", "summaries", "concepts", "story_concepts", "review_items", "write_attempts", "learning_events", "interests", "feed_entries", "explanations", "subscriptions", "translations"} {
 		var ok bool
 		if err := conn.QueryRow(ctx, "SELECT to_regclass($1) IS NOT NULL", table).Scan(&ok); err != nil || !ok {
 			t.Errorf("table %s missing (err %v)", table, err)

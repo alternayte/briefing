@@ -11,6 +11,7 @@ import (
 	learning "github.com/alternayte/briefing/internal/learning"
 	sources "github.com/alternayte/briefing/internal/sources"
 	model "github.com/alternayte/briefing/internal/stories/model"
+	translate "github.com/alternayte/briefing/internal/translate"
 	write "github.com/alternayte/briefing/internal/write"
 	"github.com/alternayte/drel"
 )
@@ -27,6 +28,7 @@ type DB struct {
 	Subscriptions *sources.SubscriptionRepository
 	Stories       *model.StoryRepository
 	StoryItems    *model.StoryItemRepository
+	Translations  *translate.TranslationRepository
 	Concepts      *write.ConceptRepository
 	Explanations  *write.ExplanationRepository
 	ReviewItems   *write.ReviewItemRepository
@@ -53,6 +55,7 @@ func Open(dsn string, opts ...drel.Option) (*DB, error) {
 		Subscriptions: &sources.SubscriptionRepository{Repository: drel.NewRepository(engine, sources.SubscriptionMeta)},
 		Stories:       &model.StoryRepository{Repository: drel.NewRepository(engine, model.StoryMeta)},
 		StoryItems:    &model.StoryItemRepository{Repository: drel.NewRepository(engine, model.StoryItemMeta)},
+		Translations:  &translate.TranslationRepository{Repository: drel.NewRepository(engine, translate.TranslationMeta)},
 		Concepts:      &write.ConceptRepository{Repository: drel.NewRepository(engine, write.ConceptMeta)},
 		Explanations:  &write.ExplanationRepository{Repository: drel.NewRepository(engine, write.ExplanationMeta)},
 		ReviewItems:   &write.ReviewItemRepository{Repository: drel.NewRepository(engine, write.ReviewItemMeta)},
@@ -82,6 +85,9 @@ func Open(dsn string, opts ...drel.Option) (*DB, error) {
 				Stories:    &model.StoryRepository{Repository: drel.NewRepository(engine, model.StoryMeta)},
 				StoryItems: &model.StoryItemRepository{Repository: drel.NewRepository(engine, model.StoryItemMeta)},
 			},
+			Translate: TranslateRepos{
+				Translations: &translate.TranslationRepository{Repository: drel.NewRepository(engine, translate.TranslationMeta)},
+			},
 			Write: WriteRepos{
 				Concepts:      &write.ConceptRepository{Repository: drel.NewRepository(engine, write.ConceptMeta)},
 				Explanations:  &write.ExplanationRepository{Repository: drel.NewRepository(engine, write.ExplanationMeta)},
@@ -107,6 +113,7 @@ type TxRepos struct {
 	Subscriptions *sources.TxSubscriptionRepository
 	Stories       *model.TxStoryRepository
 	StoryItems    *model.TxStoryItemRepository
+	Translations  *translate.TxTranslationRepository
 	Concepts      *write.TxConceptRepository
 	Explanations  *write.TxExplanationRepository
 	ReviewItems   *write.TxReviewItemRepository
@@ -131,6 +138,7 @@ func (db *DB) Tx(ctx context.Context) TxRepos {
 		Subscriptions: &sources.TxSubscriptionRepository{TxRepository: drel.NewTxRepository(tx, sources.SubscriptionMeta)},
 		Stories:       &model.TxStoryRepository{TxRepository: drel.NewTxRepository(tx, model.StoryMeta)},
 		StoryItems:    &model.TxStoryItemRepository{TxRepository: drel.NewTxRepository(tx, model.StoryItemMeta)},
+		Translations:  &translate.TxTranslationRepository{TxRepository: drel.NewTxRepository(tx, translate.TranslationMeta)},
 		Concepts:      &write.TxConceptRepository{TxRepository: drel.NewTxRepository(tx, write.ConceptMeta)},
 		Explanations:  &write.TxExplanationRepository{TxRepository: drel.NewTxRepository(tx, write.ExplanationMeta)},
 		ReviewItems:   &write.TxReviewItemRepository{TxRepository: drel.NewTxRepository(tx, write.ReviewItemMeta)},
@@ -159,6 +167,9 @@ func (db *DB) Tx(ctx context.Context) TxRepos {
 			Stories: StoriesTxRepos{
 				Stories:    &model.TxStoryRepository{TxRepository: drel.NewTxRepository(tx, model.StoryMeta)},
 				StoryItems: &model.TxStoryItemRepository{TxRepository: drel.NewTxRepository(tx, model.StoryItemMeta)},
+			},
+			Translate: TranslateTxRepos{
+				Translations: &translate.TxTranslationRepository{TxRepository: drel.NewTxRepository(tx, translate.TranslationMeta)},
 			},
 			Write: WriteTxRepos{
 				Concepts:      &write.TxConceptRepository{TxRepository: drel.NewTxRepository(tx, write.ConceptMeta)},
@@ -240,6 +251,16 @@ type StoriesTxRepos struct {
 	StoryItems *model.TxStoryItemRepository
 }
 
+// TranslateRepos holds the untracked repositories of the "translate" module.
+type TranslateRepos struct {
+	Translations *translate.TranslationRepository
+}
+
+// TranslateTxRepos holds the tracked repositories of the "translate" module.
+type TranslateTxRepos struct {
+	Translations *translate.TxTranslationRepository
+}
+
 // WriteRepos holds the untracked repositories of the "write" module.
 type WriteRepos struct {
 	Concepts      *write.ConceptRepository
@@ -263,25 +284,27 @@ type WriteTxRepos struct {
 // Modules groups the untracked repositories by feature slice, so a slice
 // reaches only its own models.
 type Modules struct {
-	Accounts AccountsRepos
-	Feed     FeedRepos
-	Ingest   IngestRepos
-	Learning LearningRepos
-	Sources  SourcesRepos
-	Stories  StoriesRepos
-	Write    WriteRepos
+	Accounts  AccountsRepos
+	Feed      FeedRepos
+	Ingest    IngestRepos
+	Learning  LearningRepos
+	Sources   SourcesRepos
+	Stories   StoriesRepos
+	Translate TranslateRepos
+	Write     WriteRepos
 }
 
 // TxModules groups the tracked repositories by feature slice. Every set is
 // bound to the same transaction.
 type TxModules struct {
-	Accounts AccountsTxRepos
-	Feed     FeedTxRepos
-	Ingest   IngestTxRepos
-	Learning LearningTxRepos
-	Sources  SourcesTxRepos
-	Stories  StoriesTxRepos
-	Write    WriteTxRepos
+	Accounts  AccountsTxRepos
+	Feed      FeedTxRepos
+	Ingest    IngestTxRepos
+	Learning  LearningTxRepos
+	Sources   SourcesTxRepos
+	Stories   StoriesTxRepos
+	Translate TranslateTxRepos
+	Write     WriteTxRepos
 }
 
 // WithTx runs fn inside a transaction and puts that transaction in the

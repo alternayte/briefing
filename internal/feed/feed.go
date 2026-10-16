@@ -25,14 +25,14 @@ var HomePage = gx.Page(func(c *gx.Ctx, _ route.Home) (HomeProps, error) {
 	p := HomeProps{Msg: i18n.For(i18n.FromContext(ctx)), LoadedAt: now.Unix()}
 	err := w.engine.WithTx(ctx, func(ctx context.Context) (err error) {
 		tx := drel.MustFromContext(ctx)
-		if p.Today, err = todayCards(ctx, tx, profile.ID(), now, p.Msg); err != nil {
+		if p.Today, err = todayCards(ctx, tx, profile.ID(), now, i18n.FromContext(ctx)); err != nil {
 			return err
 		}
 		p.CaughtUp = len(p.Today) > 0
 		for _, c := range p.Today {
 			p.CaughtUp = p.CaughtUp && c.Seen && !c.Updated
 		}
-		p.More, err = moreCards(ctx, tx, profile.ID(), now.Add(-w.tuning.Cluster.OpenWindow), moreLimit, p.Msg)
+		p.More, err = moreCards(ctx, tx, profile.ID(), now.Add(-w.tuning.Cluster.OpenWindow), moreLimit, i18n.FromContext(ctx))
 		return err
 	})
 	return p, err
@@ -58,4 +58,4 @@ var FreshAction = gx.Action(func(c *gx.Ctx, in route.Fresh) error {
 })
 
 // Routes lists every page, action and form of the slice.
-var Routes = gx.Collect(HomePage, FreshAction, StoryPage, Feedback, Explain, SettingsPage, SetLocale, SetBudget, InterestsList, InterestsAdd, InterestsRemove, OnboardingPage, SaveInterests, CalibratePage, Rate, Finish)
+var Routes = gx.Collect(HomePage, FreshAction, StoryPage, Feedback, Explain, TranslateArticle, SettingsPage, SetLocale, SetBudget, InterestsList, InterestsAdd, InterestsRemove, OnboardingPage, SaveInterests, CalibratePage, Rate, Finish)

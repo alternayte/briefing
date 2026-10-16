@@ -11,6 +11,7 @@ import (
 
 	"github.com/alternayte/briefing/internal/i18n"
 	"github.com/alternayte/briefing/internal/ingest"
+	"github.com/alternayte/briefing/internal/translate"
 )
 
 // Card is one story in the feed.
@@ -27,6 +28,8 @@ type Card struct {
 	// new revision since.
 	Seen    bool
 	Updated bool
+	// Translating marks an English entry whose translation is not ready.
+	Translating bool
 	// Feedback holds the four feedback forms.
 	Feedback []FeedbackButtonProps
 	// Meta is the coverage and confidence line, in the reader's locale.
@@ -58,20 +61,21 @@ const cardSelect = `
 	) top ON true`
 
 // todayCards returns the stories delivered to the reader today, best first.
-func todayCards(ctx context.Context, tx *drel.Tx, userID uuid.UUID, today time.Time, msg i18n.Messages) ([]Card, error) {
-	return queryCards(ctx, tx, msg, cardSelect+`
+func todayCards(ctx context.Context, tx *drel.Tx, userID uuid.UUID, today time.Time, l i18n.Locale) ([]Card, error) {
+	return queryCards(ctx, tx, l, cardSelect+`
 		WHERE f.user_id = $1 AND f.delivered_on = $2::date
 		ORDER BY f.score DESC, f.id`, userID, today.Format(time.DateOnly))
 }
 
 // moreCards returns the best candidates that did not fit today's budget.
-func moreCards(ctx context.Context, tx *drel.Tx, userID uuid.UUID, since time.Time, limit int, msg i18n.Messages) ([]Card, error) {
-	return queryCards(ctx, tx, msg, cardSelect+`
+func moreCards(ctx context.Context, tx *drel.Tx, userID uuid.UUID, since time.Time, limit int, l i18n.Locale) ([]Card, error) {
+	return queryCards(ctx, tx, l, cardSelect+`
 		WHERE f.user_id = $1 AND f.state = 'candidate' AND s.last_item_at >= $2 AND f.score > 0
 		ORDER BY f.score DESC, f.id LIMIT $3`, userID, since, limit)
 }
 
-func queryCards(ctx context.Context, tx *drel.Tx, msg i18n.Messages, sql string, args ...any) ([]Card, error) {
+func queryCards(ctx context.Context, tx *drel.Tx, l i18n.Locale, sql string, args ...any) ([]Card, error) {
+	msg := i18n.For(l)
 	rows, err := tx.Query(ctx, sql, args...)
 	if err != nil {
 		return nil, err
@@ -105,7 +109,31 @@ func queryCards(ctx context.Context, tx *drel.Tx, msg i18n.Messages, sql string,
 		c.Feedback = feedbackButtons(c.StoryID, "", given, feedbackLabels(msg))
 		out = append(out, c)
 	}
-	return out, rows.Err()
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	rows.Close()
+	if l == i18n.Locales[0] {
+		return out, nil
+	}
+	for i := range out {
+		if out[i].LinkCard {
+			continue
+		}
+		f, ok, err := translate.Story(ctx, tx, out[i].StoryID, l)
+		if err != nil {
+			return nil, err
+		}
+		if !ok {
+			out[i].Translating = true
+			continue
+		}
+		out[i].Headline, out[i].Summary, out[i].Concepts = f.Headline, f.Summary, nil
+		for _, c := range f.Concepts {
+			out[i].Concepts = append(out[i].Concepts, c.Name)
+		}
+	}
+	return out, nil
 }
 
 // sourceLinks keeps the first URL of each publisher, at most four.

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"log/slog"
@@ -127,4 +128,50 @@ func (o *OpenRouter) SpentOn(ctx context.Context, day time.Time) (float64, error
 			`SELECT COALESCE(sum(cost_usd), 0)::float8 FROM llm_usage WHERE day = $1`, day.UTC().Format(time.DateOnly)).Scan(&spent)
 	})
 	return spent, err
+}
+
+// ChatMessage is one message of a chat completion.
+type ChatMessage struct {
+	Role    string `json:"role"`
+	Content string `json:"content"`
+}
+
+// ErrCut reports a chat answer that stopped at the token limit.
+var ErrCut = errors.New("the answer was cut at the token limit")
+
+// Chat sends one chat completion and returns the text of the answer. With
+// jsonOut the model must answer with a JSON object. On ErrCut the text is
+// the part that was written.
+func (o *OpenRouter) Chat(ctx context.Context, model, stage string, messages []ChatMessage, maxTokens int, jsonOut bool) (string, error) {
+	req := map[string]any{
+		"model":       model,
+		"messages":    messages,
+		"temperature": 0.2,
+		"max_tokens":  maxTokens,
+		// A reasoning model would spend the output budget before the answer.
+		"reasoning": map[string]bool{"enabled": false},
+		"usage":     map[string]bool{"include": true},
+	}
+	if jsonOut {
+		req["response_format"] = map[string]string{"type": "json_object"}
+	}
+	var resp struct {
+		Choices []struct {
+			FinishReason string `json:"finish_reason"`
+			Message      struct {
+				Content string `json:"content"`
+			} `json:"message"`
+		} `json:"choices"`
+	}
+	if err := o.Post(ctx, "/api/v1/chat/completions", stage, model, req, &resp); err != nil {
+		return "", err
+	}
+	if len(resp.Choices) == 0 {
+		return "", errors.New("openrouter: the model returned no choice")
+	}
+	content := resp.Choices[0].Message.Content
+	if resp.Choices[0].FinishReason == "length" {
+		return content, ErrCut
+	}
+	return content, nil
 }

@@ -58,6 +58,8 @@ type Story struct {
 	gx.Route `GET /s/{ID}`
 	ID       int64
 	Explain  string `query:"explain"`
+	// Article carries a notice code from TranslateArticle.
+	Article string `query:"article"`
 }
 
 // Explain asks for an explanation of a story at the reader's level.
@@ -125,3 +127,12 @@ type InterestsRemove struct {
 }
 
 func (in *InterestsRemove) Rules() gx.Rules { return gx.Rules{} }
+
+// TranslateArticle translates the extracted text of one source of a story.
+type TranslateArticle struct {
+	gx.Route `POST /s/{StoryID}/items/{ItemID}/translate`
+	StoryID  int64
+	ItemID   int64
+}
+
+func (in *TranslateArticle) Rules() gx.Rules { return gx.Rules{} }

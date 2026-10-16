@@ -152,6 +152,12 @@ type Messages struct {
 	SettingsMCPEndpoint  string
 	SettingsMCPHeader    string
 	SettingsInvalid      string
+
+	FeedTranslating   string
+	ArticleTranslate  string
+	ArticleTranslated string
+	ArticleLimit      string
+	ArticleCap        string
 }
 
 func (m Messages) MagicLinkText(link string, minutes int) string {
@@ -297,6 +303,11 @@ var en = Messages{
 	SettingsMCPEndpoint:  "Server address",
 	SettingsMCPHeader:    "Header",
 	SettingsInvalid:      "That value is not valid.",
+	FeedTranslating:      "Translation in progress",
+	ArticleTranslate:     "Translate this article",
+	ArticleTranslated:    "Machine translation",
+	ArticleLimit:         "You have used today's article translations. More tomorrow.",
+	ArticleCap:           "Translations are paused until tomorrow: today's spending cap is reached.",
 }
 
 var fr = Messages{
@@ -438,4 +449,9 @@ var fr = Messages{
 	SettingsMCPEndpoint:  "Adresse du serveur",
 	SettingsMCPHeader:    "En-tête",
 	SettingsInvalid:      "Cette valeur n’est pas valide.",
+	FeedTranslating:      "Traduction en cours",
+	ArticleTranslate:     "Traduire cet article",
+	ArticleTranslated:    "Traduction automatique",
+	ArticleLimit:         "Vous avez utilisé vos traductions d’articles du jour. D’autres demain.",
+	ArticleCap:           "Les traductions reprennent demain : le plafond de dépenses du jour est atteint.",
 }

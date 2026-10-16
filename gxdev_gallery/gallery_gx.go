@@ -34,6 +34,7 @@ func Fixtures() []gx.Fixture {
 		{Component: "SettingsView", Package: "github.com/alternayte/briefing/internal/feed", Missing: true},
 		{Component: "StoryCard", Package: "github.com/alternayte/briefing/internal/feed", Missing: true},
 		{Component: "StoryView", Package: "github.com/alternayte/briefing/internal/feed", Missing: true},
+		{Component: "TranslateArticleButton", Package: "github.com/alternayte/briefing/internal/feed", Missing: true},
 		{Component: "AddFeedForm", Package: "github.com/alternayte/briefing/internal/sources", Missing: true},
 		{Component: "SubscribeButton", Package: "github.com/alternayte/briefing/internal/sources", Missing: true},
 	}

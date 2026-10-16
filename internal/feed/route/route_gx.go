@@ -902,6 +902,9 @@ func (in *Story) Bind(r *http.Request) error {
 	if v := r.URL.Query().Get("explain"); v != "" {
 		in.Explain = string(v)
 	}
+	if v := r.URL.Query().Get("article"); v != "" {
+		in.Article = string(v)
+	}
 	return nil
 }
 
@@ -916,9 +919,100 @@ func (in Story) URL() string {
 	if in.Explain != "" {
 		q.Set("explain", in.Explain)
 	}
+	if in.Article != "" {
+		q.Set("article", in.Article)
+	}
 	if s := q.Encode(); s != "" {
 		b.WriteString("?")
 		b.WriteString(s)
 	}
 	return gx.BasePath() + b.String()
+}
+
+// Pattern returns the method and pattern of TranslateArticle.
+func (TranslateArticle) Pattern() string { return "POST /s/{StoryID}/items/{ItemID}/translate" }
+
+// GxBindForm fills TranslateArticle and returns one message key per field
+// that did not convert (REQ-FRM-07).
+func (in *TranslateArticle) GxBindForm(r *http.Request) (map[string]string, error) {
+	errs := map[string]string{}
+	if v := gx.PathValue(r, "StoryID"); v != "" {
+		x, err := strconv.ParseInt(v, 10, 64)
+		if err != nil {
+			errs[""] = "invalid"
+		} else {
+			in.StoryID = int64(x)
+		}
+	}
+	if v := gx.PathValue(r, "ItemID"); v != "" {
+		x, err := strconv.ParseInt(v, 10, 64)
+		if err != nil {
+			errs[""] = "invalid"
+		} else {
+			in.ItemID = int64(x)
+		}
+	}
+	return errs, nil
+}
+
+// Bind fills TranslateArticle from the request.
+func (in *TranslateArticle) Bind(r *http.Request) error {
+	errs, err := in.GxBindForm(r)
+	if err != nil {
+		return err
+	}
+	for _, name := range gx.FieldNames(errs) {
+		return fmt.Errorf("gx: %s: %s", name, errs[name])
+	}
+	return nil
+}
+
+// URL returns the path of TranslateArticle.
+func (in TranslateArticle) URL() string {
+	var b strings.Builder
+	b.WriteString("/")
+	b.WriteString("s")
+	b.WriteString("/")
+	b.WriteString(url.PathEscape(strconv.FormatInt(int64(in.StoryID), 10)))
+	b.WriteString("/")
+	b.WriteString("items")
+	b.WriteString("/")
+	b.WriteString(url.PathEscape(strconv.FormatInt(int64(in.ItemID), 10)))
+	b.WriteString("/")
+	b.WriteString("translate")
+	return gx.BasePath() + b.String()
+}
+
+// TranslateArticleForm is the generated form value of TranslateArticle (REQ-FRM-03).
+type TranslateArticleForm struct {
+	gx.FormMeta
+	StoryID gx.FormField[int64]
+	ItemID  gx.FormField[int64]
+}
+
+// GxFormValue fills the form value of TranslateArticle (REQ-FRM-03).
+func (in *TranslateArticle) GxFormValue(errs map[string]string) gx.FormValue {
+	f := TranslateArticleForm{FormMeta: gx.FormMeta{Name: "translateArticle", ID: "translateArticle-form", Action: in.URL(), Method: "POST", Enctype: ""}}
+	f.StoryID = gx.FormField[int64]{Name: "", ID: gx.FieldID("translateArticle", ""), Value: in.StoryID, ErrorKey: errs[""], Error: gx.Translate(errs[""], gx.DefaultMessage(errs[""])), Constraints: nil, ValidateURL: gx.ValidateURL(in.URL(), "")}
+	f.ItemID = gx.FormField[int64]{Name: "", ID: gx.FieldID("translateArticle", ""), Value: in.ItemID, ErrorKey: errs[""], Error: gx.Translate(errs[""], gx.DefaultMessage(errs[""])), Constraints: nil, ValidateURL: gx.ValidateURL(in.URL(), "")}
+	return f
+}
+
+// GxFieldName returns the form field name of a field pointer (REQ-FRM-02).
+func (in *TranslateArticle) GxFieldName(ptr any) string {
+	switch ptr {
+	case any(&in.StoryID):
+		return ""
+	case any(&in.ItemID):
+		return ""
+	}
+	return ""
+}
+
+// GxNewForm returns a fresh TranslateArticle (REQ-FRM-02).
+func (in *TranslateArticle) GxNewForm() gx.FormInput { return &TranslateArticle{} }
+
+// GxRunForm calls the form handler with the concrete input type (REQ-FRM-02).
+func (in *TranslateArticle) GxRunForm(ctx *gx.Ctx, fn any) error {
+	return fn.(func(*gx.Ctx, *TranslateArticle) error)(ctx, in)
 }

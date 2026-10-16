@@ -13,6 +13,7 @@ import (
 	"github.com/alternayte/briefing/internal/platform/migrations"
 	sourcesmigrations "github.com/alternayte/briefing/internal/sources/migrations"
 	storiesmigrations "github.com/alternayte/briefing/internal/stories/model/migrations"
+	translatemigrations "github.com/alternayte/briefing/internal/translate/migrations"
 	writemigrations "github.com/alternayte/briefing/internal/write/migrations"
 )
 
@@ -34,5 +35,5 @@ func migrate(ctx context.Context, cfg platform.Config) error {
 	if err := platform.MigrateRiver(ctx, pool); err != nil {
 		return err
 	}
-	return platform.MigrateApp(ctx, cfg.DatabaseURL, migrations.FS, accountsmigrations.FS, sourcesmigrations.FS, ingestmigrations.FS, storiesmigrations.FS, writemigrations.FS, learningmigrations.FS, feedmigrations.FS)
+	return platform.MigrateApp(ctx, cfg.DatabaseURL, migrations.FS, accountsmigrations.FS, sourcesmigrations.FS, ingestmigrations.FS, storiesmigrations.FS, writemigrations.FS, learningmigrations.FS, feedmigrations.FS, translatemigrations.FS)
 }
