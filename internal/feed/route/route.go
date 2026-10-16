@@ -51,3 +51,9 @@ type Finish struct {
 }
 
 func (in *Finish) Rules() gx.Rules { return gx.Rules{} }
+
+// Story is the full view of one story.
+type Story struct {
+	gx.Route `GET /s/{ID}`
+	ID       int64
+}

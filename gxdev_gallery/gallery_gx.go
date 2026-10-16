@@ -24,5 +24,6 @@ func Fixtures() []gx.Fixture {
 		{Component: "Onboarding", Package: "github.com/alternayte/briefing/internal/feed", Missing: true},
 		{Component: "RateButton", Package: "github.com/alternayte/briefing/internal/feed", Missing: true},
 		{Component: "StoryCard", Package: "github.com/alternayte/briefing/internal/feed", Missing: true},
+		{Component: "StoryView", Package: "github.com/alternayte/briefing/internal/feed", Missing: true},
 	}
 }

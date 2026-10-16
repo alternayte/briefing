@@ -28,6 +28,10 @@ var HomePage = gx.Page(func(c *gx.Ctx, _ route.Home) (HomeProps, error) {
 		if p.Today, err = todayCards(ctx, tx, profile.ID(), now, p.Msg); err != nil {
 			return err
 		}
+		p.CaughtUp = len(p.Today) > 0
+		for _, c := range p.Today {
+			p.CaughtUp = p.CaughtUp && c.Seen && !c.Updated
+		}
 		p.More, err = moreCards(ctx, tx, profile.ID(), now.Add(-w.tuning.Cluster.OpenWindow), moreLimit, p.Msg)
 		return err
 	})
@@ -54,4 +58,4 @@ var FreshAction = gx.Action(func(c *gx.Ctx, in route.Fresh) error {
 })
 
 // Routes lists every page, action and form of the slice.
-var Routes = gx.Collect(HomePage, FreshAction, OnboardingPage, SaveInterests, CalibratePage, Rate, Finish)
+var Routes = gx.Collect(HomePage, FreshAction, StoryPage, OnboardingPage, SaveInterests, CalibratePage, Rate, Finish)

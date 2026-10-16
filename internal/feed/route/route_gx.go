@@ -325,3 +325,28 @@ func (in *SaveInterests) GxNewForm() gx.FormInput { return &SaveInterests{} }
 func (in *SaveInterests) GxRunForm(ctx *gx.Ctx, fn any) error {
 	return fn.(func(*gx.Ctx, *SaveInterests) error)(ctx, in)
 }
+
+// Pattern returns the method and pattern of Story.
+func (Story) Pattern() string { return "GET /s/{ID}" }
+
+// Bind fills Story from the request.
+func (in *Story) Bind(r *http.Request) error {
+	if v := gx.PathValue(r, "ID"); v != "" {
+		x, err := strconv.ParseInt(v, 10, 64)
+		if err != nil {
+			return fmt.Errorf("gx: ID: %w", err)
+		}
+		in.ID = int64(x)
+	}
+	return nil
+}
+
+// URL returns the path of Story.
+func (in Story) URL() string {
+	var b strings.Builder
+	b.WriteString("/")
+	b.WriteString("s")
+	b.WriteString("/")
+	b.WriteString(url.PathEscape(strconv.FormatInt(int64(in.ID), 10)))
+	return gx.BasePath() + b.String()
+}

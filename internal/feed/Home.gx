@@ -13,6 +13,8 @@ props {
   // Today holds the stories delivered today; More the ones that waited.
   Today []Card = nil
   More []Card = nil
+  // CaughtUp is true when the reader saw every story of today.
+  CaughtUp bool = false
 }
 
 <gx.Head title={p.Msg.FeedTitle + " · " + p.Msg.AppName} />
@@ -34,6 +36,12 @@ if len(p.Today) == 0 {
     <li><StoryCard card={c} msg={p.Msg} /></li>
   }
 </ol>
+if p.CaughtUp {
+  <section class="mt-line border-t-2 border-foreground pt-half" aria-live="polite">
+    <p class="font-semibold">{p.Msg.FeedCaughtUp}</p>
+    <p class="text-small text-muted-foreground">{p.Msg.FeedCaughtUpHint}</p>
+  </section>
+}
 if len(p.More) > 0 {
   <details class="mt-line border-t-2 border-foreground">
     <summary class="label min-h-target cursor-pointer py-half">{p.Msg.FeedMore} ({len(p.More)})</summary>

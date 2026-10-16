@@ -23,6 +23,10 @@ type Card struct {
 	Concepts   []string
 	Sources    []SourceLink
 	Publishers int
+	// Seen marks a story the reader opened or rated; Updated a story with a
+	// new revision since.
+	Seen    bool
+	Updated bool
 	// Meta is the coverage and confidence line, in the reader's locale.
 	Meta   []string
 	Reason string
@@ -36,7 +40,7 @@ type SourceLink struct {
 }
 
 const cardSelect = `
-	SELECT s.id, f.reason, s.publisher_count,
+	SELECT s.id, f.reason, s.publisher_count, f.state = 'seen', f.shown_revision > 0 AND f.shown_revision < s.revision,
 		COALESCE(m.headline, ''), COALESCE(m.summary, ''), COALESCE(m.confidence::text, ''),
 		COALESCE((SELECT array_agg(c.name ORDER BY c.name) FROM story_concepts sc JOIN concepts c ON c.id = sc.concept_id WHERE sc.story_id = s.id), '{}'),
 		(SELECT array_agg(i.canonical_url ORDER BY i.text_len DESC, i.id) FROM story_items si JOIN items i ON i.id = si.item_id WHERE si.story_id = s.id),
@@ -74,7 +78,7 @@ func queryCards(ctx context.Context, tx *drel.Tx, msg i18n.Messages, sql string,
 		var c Card
 		var confidence, title, snippet string
 		var urls []string
-		if err := rows.Scan(&c.StoryID, &c.Reason, &c.Publishers, &c.Headline, &c.Summary, &confidence, &c.Concepts, &urls, &title, &snippet); err != nil {
+		if err := rows.Scan(&c.StoryID, &c.Reason, &c.Publishers, &c.Seen, &c.Updated, &c.Headline, &c.Summary, &confidence, &c.Concepts, &urls, &title, &snippet); err != nil {
 			return nil, err
 		}
 		c.Sources = sourceLinks(urls)

@@ -1,0 +1,96 @@
+package feed
+
+import (
+  "strings"
+
+  "github.com/alternayte/briefing/internal/feed/route"
+  "github.com/alternayte/briefing/internal/i18n"
+)
+
+props {
+  // Msg is the catalog of the request locale.
+  Msg i18n.Messages
+  // StoryID is the story.
+  StoryID int64
+  // The entry; LinkCard means the story has no summary.
+  Headline string = ""
+  Summary string = ""
+  Why string = ""
+  New string = ""
+  LinkCard bool = false
+  Updated bool = false
+  Meta []string = nil
+  Claims []ClaimView = nil
+  Concepts []ConceptView = nil
+  Sources []SourceView = nil
+}
+
+<gx.Head title={p.Headline + " · " + p.Msg.AppName} />
+<nav class="pt-half"><a href={route.Home{}} class="label min-h-target inline-flex items-center text-muted-foreground hover:text-foreground">← {p.Msg.StoryBack}</a></nav>
+<article class="pt-half" aria-labelledby="headline">
+  if p.Updated {
+    <p class="label text-accent">{p.Msg.StoryUpdated}</p>
+  }
+  <h1 id="headline" class="text-headline leading-tight font-semibold">{p.Headline}</h1>
+  if len(p.Meta) > 0 {
+    <p class="mt-quarter text-small text-muted-foreground">{strings.Join(p.Meta, " · ")}</p>
+  }
+  if !p.LinkCard {
+    <p class="mt-half">{p.Summary}</p>
+    <section class="mt-line" aria-labelledby="why">
+      <h2 id="why" class="label border-b border-foreground pb-quarter">{p.Msg.StoryWhy}</h2>
+      <p class="mt-quarter">{p.Why}</p>
+    </section>
+    <section class="mt-line" aria-labelledby="new">
+      <h2 id="new" class="label border-b border-foreground pb-quarter">{p.Msg.StoryWhatIsNew}</h2>
+      <p class="mt-quarter">{p.New}</p>
+    </section>
+    <section class="mt-line" aria-labelledby="claims">
+      <h2 id="claims" class="label border-b border-foreground pb-quarter">{p.Msg.StoryClaims}</h2>
+      <ul class="mt-quarter grid gap-quarter">
+        for _, c := range p.Claims {
+          <li>{c.Text}
+            for _, r := range c.Refs {
+              <a href={r.URL} rel="noopener" class="ml-quarter align-super text-label text-accent">[{gx.TextValue(r.N)}]</a>
+            }
+          </li>
+        }
+      </ul>
+    </section>
+  }
+  if len(p.Concepts) > 0 {
+    <section class="mt-line" aria-labelledby="concepts">
+      <h2 id="concepts" class="label border-b border-foreground pb-quarter">{p.Msg.StoryConcepts}</h2>
+      <dl class="mt-quarter grid gap-half">
+        for _, c := range p.Concepts {
+          <div>
+            <dt class="font-semibold">{c.Name} <span class="label font-normal text-muted-foreground" class:text-accent={c.Mastered}>{c.State}</span></dt>
+            <dd class="text-small text-muted-foreground">{c.Definition}</dd>
+          </div>
+        }
+      </dl>
+    </section>
+  }
+  <section class="mt-line" aria-labelledby="sources">
+    <h2 id="sources" class="label border-b border-foreground pb-quarter">{p.Msg.StorySources}</h2>
+    <ol class="divide-y divide-border">
+      for _, s := range p.Sources {
+        <li class="py-half">
+          <p><span class="label text-muted-foreground">[{gx.TextValue(s.N)}] {s.Domain}</span><br /><a href={s.URL} rel="noopener" class="underline underline-offset-2 hover:text-accent">{s.Title}</a></p>
+          if len(s.Paragraphs) > 0 {
+            <details class="mt-quarter">
+              <summary class="label min-h-target cursor-pointer text-muted-foreground">{p.Msg.StoryReadText}</summary>
+              <div class="mt-quarter grid gap-half text-small">
+                for _, para := range s.Paragraphs {
+                  <p>{para}</p>
+                }
+              </div>
+            </details>
+          } else {
+            <p class="mt-quarter text-small text-muted-foreground italic">{p.Msg.StoryNoText}</p>
+          }
+        </li>
+      }
+    </ol>
+  </section>
+</article>

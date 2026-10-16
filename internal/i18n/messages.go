@@ -91,6 +91,22 @@ type Messages struct {
 	FeedLinkCard     string
 	// FeedBecause takes the interest text.
 	FeedBecause string
+
+	StoryBack        string
+	StoryWhy         string
+	StoryWhatIsNew   string
+	StoryClaims      string
+	StoryConcepts    string
+	StorySources     string
+	StoryReadText    string
+	StoryNoText      string
+	StoryUpdated     string
+	ConceptMastered  string
+	ConceptFamiliar  string
+	ConceptMet       string
+	ConceptNew       string
+	FeedCaughtUp     string
+	FeedCaughtUpHint string
 }
 
 func (m Messages) MagicLinkText(link string, minutes int) string {
@@ -179,6 +195,21 @@ var en = Messages{
 	ConfidenceLow:    "low",
 	FeedLinkCard:     "Not enough source text for a summary yet. Read the original:",
 	FeedBecause:      "Because you follow “%s”",
+	StoryBack:        "Back to today",
+	StoryWhy:         "Why it matters",
+	StoryWhatIsNew:   "What is new",
+	StoryClaims:      "Claims and sources",
+	StoryConcepts:    "Concepts",
+	StorySources:     "Sources",
+	StoryReadText:    "Read the extracted text",
+	StoryNoText:      "No text could be extracted from this page.",
+	StoryUpdated:     "Updated",
+	ConceptMastered:  "mastered",
+	ConceptFamiliar:  "familiar",
+	ConceptMet:       "met",
+	ConceptNew:       "new to you",
+	FeedCaughtUp:     "You are caught up.",
+	FeedCaughtUpHint: "New stories appear here as they are ranked. More stories wait below.",
 }
 
 var fr = Messages{
@@ -263,4 +294,19 @@ var fr = Messages{
 	ConfidenceLow:    "faible",
 	FeedLinkCard:     "Pas encore assez de texte source pour un résumé. Lire l’original :",
 	FeedBecause:      "Parce que vous suivez « %s »",
+	StoryBack:        "Retour à aujourd’hui",
+	StoryWhy:         "Pourquoi c’est important",
+	StoryWhatIsNew:   "Ce qui est nouveau",
+	StoryClaims:      "Faits et sources",
+	StoryConcepts:    "Concepts",
+	StorySources:     "Sources",
+	StoryReadText:    "Lire le texte extrait",
+	StoryNoText:      "Aucun texte n’a pu être extrait de cette page.",
+	StoryUpdated:     "Mis à jour",
+	ConceptMastered:  "maîtrisé",
+	ConceptFamiliar:  "familier",
+	ConceptMet:       "rencontré",
+	ConceptNew:       "nouveau pour vous",
+	FeedCaughtUp:     "Vous êtes à jour.",
+	FeedCaughtUpHint: "Les nouveaux articles apparaissent ici dès qu’ils sont classés. D’autres articles attendent plus bas.",
 }
