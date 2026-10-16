@@ -9,6 +9,7 @@ import (
 	"github.com/alternayte/briefing/internal/accounts"
 	"github.com/alternayte/briefing/internal/feed/route"
 	"github.com/alternayte/briefing/internal/i18n"
+	"github.com/alternayte/briefing/internal/learning"
 )
 
 const moreLimit = 10
@@ -27,6 +28,13 @@ var HomePage = gx.Page(func(c *gx.Ctx, _ route.Home) (HomeProps, error) {
 		tx := drel.MustFromContext(ctx)
 		if p.Today, err = todayCards(ctx, tx, profile.ID(), now, i18n.FromContext(ctx)); err != nil {
 			return err
+		}
+		due, err := learning.Due(ctx, tx, profile.ID(), now, w.tuning.Review)
+		if err != nil {
+			return err
+		}
+		if len(due) > 0 {
+			p.ReviewCard = i18n.Count(i18n.FromContext(ctx), len(due), p.Msg.ReviewCardOne, p.Msg.ReviewCard)
 		}
 		p.CaughtUp = len(p.Today) > 0
 		for _, c := range p.Today {

@@ -22,8 +22,10 @@ props {
   <div class="flex items-baseline justify-between border-b-2 border-foreground pb-quarter">
     <a href="/" class="text-masthead leading-tight font-bold tracking-tight">{p.Msg.AppName}</a>
     if p.SignOut != nil {
-      <nav class="flex items-center gap-half">
+      <nav class="flex flex-wrap items-center justify-end gap-x-half">
         <a href="/" class="label min-h-target inline-flex items-center text-muted-foreground hover:text-foreground">{p.Msg.FeedTitle}</a>
+        <a href="/review" class="label min-h-target inline-flex items-center text-muted-foreground hover:text-foreground">{p.Msg.ReviewTitle}</a>
+        <a href="/learned" class="label min-h-target inline-flex items-center text-muted-foreground hover:text-foreground">{p.Msg.LearnedTitle}</a>
         <a href="/settings" class="label min-h-target inline-flex items-center text-muted-foreground hover:text-foreground">{p.Msg.SettingsTitle}</a>
         <accounts.SignOutButton f={p.SignOut.F} label={p.SignOut.Label} />
       </nav>

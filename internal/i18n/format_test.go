@@ -25,3 +25,19 @@ func TestFormatsFollowTheLocale(t *testing.T) {
 		}
 	}
 }
+
+func TestCountPicksThePluralOfTheLocale(t *testing.T) {
+	cases := []struct {
+		l    Locale
+		n    int
+		want string
+	}{
+		{EN, 0, "0 other"}, {EN, 1, "1 one"}, {EN, 2, "2 other"},
+		{FR, 0, "0 one"}, {FR, 1, "1 one"}, {FR, 2, "2 other"},
+	}
+	for _, c := range cases {
+		if got := Count(c.l, c.n, "%d one", "%d other"); got != c.want {
+			t.Errorf("%s %d: %q", c.l, c.n, got)
+		}
+	}
+}

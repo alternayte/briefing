@@ -1,0 +1,44 @@
+package learning
+
+import "github.com/alternayte/briefing/internal/i18n"
+
+props {
+  // Msg is the catalog of the request locale.
+  Msg i18n.Messages
+  // Questions are the due questions.
+  Questions []QuestionView = nil
+  // The outcome of the answer just given.
+  Answered bool = false
+  Correct bool = false
+  Explanation string = ""
+  NextIn string = ""
+}
+
+<gx.Head title={p.Msg.ReviewTitle + " · " + p.Msg.AppName} />
+<h1 class="pt-line text-headline leading-tight font-semibold">{p.Msg.ReviewTitle}</h1>
+<p class="mt-half text-muted-foreground">{p.Msg.ReviewIntro}</p>
+if p.Answered {
+  <section role="status" aria-live="polite" class="mt-line border-l-2 pl-half" class:border-success={p.Correct} class:border-destructive={!p.Correct}>
+    if p.Correct {
+      <p class="font-semibold text-success">{p.Msg.ReviewCorrect}</p>
+    } else {
+      <p class="font-semibold text-destructive">{p.Msg.ReviewWrong}</p>
+    }
+    <p class="mt-quarter">{p.Explanation}</p>
+    <p class="mt-quarter text-small text-muted-foreground">{p.NextIn}</p>
+  </section>
+}
+if len(p.Questions) == 0 {
+  <p class="mt-line text-muted-foreground italic">{p.Msg.ReviewNone}</p>
+} else {
+  q := p.Questions[0]
+  <section class="mt-line border-t-2 border-foreground pt-half" aria-labelledby="question">
+    <p class="label text-muted-foreground">{p.Msg.ReviewFrom} · {q.Headline}</p>
+    <h2 id="question" class="mt-quarter text-deck leading-tight font-semibold">{q.Question}</h2>
+    <ol class="mt-half grid gap-quarter">
+      for _, b := range q.Buttons {
+        <li><AnswerButton f={b.F} label={b.Label} choice={b.Choice} /></li>
+      }
+    </ol>
+  </section>
+}

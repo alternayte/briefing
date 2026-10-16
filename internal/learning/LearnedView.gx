@@ -1,0 +1,51 @@
+package learning
+
+import (
+  "strings"
+
+  "github.com/alternayte/briefing/internal/i18n"
+)
+
+props {
+  // Msg is the catalog of the request locale.
+  Msg i18n.Messages
+  // Week holds the seven-day numbers, already worded.
+  Week []string = nil
+  // Groups are the concepts by state, strongest first.
+  Groups []ConceptGroup = nil
+}
+
+<gx.Head title={p.Msg.LearnedTitle + " · " + p.Msg.AppName} />
+<h1 class="pt-line text-headline leading-tight font-semibold">{p.Msg.LearnedTitle}</h1>
+<p class="mt-half text-muted-foreground">{p.Msg.LearnedIntro}</p>
+<section class="mt-line" aria-labelledby="week">
+  <h2 id="week" class="label border-b border-foreground pb-quarter">{p.Msg.LearnedWeek}</h2>
+  <p class="mt-quarter tabular-nums">{strings.Join(p.Week, " · ")}</p>
+</section>
+if len(p.Groups) == 0 {
+  <p class="mt-line text-muted-foreground italic">{p.Msg.LearnedEmpty}</p>
+}
+for _, g := range p.Groups {
+  <section class="mt-line">
+    <h2 class="label border-b border-foreground pb-quarter">{g.Label} ({len(g.Concepts)})</h2>
+    <dl class="divide-y divide-border">
+      for _, c := range g.Concepts {
+        <div class="py-half">
+          <dt class="font-semibold">{c.Name}</dt>
+          <dd class="text-small text-muted-foreground">{c.Definition}</dd>
+          if len(c.Stories) > 0 {
+            <dd class="mt-quarter text-small">
+              <span class="label text-muted-foreground">{p.Msg.LearnedFrom}</span>
+              for i, s := range c.Stories {
+                if i > 0 {
+                  ·
+                }
+                <a href={s.URL} class="underline underline-offset-2 hover:text-accent">{s.Headline}</a>
+              }
+            </dd>
+          }
+        </div>
+      }
+    </dl>
+  </section>
+}

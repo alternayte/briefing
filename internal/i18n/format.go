@@ -59,3 +59,16 @@ func group(digits, sep string) string {
 	}
 	return b.String()
 }
+
+// Count words a number with the singular or plural format of the locale:
+// French takes the singular for 0 and 1, English for 1 only.
+func Count(l Locale, n int, one, other string) string {
+	singular := n == 1
+	if l == FR {
+		singular = n < 2
+	}
+	if singular {
+		return fmt.Sprintf(one, n)
+	}
+	return fmt.Sprintf(other, n)
+}

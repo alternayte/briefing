@@ -1,0 +1,16 @@
+package learning
+
+import "github.com/alternayte/briefing/internal/learning/route"
+
+props {
+  // F is the answer form of one choice.
+  F route.ReviewAnswerForm
+  // Label is the choice text; Choice is its index.
+  Label string = ""
+  Choice int = 0
+}
+
+<form {...p.F.Attrs()}>
+  <input type="hidden" name={p.F.Choice.Name} value={gx.TextValue(p.Choice)} />
+  <button type="submit" class="min-h-target w-full border border-border px-half py-quarter text-left hover:border-foreground">{p.Label}</button>
+</form>

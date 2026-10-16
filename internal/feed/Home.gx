@@ -15,6 +15,8 @@ props {
   More []Card = nil
   // CaughtUp is true when the reader saw every story of today.
   CaughtUp bool = false
+  // ReviewCard words the due questions, or is empty.
+  ReviewCard string = ""
 }
 
 <gx.Head title={p.Msg.FeedTitle + " · " + p.Msg.AppName} />
@@ -28,6 +30,12 @@ props {
   </p>
 </div>
 <h1 class="sr-only">{p.Msg.FeedTitle}</h1>
+if p.ReviewCard != "" {
+  <a href="/review" class="mt-half flex min-h-target items-center justify-between gap-half border-2 border-foreground px-half py-quarter hover:border-accent">
+    <span class="font-semibold">{p.ReviewCard}</span>
+    <span class="label text-accent">{p.Msg.ReviewOpen} →</span>
+  </a>
+}
 if len(p.Today) == 0 {
   <p class="pt-line text-muted-foreground italic">{p.Msg.FeedEmpty}</p>
 }
