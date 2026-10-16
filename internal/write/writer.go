@@ -171,42 +171,18 @@ func (w *Writer) countAttempt(ctx context.Context, storyID int64, now time.Time)
 // call asks the writer model. After a rejected answer, previous and problems
 // carry that answer and the rules it broke, so the model can fix it.
 func (w *Writer) call(ctx context.Context, sources []Source, previous, problems string) (string, Output, error) {
-	messages := []map[string]string{
-		{"role": "system", "content": systemPrompt},
-		{"role": "user", "content": userPrompt(sources, w.tuning.MaxCharsPerSource)},
+	messages := []message{
+		{"system", systemPrompt},
+		{"user", userPrompt(sources, w.tuning.MaxCharsPerSource)},
 	}
 	if problems != "" && previous != "" {
 		messages = append(messages,
-			map[string]string{"role": "assistant", "content": previous},
-			map[string]string{"role": "user", "content": "Your answer broke these rules:\n" + problems + "\nAnswer again with the corrected JSON object only."})
+			message{"assistant", previous},
+			message{"user", "Your answer broke these rules:\n" + problems + "\nAnswer again with the corrected JSON object only."})
 	}
-	req := map[string]any{
-		"model":           w.model,
-		"messages":        messages,
-		"response_format": map[string]string{"type": "json_object"},
-		"temperature":     0.2,
-		"max_tokens":      w.tuning.MaxOutputTokens,
-		// A reasoning model would spend the output budget before the JSON.
-		"reasoning": map[string]bool{"enabled": false},
-		"usage":     map[string]bool{"include": true},
-	}
-	var resp struct {
-		Choices []struct {
-			FinishReason string `json:"finish_reason"`
-			Message      struct {
-				Content string `json:"content"`
-			} `json:"message"`
-		} `json:"choices"`
-	}
-	if err := w.or.Post(ctx, "/api/v1/chat/completions", "write", w.model, req, &resp); err != nil {
-		return "", Output{}, err
-	}
-	if len(resp.Choices) == 0 {
-		return "", Output{}, errors.New("writer returned no choice")
-	}
-	content := resp.Choices[0].Message.Content
-	if resp.Choices[0].FinishReason == "length" {
-		return content, Output{}, errors.New("writer output was cut at the token limit")
+	content, err := chat(ctx, w.or, w.model, "write", messages, w.tuning.MaxOutputTokens, true)
+	if err != nil {
+		return content, Output{}, err
 	}
 	out, err := parseOutput(content)
 	return content, out, err

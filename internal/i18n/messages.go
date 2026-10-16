@@ -113,6 +113,11 @@ type Messages struct {
 	FeedbackKnew       string
 	FeedbackIrrelevant string
 	FeedbackMisleading string
+
+	ExplainButton  string
+	ExplainHeading string
+	ExplainCap     string
+	ExplainLimit   string
 }
 
 func (m Messages) MagicLinkText(link string, minutes int) string {
@@ -221,6 +226,10 @@ var en = Messages{
 	FeedbackKnew:       "Knew it",
 	FeedbackIrrelevant: "Not relevant",
 	FeedbackMisleading: "Misleading",
+	ExplainButton:      "Explain it to me",
+	ExplainHeading:     "Explained for you",
+	ExplainCap:         "Explanations are paused until tomorrow: today's spending cap is reached.",
+	ExplainLimit:       "You have used today's explanations. More tomorrow.",
 }
 
 var fr = Messages{
@@ -325,4 +334,8 @@ var fr = Messages{
 	FeedbackKnew:       "Déjà su",
 	FeedbackIrrelevant: "Hors sujet",
 	FeedbackMisleading: "Trompeur",
+	ExplainButton:      "Expliquez-moi",
+	ExplainHeading:     "Expliqué pour vous",
+	ExplainCap:         "Les explications reprennent demain : le plafond de dépenses du jour est atteint.",
+	ExplainLimit:       "Vous avez utilisé vos explications du jour. D’autres demain.",
 }

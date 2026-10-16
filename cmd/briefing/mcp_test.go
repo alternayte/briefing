@@ -78,7 +78,7 @@ func TestMCPNeedsAValidAccessToken(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	feedWeb := feed.NewWeb(engine, nil, accounts.NewProfileStore(engine, platform.DefaultTuning()), jobs, platform.DefaultTuning(), time.Now)
+	feedWeb := feed.NewWeb(engine, nil, nil, accounts.NewProfileStore(engine, platform.DefaultTuning()), jobs, platform.DefaultTuning(), time.Now)
 	srv.Config.Handler = newHandler(web, feedWeb, admin.NewWeb(engine, cfg, time.Now), pool.Ping)
 
 	email := fmt.Sprintf("mcp-%d@example.com", time.Now().UnixNano())
@@ -109,7 +109,7 @@ func TestMCPNeedsAValidAccessToken(t *testing.T) {
 	for _, tool := range tools.Tools {
 		names[tool.Name] = true
 	}
-	for _, want := range []string{"accounts_me", "feed_feedback"} {
+	for _, want := range []string{"accounts_me", "feed_feedback", "feed_explain"} {
 		if !names[want] {
 			t.Errorf("%s missing from the tools %v", want, names)
 		}

@@ -19,6 +19,7 @@ func Fixtures() []gx.Fixture {
 		{Component: "Dashboard", Package: "github.com/alternayte/briefing/internal/admin", Missing: true},
 		{Component: "ToggleButton", Package: "github.com/alternayte/briefing/internal/admin", Missing: true},
 		{Component: "CalibrateView", Package: "github.com/alternayte/briefing/internal/feed", Missing: true},
+		{Component: "ExplainButton", Package: "github.com/alternayte/briefing/internal/feed", Missing: true},
 		{Component: "FeedbackButton", Package: "github.com/alternayte/briefing/internal/feed", Missing: true},
 		{Component: "FinishButton", Package: "github.com/alternayte/briefing/internal/feed", Missing: true},
 		{Component: "Home", Package: "github.com/alternayte/briefing/internal/feed", Missing: true},

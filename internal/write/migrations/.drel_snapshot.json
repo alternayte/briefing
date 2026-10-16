@@ -59,6 +59,77 @@
       ]
     },
     {
+      "name": "explanations",
+      "columns": [
+        {
+          "name": "id",
+          "type": "BIGSERIAL PRIMARY KEY",
+          "notNull": true,
+          "pk": true
+        },
+        {
+          "name": "user_id",
+          "type": "uuid",
+          "notNull": true,
+          "ref": "auth_users",
+          "refColumn": "id",
+          "onDelete": "CASCADE"
+        },
+        {
+          "name": "story_id",
+          "type": "bigint",
+          "notNull": true,
+          "ref": "stories",
+          "refColumn": "id",
+          "onDelete": "CASCADE"
+        },
+        {
+          "name": "revision",
+          "type": "integer",
+          "notNull": true
+        },
+        {
+          "name": "locale",
+          "type": "text",
+          "notNull": true
+        },
+        {
+          "name": "text",
+          "type": "text",
+          "notNull": true
+        },
+        {
+          "name": "model",
+          "type": "text",
+          "notNull": true
+        },
+        {
+          "name": "created_at",
+          "type": "timestamptz",
+          "notNull": true,
+          "default": "NOW()"
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "notNull": true,
+          "default": "NOW()"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "uq_explanations",
+          "columns": [
+            "user_id",
+            "story_id",
+            "revision",
+            "locale"
+          ],
+          "unique": true
+        }
+      ]
+    },
+    {
       "name": "review_items",
       "columns": [
         {

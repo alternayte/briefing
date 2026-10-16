@@ -52,11 +52,21 @@ type Finish struct {
 
 func (in *Finish) Rules() gx.Rules { return gx.Rules{} }
 
-// Story is the full view of one story.
+// Story is the full view of one story. Explain carries a notice code from
+// the Explain form.
 type Story struct {
 	gx.Route `GET /s/{ID}`
 	ID       int64
+	Explain  string `query:"explain"`
 }
+
+// Explain asks for an explanation of a story at the reader's level.
+type Explain struct {
+	gx.Route `POST /s/{StoryID}/explain`
+	StoryID  int64
+}
+
+func (in *Explain) Rules() gx.Rules { return gx.Rules{} }
 
 // Feedback records what the reader thinks of a story. From names the page to
 // return to: "story" or the feed.

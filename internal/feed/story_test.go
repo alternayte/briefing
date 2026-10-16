@@ -15,6 +15,7 @@ import (
 	"github.com/alternayte/briefing/internal/i18n"
 	"github.com/alternayte/briefing/internal/platform"
 	"github.com/alternayte/briefing/internal/platform/pgtest"
+	"github.com/alternayte/briefing/internal/write"
 )
 
 func TestStoryViewShowsTheEntryAndMarksItSeen(t *testing.T) {
@@ -22,7 +23,7 @@ func TestStoryViewShowsTheEntryAndMarksItSeen(t *testing.T) {
 	e := pgtest.Engine(t)
 	now := time.Date(2031, 8, 2, 12, 0, 0, 0, time.UTC)
 	tu := platform.DefaultTuning()
-	w := NewWeb(e, nil, accounts.NewProfileStore(e, tu), nil, tu, func() time.Time { return now })
+	w := NewWeb(e, nil, write.NewExplainer(e, nil, platform.Config{}, 0, time.Now), accounts.NewProfileStore(e, tu), nil, tu, func() time.Time { return now })
 	dreltest.WithRollback(t, e, func(ctx context.Context) {
 		tx := drel.MustFromContext(ctx)
 		user := pgtest.User(t, ctx, "story@example.com")

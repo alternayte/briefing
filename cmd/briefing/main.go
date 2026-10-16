@@ -19,7 +19,11 @@ import (
 	"github.com/alternayte/briefing/internal/embed"
 	"github.com/alternayte/briefing/internal/feed"
 	"github.com/alternayte/briefing/internal/platform"
+	"github.com/alternayte/briefing/internal/write"
 )
+
+// explainsPerDay limits each reader's explanations, which cost a writer call.
+const explainsPerDay = 20
 
 const usage = "usage: briefing all|serve|work|migrate|seed"
 
@@ -94,7 +98,7 @@ func serve(ctx context.Context, cfg platform.Config) error {
 		return err
 	}
 	or := platform.NewOpenRouter(platform.OpenRouterBase, cfg.OpenRouterAPIKey, &http.Client{Timeout: time.Minute}, engine, time.Now)
-	feedWeb := feed.NewWeb(engine, embed.New(or, cfg), profiles, jobs, tuning, time.Now)
+	feedWeb := feed.NewWeb(engine, embed.New(or, cfg), write.NewExplainer(engine, or, cfg, explainsPerDay, time.Now), profiles, jobs, tuning, time.Now)
 
 	adminWeb := admin.NewWeb(engine, cfg, time.Now)
 	srv := &http.Server{Addr: cfg.Addr, Handler: newHandler(web, feedWeb, adminWeb, pool.Ping), ReadHeaderTimeout: 10 * time.Second}

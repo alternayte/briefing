@@ -1,0 +1,14 @@
+package feed
+
+import "github.com/alternayte/briefing/internal/feed/route"
+
+props {
+  // F is the explain form of one story.
+  F route.ExplainForm
+  // Label is the button text.
+  Label string = ""
+}
+
+<form {...p.F.Attrs()}>
+  <button type="submit" class="label min-h-target border border-foreground px-line hover:bg-foreground hover:text-background">{p.Label}</button>
+</form>

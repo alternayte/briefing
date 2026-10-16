@@ -25,6 +25,11 @@ props {
   Sources []SourceView = nil
   // Feedback holds the four feedback forms.
   Feedback []FeedbackButtonProps = nil
+  // Explanation is the reader's cached explanation as paragraphs; without
+  // one, ExplainForm offers to write it and ExplainNotice says why it cannot.
+  Explanation []string = nil
+  ExplainForm ExplainButtonProps
+  ExplainNotice string = ""
 }
 
 <gx.Head title={p.Headline + " · " + p.Msg.AppName} />
@@ -51,6 +56,22 @@ props {
     <section class="mt-line" aria-labelledby="new">
       <h2 id="new" class="label border-b border-foreground pb-quarter">{p.Msg.StoryWhatIsNew}</h2>
       <p class="mt-quarter">{p.New}</p>
+    </section>
+    <section class="mt-line" aria-labelledby="explain" id="explanation">
+      <h2 id="explain" class="label border-b border-foreground pb-quarter">{p.Msg.ExplainHeading}</h2>
+      if len(p.Explanation) > 0 {
+        <div class="mt-quarter grid gap-half">
+          for _, para := range p.Explanation {
+            <p>{para}</p>
+          }
+        </div>
+      } else {
+        if p.ExplainNotice != "" {
+          <p role="status" class="mt-quarter text-small text-muted-foreground">{p.ExplainNotice}</p>
+        } else {
+          <div class="mt-quarter"><ExplainButton f={p.ExplainForm.F} label={p.ExplainForm.Label} /></div>
+        }
+      }
     </section>
     <section class="mt-line" aria-labelledby="claims">
       <h2 id="claims" class="label border-b border-foreground pb-quarter">{p.Msg.StoryClaims}</h2>

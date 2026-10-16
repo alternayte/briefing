@@ -4,6 +4,7 @@ package write
 
 import (
 	"github.com/alternayte/drel"
+	"github.com/google/uuid"
 
 	"github.com/alternayte/briefing/internal/platform"
 )
@@ -79,4 +80,16 @@ type WriteAttempt struct {
 	StoryID  int64     `db:"story_id,references=stories.id,on_delete=cascade,unique_index=uq_write_attempts"`
 	Day      drel.Date `db:"day,unique_index=uq_write_attempts"`
 	Attempts int       `db:"attempts"`
+}
+
+// Explanation is a story explained for one reader, in their locale, at one
+// revision.
+type Explanation struct {
+	drel.Model[int64]
+	UserID      uuid.UUID `db:"user_id,references=auth_users.id,on_delete=cascade,unique_index=uq_explanations"`
+	StoryID     int64     `db:"story_id,references=stories.id,on_delete=cascade,unique_index=uq_explanations"`
+	Revision    int       `db:"revision,unique_index=uq_explanations"`
+	Locale      string    `db:"locale,unique_index=uq_explanations"`
+	Text        string    `db:"text"`
+	WriterModel string    `db:"model"`
 }

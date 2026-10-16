@@ -27,6 +27,7 @@ type DB struct {
 	Stories       *model.StoryRepository
 	StoryItems    *model.StoryItemRepository
 	Concepts      *write.ConceptRepository
+	Explanations  *write.ExplanationRepository
 	ReviewItems   *write.ReviewItemRepository
 	StoryConcepts *write.StoryConceptRepository
 	Summaries     *write.SummaryRepository
@@ -51,6 +52,7 @@ func Open(dsn string, opts ...drel.Option) (*DB, error) {
 		Stories:       &model.StoryRepository{Repository: drel.NewRepository(engine, model.StoryMeta)},
 		StoryItems:    &model.StoryItemRepository{Repository: drel.NewRepository(engine, model.StoryItemMeta)},
 		Concepts:      &write.ConceptRepository{Repository: drel.NewRepository(engine, write.ConceptMeta)},
+		Explanations:  &write.ExplanationRepository{Repository: drel.NewRepository(engine, write.ExplanationMeta)},
 		ReviewItems:   &write.ReviewItemRepository{Repository: drel.NewRepository(engine, write.ReviewItemMeta)},
 		StoryConcepts: &write.StoryConceptRepository{Repository: drel.NewRepository(engine, write.StoryConceptMeta)},
 		Summaries:     &write.SummaryRepository{Repository: drel.NewRepository(engine, write.SummaryMeta)},
@@ -79,6 +81,7 @@ func Open(dsn string, opts ...drel.Option) (*DB, error) {
 			},
 			Write: WriteRepos{
 				Concepts:      &write.ConceptRepository{Repository: drel.NewRepository(engine, write.ConceptMeta)},
+				Explanations:  &write.ExplanationRepository{Repository: drel.NewRepository(engine, write.ExplanationMeta)},
 				ReviewItems:   &write.ReviewItemRepository{Repository: drel.NewRepository(engine, write.ReviewItemMeta)},
 				StoryConcepts: &write.StoryConceptRepository{Repository: drel.NewRepository(engine, write.StoryConceptMeta)},
 				Summaries:     &write.SummaryRepository{Repository: drel.NewRepository(engine, write.SummaryMeta)},
@@ -101,6 +104,7 @@ type TxRepos struct {
 	Stories       *model.TxStoryRepository
 	StoryItems    *model.TxStoryItemRepository
 	Concepts      *write.TxConceptRepository
+	Explanations  *write.TxExplanationRepository
 	ReviewItems   *write.TxReviewItemRepository
 	StoryConcepts *write.TxStoryConceptRepository
 	Summaries     *write.TxSummaryRepository
@@ -123,6 +127,7 @@ func (db *DB) Tx(ctx context.Context) TxRepos {
 		Stories:       &model.TxStoryRepository{TxRepository: drel.NewTxRepository(tx, model.StoryMeta)},
 		StoryItems:    &model.TxStoryItemRepository{TxRepository: drel.NewTxRepository(tx, model.StoryItemMeta)},
 		Concepts:      &write.TxConceptRepository{TxRepository: drel.NewTxRepository(tx, write.ConceptMeta)},
+		Explanations:  &write.TxExplanationRepository{TxRepository: drel.NewTxRepository(tx, write.ExplanationMeta)},
 		ReviewItems:   &write.TxReviewItemRepository{TxRepository: drel.NewTxRepository(tx, write.ReviewItemMeta)},
 		StoryConcepts: &write.TxStoryConceptRepository{TxRepository: drel.NewTxRepository(tx, write.StoryConceptMeta)},
 		Summaries:     &write.TxSummaryRepository{TxRepository: drel.NewTxRepository(tx, write.SummaryMeta)},
@@ -151,6 +156,7 @@ func (db *DB) Tx(ctx context.Context) TxRepos {
 			},
 			Write: WriteTxRepos{
 				Concepts:      &write.TxConceptRepository{TxRepository: drel.NewTxRepository(tx, write.ConceptMeta)},
+				Explanations:  &write.TxExplanationRepository{TxRepository: drel.NewTxRepository(tx, write.ExplanationMeta)},
 				ReviewItems:   &write.TxReviewItemRepository{TxRepository: drel.NewTxRepository(tx, write.ReviewItemMeta)},
 				StoryConcepts: &write.TxStoryConceptRepository{TxRepository: drel.NewTxRepository(tx, write.StoryConceptMeta)},
 				Summaries:     &write.TxSummaryRepository{TxRepository: drel.NewTxRepository(tx, write.SummaryMeta)},
@@ -229,6 +235,7 @@ type StoriesTxRepos struct {
 // WriteRepos holds the untracked repositories of the "write" module.
 type WriteRepos struct {
 	Concepts      *write.ConceptRepository
+	Explanations  *write.ExplanationRepository
 	ReviewItems   *write.ReviewItemRepository
 	StoryConcepts *write.StoryConceptRepository
 	Summaries     *write.SummaryRepository
@@ -238,6 +245,7 @@ type WriteRepos struct {
 // WriteTxRepos holds the tracked repositories of the "write" module.
 type WriteTxRepos struct {
 	Concepts      *write.TxConceptRepository
+	Explanations  *write.TxExplanationRepository
 	ReviewItems   *write.TxReviewItemRepository
 	StoryConcepts *write.TxStoryConceptRepository
 	Summaries     *write.TxSummaryRepository

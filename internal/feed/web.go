@@ -12,20 +12,22 @@ import (
 	"github.com/alternayte/briefing/internal/accounts"
 	"github.com/alternayte/briefing/internal/embed"
 	"github.com/alternayte/briefing/internal/platform"
+	"github.com/alternayte/briefing/internal/write"
 )
 
 // Web holds what the feed pages need at request time.
 type Web struct {
-	engine   *drel.Engine
-	embedder *embed.Embedder
-	profiles *accounts.ProfileStore
-	jobs     *river.Client[pgx.Tx]
-	tuning   platform.Tuning
-	now      func() time.Time
+	engine    *drel.Engine
+	embedder  *embed.Embedder
+	explainer *write.Explainer
+	profiles  *accounts.ProfileStore
+	jobs      *river.Client[pgx.Tx]
+	tuning    platform.Tuning
+	now       func() time.Time
 }
 
-func NewWeb(engine *drel.Engine, e *embed.Embedder, profiles *accounts.ProfileStore, jobs *river.Client[pgx.Tx], t platform.Tuning, now func() time.Time) *Web {
-	return &Web{engine: engine, embedder: e, profiles: profiles, jobs: jobs, tuning: t, now: now}
+func NewWeb(engine *drel.Engine, e *embed.Embedder, x *write.Explainer, profiles *accounts.ProfileStore, jobs *river.Client[pgx.Tx], t platform.Tuning, now func() time.Time) *Web {
+	return &Web{engine: engine, embedder: e, explainer: x, profiles: profiles, jobs: jobs, tuning: t, now: now}
 }
 
 type webKey struct{}

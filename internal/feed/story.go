@@ -62,6 +62,20 @@ var StoryPage = gx.Page(func(c *gx.Ctx, in route.Story) (StoryViewProps, error) 
 	if err == nil && p.Headline == "" && len(p.Sources) == 0 {
 		return p, gx.NotFound()
 	}
+	if err != nil || p.LinkCard {
+		return p, err
+	}
+	locale := i18n.FromContext(ctx)
+	text, err := w.explainer.Cached(ctx, profile.ID(), in.ID, locale)
+	p.Explanation = paragraphs(strings.ReplaceAll(text, "\n", "\n\n"))
+	p.ExplainForm = Explain.Props(&route.Explain{StoryID: in.ID})
+	p.ExplainForm.Label = msg.ExplainButton
+	switch in.Explain {
+	case "cap":
+		p.ExplainNotice = msg.ExplainCap
+	case "limit":
+		p.ExplainNotice = msg.ExplainLimit
+	}
 	return p, err
 }, StoryView)
 

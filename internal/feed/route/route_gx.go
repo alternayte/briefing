@@ -29,6 +29,88 @@ func (in Calibrate) URL() string {
 	return gx.BasePath() + b.String()
 }
 
+// Pattern returns the method and pattern of Explain.
+func (Explain) Pattern() string { return "POST /s/{StoryID}/explain" }
+
+// GxBindForm fills Explain and returns one message key per field
+// that did not convert (REQ-FRM-07).
+func (in *Explain) GxBindForm(r *http.Request) (map[string]string, error) {
+	errs := map[string]string{}
+	if v := gx.PathValue(r, "StoryID"); v != "" {
+		x, err := strconv.ParseInt(v, 10, 64)
+		if err != nil {
+			errs[""] = "invalid"
+		} else {
+			in.StoryID = int64(x)
+		}
+	}
+	return errs, nil
+}
+
+// Bind fills Explain from the request.
+func (in *Explain) Bind(r *http.Request) error {
+	errs, err := in.GxBindForm(r)
+	if err != nil {
+		return err
+	}
+	for _, name := range gx.FieldNames(errs) {
+		return fmt.Errorf("gx: %s: %s", name, errs[name])
+	}
+	return nil
+}
+
+// URL returns the path of Explain.
+func (in Explain) URL() string {
+	var b strings.Builder
+	b.WriteString("/")
+	b.WriteString("s")
+	b.WriteString("/")
+	b.WriteString(url.PathEscape(strconv.FormatInt(int64(in.StoryID), 10)))
+	b.WriteString("/")
+	b.WriteString("explain")
+	return gx.BasePath() + b.String()
+}
+
+// ExplainForm is the generated form value of Explain (REQ-FRM-03).
+type ExplainForm struct {
+	gx.FormMeta
+	StoryID gx.FormField[int64]
+}
+
+// GxFormValue fills the form value of Explain (REQ-FRM-03).
+func (in *Explain) GxFormValue(errs map[string]string) gx.FormValue {
+	f := ExplainForm{FormMeta: gx.FormMeta{Name: "explain", ID: "explain-form", Action: in.URL(), Method: "POST", Enctype: "", Tool: "feed_explain"}}
+	f.StoryID = gx.FormField[int64]{Name: "", ID: gx.FieldID("explain", ""), Value: in.StoryID, ErrorKey: errs[""], Error: gx.Translate(errs[""], gx.DefaultMessage(errs[""])), Constraints: nil, ValidateURL: gx.ValidateURL(in.URL(), "")}
+	return f
+}
+
+// GxFieldName returns the form field name of a field pointer (REQ-FRM-02).
+func (in *Explain) GxFieldName(ptr any) string {
+	switch ptr {
+	case any(&in.StoryID):
+		return ""
+	}
+	return ""
+}
+
+// GxNewForm returns a fresh Explain (REQ-FRM-02).
+func (in *Explain) GxNewForm() gx.FormInput { return &Explain{} }
+
+// GxRunForm calls the form handler with the concrete input type (REQ-FRM-02).
+func (in *Explain) GxRunForm(ctx *gx.Ctx, fn any) error {
+	return fn.(func(*gx.Ctx, *Explain) error)(ctx, in)
+}
+
+// GxTool describes Explain as a tool.
+func (Explain) GxTool() gx.ToolInfo {
+	return gx.ToolInfo{
+		Name:        "feed_explain",
+		Description: "Explains a story at the reader's level, in their language: it builds on the concepts they have mastered and defines the ones they have not met. Use it when the reader asks what a story means or why it matters. A story has one explanation per revision; asking again returns the same text. Returns the explanation as plain text, or an error when today's limit or spending cap is reached.",
+		Schema:      "{\"additionalProperties\":false,\"properties\":{\"StoryID\":{\"type\":\"integer\"}},\"required\":[\"StoryID\"],\"type\":\"object\"}",
+		Fields:      []gx.ToolField{{Name: "StoryID", In: "path"}},
+	}
+}
+
 // Pattern returns the method and pattern of Feedback.
 func (Feedback) Pattern() string { return "POST /s/{StoryID}/feedback" }
 
@@ -438,6 +520,9 @@ func (in *Story) Bind(r *http.Request) error {
 		}
 		in.ID = int64(x)
 	}
+	if v := r.URL.Query().Get("explain"); v != "" {
+		in.Explain = string(v)
+	}
 	return nil
 }
 
@@ -448,5 +533,13 @@ func (in Story) URL() string {
 	b.WriteString("s")
 	b.WriteString("/")
 	b.WriteString(url.PathEscape(strconv.FormatInt(int64(in.ID), 10)))
+	q := url.Values{}
+	if in.Explain != "" {
+		q.Set("explain", in.Explain)
+	}
+	if s := q.Encode(); s != "" {
+		b.WriteString("?")
+		b.WriteString(s)
+	}
 	return gx.BasePath() + b.String()
 }
