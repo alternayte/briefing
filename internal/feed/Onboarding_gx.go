@@ -107,33 +107,33 @@ var _tOnboarding0 = gx.NewTemplate(
 	[]string{"", "\n"},
 	[]int{0},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: 0}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: 0}},
 )
 
 var _tOnboarding1 = gx.NewTemplate(
 	[]string{"\n  <h1", ">", "</h1>\n  <p class=\"mt-half text-deck leading-tight text-muted-foreground italic\">", "</p>\n  "},
 	[]int{0, 1, 1},
 	[]gx.TemplateEl{{Slot: 0, Start: 3, EndStatic: 2, End: 5}},
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: 0, Slot: -1}, {El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "p"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: 0, Slot: -1}, {El: -1, Slot: -1, Name: "p"}},
 )
 
 var _tOnboarding2 = gx.NewTemplate(
 	[]string{"\n    <p class=\"mt-line border-l-2 border-destructive pl-half text-small text-destructive\" role=\"alert\">", "</p>\n  "},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "p"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "p"}},
 )
 
 var _tOnboarding3 = gx.NewTemplate(
 	[]string{"\n  <form", ">\n    <fieldset>\n      <legend class=\"label text-muted-foreground\">", "</legend>\n      <div class=\"mt-quarter flex gap-line\">\n        <label class=\"flex min-h-target items-center gap-quarter\"><input", "> English</label>\n        <label class=\"flex min-h-target items-center gap-quarter\"><input", "> Français</label>\n      </div>\n    </fieldset>\n    <div class=\"grid gap-quarter\">\n      <label", ">", "</label>\n      <textarea", ">", "</textarea>\n      <p", ">", "</p>\n    </div>\n    <div class=\"grid gap-quarter\">\n      <label", ">", "</label>\n      <textarea", ">", "</textarea>\n      <p", ">", "</p>\n    </div>\n    <button class=\"label min-h-target bg-primary px-line text-primary-foreground hover:bg-accent hover:text-accent-foreground\" type=\"submit\">", "</button>\n  </form>\n"},
 	[]int{0, 3, 4, 4, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2},
 	[]gx.TemplateEl{{Slot: 0, Start: 3, EndStatic: 17, End: 19}, {Slot: 2, Start: 121, EndStatic: 3, End: 1}, {Slot: 3, Start: 84, EndStatic: 4, End: 1}, {Slot: 4, Start: 90, EndStatic: 6, End: 8}, {Slot: 6, Start: 15, EndStatic: 8, End: 11}, {Slot: 8, Start: 18, EndStatic: 10, End: 4}, {Slot: 10, Start: 57, EndStatic: 12, End: 8}, {Slot: 12, Start: 15, EndStatic: 14, End: 11}, {Slot: 14, Start: 18, EndStatic: 16, End: 4}},
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: 0, Slot: -1}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: 0, Slot: -1}},
 )
 
 var _tOnboarding4 = gx.NewTemplate(
 	[]string{"<section class=\"pt-line\" aria-labelledby=\"onboarding-title\">", "</section>\n"},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "section"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "section"}},
 )

@@ -108,9 +108,7 @@ func Home(p HomeProps) gx.Node {
 	for _, c := range p.Today {
 //line Home.gx:43:30
 		_b3.Add(_tHome9.With(
-//line Home.gx:44:5
-			gx.Open("li", gx.Attrs{gx.Attr{Key: "id", Value: entryID(c.StoryID), Kind: gx.AttrText}}),
-//line Home.gx:44:33
+//line Home.gx:44:9
 			StoryCard(StoryCardProps{Card: c, Msg: p.Msg}),
 		))
 	}
@@ -154,9 +152,7 @@ func Home(p HomeProps) gx.Node {
 		for _, c := range p.More {
 //line Home.gx:57:33
 			_b5.Add(_tHome14.With(
-//line Home.gx:58:9
-				gx.Open("li", gx.Attrs{gx.Attr{Key: "id", Value: entryID(c.StoryID), Kind: gx.AttrText}}),
-//line Home.gx:58:37
+//line Home.gx:58:13
 				StoryCard(StoryCardProps{Card: c, Msg: p.Msg}),
 			))
 		}
@@ -216,119 +212,119 @@ var _tHome0 = gx.NewTemplate(
 	[]string{"", "\n"},
 	[]int{0},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: 0}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: 0}},
 )
 
 var _tHome1 = gx.NewTemplate(
 	[]string{"\n  "},
 	[]int{},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}},
+	[]gx.TemplateRoot{},
 ).With()
 
 var _tHome2 = gx.NewTemplate(
 	[]string{"\n    "},
 	[]int{},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}},
+	[]gx.TemplateRoot{},
 ).With()
 
 var _tHome3 = gx.NewTemplate(
 	[]string{"\n      <span class=\"mt-half flex items-baseline justify-between gap-half border-y border-foreground py-quarter text-small\">", " <a class=\"label text-accent\" href=\"/\">", "</a></span>\n    "},
 	[]int{1, 2},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "span"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "span"}},
 )
 
 var _tHome4 = gx.NewTemplate(
 	[]string{"<p", ">", "</p>\n"},
 	[]int{0, 1},
 	[]gx.TemplateEl{{Slot: 0, Start: 0, EndStatic: 2, End: 4}},
-	[]gx.TemplateRoot{{El: 0, Slot: -1}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: 0, Slot: -1}},
 )
 
 var _tHome5 = gx.NewTemplate(
 	[]string{"<div", ">", "</div>\n<h1 class=\"sr-only\">", "</h1>\n"},
 	[]int{0, 1, 1},
 	[]gx.TemplateEl{{Slot: 0, Start: 0, EndStatic: 2, End: 6}},
-	[]gx.TemplateRoot{{El: 0, Slot: -1}, {El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "h1"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: 0, Slot: -1}, {El: -1, Slot: -1, Name: "h1"}},
 )
 
 var _tHome6 = gx.NewTemplate(
 	[]string{"\n  <a class=\"mt-half flex min-h-target items-center justify-between gap-half border-2 border-foreground px-half py-quarter hover:border-accent\" href=\"/review\">\n    <span class=\"font-semibold\">", "</span>\n    <span class=\"label text-accent\">", " →</span>\n  </a>\n"},
 	[]int{2, 2},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "a"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "a"}},
 )
 
 var _tHome7 = gx.NewTemplate(
 	[]string{"\n"},
 	[]int{},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}},
+	[]gx.TemplateRoot{},
 ).With()
 
 var _tHome8 = gx.NewTemplate(
 	[]string{"\n  <p class=\"pt-line text-muted-foreground italic\">", "</p>\n"},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "p"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "p"}},
 )
 
 var _tHome9 = gx.NewTemplate(
-	[]string{"\n    <li", ">", "</li>\n  "},
-	[]int{0, 1},
-	[]gx.TemplateEl{{Slot: 0, Start: 5, EndStatic: 2, End: 5}},
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: 0, Slot: -1}, {El: -1, Slot: -1}},
+	[]string{"\n    <li>", "</li>\n  "},
+	[]int{1},
+	nil,
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "li"}},
 )
 
 var _tHome10 = gx.NewTemplate(
 	[]string{"<ol class=\"divide-y divide-border\">", "</ol>\n"},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "ol"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "ol"}},
 )
 
 var _tHome11 = gx.NewTemplate(
 	[]string{"\n  <section class=\"mt-line border-t-2 border-foreground pt-half\" aria-live=\"polite\">\n    <p class=\"font-semibold\">", "</p>\n    <p class=\"text-small text-muted-foreground\">", "</p>\n  </section>\n"},
 	[]int{2, 2},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "section"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "section"}},
 )
 
 var _tHome12 = gx.NewTemplate(
 	[]string{"\n    <summary class=\"label min-h-target cursor-pointer py-half\">", " (", ")</summary>\n    "},
 	[]int{1, 1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "summary"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "summary"}},
 )
 
 var _tHome13 = gx.NewTemplate(
 	[]string{"\n      "},
 	[]int{},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}},
+	[]gx.TemplateRoot{},
 ).With()
 
 var _tHome14 = gx.NewTemplate(
-	[]string{"\n        <li", ">", "</li>\n      "},
-	[]int{0, 1},
-	[]gx.TemplateEl{{Slot: 0, Start: 9, EndStatic: 2, End: 5}},
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: 0, Slot: -1}, {El: -1, Slot: -1}},
+	[]string{"\n        <li>", "</li>\n      "},
+	[]int{1},
+	nil,
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "li"}},
 )
 
 var _tHome15 = gx.NewTemplate(
 	[]string{"<ol class=\"divide-y divide-border\">", "</ol>\n  "},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "ol"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "ol"}},
 )
 
 var _tHome16 = gx.NewTemplate(
 	[]string{"<details class=\"mt-line border-t-2 border-foreground\">", "</details>\n"},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "details"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "details"}},
 )
 
 var _tHome17 = gx.NewTemplate(

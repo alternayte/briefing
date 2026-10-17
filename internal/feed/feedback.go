@@ -50,22 +50,21 @@ var Feedback = gx.Form(func(c *gx.Ctx, in *route.Feedback) error {
 			if err != nil {
 				return err
 			}
-			group := FeedbackGroup(FeedbackGroupProps{Buttons: feedbackButtons(in.StoryID, "story", given, feedbackLabels(msg)), Msg: msg})
-			return c.Patch(gx.El("div", gx.Attrs{{Key: "id", Value: "feedback", Kind: gx.AttrText}}, group))
+			return c.Patch(FeedbackGroup(FeedbackGroupProps{StoryID: in.StoryID, Buttons: feedbackButtons(in.StoryID, "story", given, feedbackLabels(msg)), Msg: msg}))
 		}
 		cards, err := queryCards(ctx, tx, l, cardSelect+` WHERE s.id = $2`, profile.ID(), in.StoryID)
 		if err != nil || len(cards) == 0 {
 			return err
 		}
-		card := StoryCard(StoryCardProps{Card: cards[0], Msg: msg})
-		return c.Patch(gx.El("li", gx.Attrs{{Key: "id", Value: entryID(in.StoryID), Kind: gx.AttrText}}, card))
+		return c.Patch(StoryCard(StoryCardProps{Card: cards[0], Msg: msg}))
 	})
 }, FeedbackButton).Tool()
 
-// entryID is the element id of a story in the feed list. The patch wraps the
-// card in its list item because a component's own output ends in text, which
-// a patch cannot target.
+// entryID is the element id of a story card, which a feedback answer patches.
 func entryID(storyID int64) string { return "entry-" + strconv.FormatInt(storyID, 10) }
+
+// feedbackID is the element id of the feedback buttons of a story.
+func feedbackID(storyID int64) string { return "feedback-" + strconv.FormatInt(storyID, 10) }
 
 // fromPage reports whether the request comes from the Gx runtime in an open
 // page, which can take a patch; a plain form post or a tool call cannot.

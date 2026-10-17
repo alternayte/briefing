@@ -51,5 +51,5 @@ var _tBudgetForm0 = gx.NewTemplate(
 	[]string{"<form", ">\n  <label", ">", "</label>\n  <input", ">\n  <button class=\"label min-h-target border border-foreground px-half hover:bg-foreground hover:text-background\" type=\"submit\">", "</button>\n  <p", ">", "</p>\n</form>\n"},
 	[]int{0, 1, 2, 1, 2, 1, 2},
 	[]gx.TemplateEl{{Slot: 0, Start: 0, EndStatic: 7, End: 12}, {Slot: 1, Start: 4, EndStatic: 3, End: 8}, {Slot: 3, Start: 11, EndStatic: 4, End: 1}, {Slot: 5, Start: 12, EndStatic: 7, End: 4}},
-	[]gx.TemplateRoot{{El: 0, Slot: -1}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: 0, Slot: -1}},
 )

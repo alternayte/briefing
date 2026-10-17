@@ -28,7 +28,7 @@ props {
   }
 
   <div class="mt-line border-t border-border pt-line">
-    <a href="/api/auth/oauth/github?redirect_to=/" data-gx-nav="off" class="label inline-flex min-h-target w-full items-center justify-center bg-primary px-line text-primary-foreground hover:bg-accent hover:text-accent-foreground">{p.Msg.LoginGitHub}</a>
+    <a href="/api/auth/oauth/github?redirect_to=/" class="label inline-flex min-h-target w-full items-center justify-center bg-primary px-line text-primary-foreground hover:bg-accent hover:text-accent-foreground">{p.Msg.LoginGitHub}</a>
   </div>
 
   if p.MagicLink {

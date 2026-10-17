@@ -18,8 +18,8 @@ github.com/alternayte/auth-all v0.5.1 h1:zlyzrJMOe8koBKaqWF0kvYbydTOh2TBBOExaXvE
 github.com/alternayte/auth-all v0.5.1/go.mod h1:R0cqJZoxuzllxbONfiPNNNXvHJoHS7efm8pA0/JEplE=
 github.com/alternayte/drel v0.10.3 h1:VPFWAiqEg8zOYm+0CzlDosLXxlJzxlMS+YSnzn/129w=
 github.com/alternayte/drel v0.10.3/go.mod h1:XY8EMHGTTLuLJDfWMJX6NJgGYqWRm/YNHc52aLZLkUs=
-github.com/alternayte/gx v0.4.2 h1:vn5ld1tIIpJwNgaY2GNc+GOvJKEoEgUA/pBg66HMK+c=
-github.com/alternayte/gx v0.4.2/go.mod h1:aunaasBMfN5/Lah9Y0LkN6E58PeuOSs3LQ318og2trQ=
+github.com/alternayte/gx v0.4.4 h1:5pqNWRmsrsHJ22EmkWQmbnGkhyARqocjfleLVqllxS8=
+github.com/alternayte/gx v0.4.4/go.mod h1:aunaasBMfN5/Lah9Y0LkN6E58PeuOSs3LQ318og2trQ=
 github.com/andybalholm/brotli v1.0.5/go.mod h1:fO7iG3H7G2nSZ7m0zPUDn85XEX2GTukHGRSepvi9Eig=
 github.com/andybalholm/brotli v1.2.0 h1:ukwgCxwYrmACq68yiUqwIWnGY0cTPox/M94sVwToPjQ=
 github.com/andybalholm/brotli v1.2.0/go.mod h1:rzTDkvFWvIrjDXZHkuS16NPggd91W3kUSvPlQ1pLaKY=

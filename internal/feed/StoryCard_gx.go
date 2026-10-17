@@ -26,7 +26,7 @@ func StoryCard(p StoryCardProps) gx.Node {
 	var _b gx.Builder
 //line StoryCard.gx:17:1
 	var _b1 gx.Builder
-//line StoryCard.gx:17:84
+//line StoryCard.gx:17:113
 	_b1.Add(_tStoryCard0)
 //line StoryCard.gx:18:3
 	if p.Card.Updated {
@@ -155,12 +155,12 @@ func StoryCard(p StoryCardProps) gx.Node {
 //line StoryCard.gx:38:3
 		_b3.Node(),
 //line StoryCard.gx:51:3
-		FeedbackGroup(FeedbackGroupProps{Buttons: p.Card.Feedback, Msg: p.Msg}),
+		FeedbackGroup(FeedbackGroupProps{StoryID: p.Card.StoryID, Buttons: p.Card.Feedback, Msg: p.Msg}),
 	))
 //line StoryCard.gx:17:1
 	_b.Add(_tStoryCard15.With(
 //line StoryCard.gx:17:1
-		gx.Open("article", gx.Attrs{gx.Attr{Key: "class", Value: "py-line", Kind: gx.AttrText}, gx.Attr{Key: "aria-labelledby", Value: "story-" + gx.TextValue(p.Card.StoryID), Kind: gx.AttrText}}),
+		gx.Open("article", gx.Attrs{gx.Attr{Key: "class", Value: "py-line", Kind: gx.AttrText}, gx.Attr{Key: "id", Value: entryID(p.Card.StoryID), Kind: gx.AttrText}, gx.Attr{Key: "aria-labelledby", Value: "story-" + gx.TextValue(p.Card.StoryID), Kind: gx.AttrText}}),
 //line StoryCard.gx:17:1
 		_b1.Node(),
 	))
@@ -171,110 +171,110 @@ var _tStoryCard0 = gx.NewTemplate(
 	[]string{"\n  "},
 	[]int{},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}},
+	[]gx.TemplateRoot{},
 ).With()
 
 var _tStoryCard1 = gx.NewTemplate(
 	[]string{"\n    <p class=\"label text-accent\">", "</p>\n  "},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "p"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "p"}},
 )
 
 var _tStoryCard2 = gx.NewTemplate(
 	[]string{"\n    <p class=\"label text-muted-foreground\" lang=\"en\">", "</p>\n  "},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "p"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "p"}},
 )
 
 var _tStoryCard3 = gx.NewTemplate(
 	[]string{"\n  <h2", "><a", ">", "</a></h2>\n  "},
 	[]int{0, 1, 2},
 	[]gx.TemplateEl{{Slot: 0, Start: 3, EndStatic: 3, End: 9}, {Slot: 1, Start: 1, EndStatic: 3, End: 4}},
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: 0, Slot: -1}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: 0, Slot: -1}},
 )
 
 var _tStoryCard4 = gx.NewTemplate(
 	[]string{"\n    <p class=\"mt-quarter text-small text-muted-foreground\">", "</p>\n    <p class=\"mt-quarter text-small\">", " <a", ">", "</a></p>\n  "},
 	[]int{1, 1, 1, 2},
 	[]gx.TemplateEl{{Slot: 2, Start: 1, EndStatic: 4, End: 4}},
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "p"}, {El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "p"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "p"}, {El: -1, Slot: -1, Name: "p"}},
 )
 
 var _tStoryCard5 = gx.NewTemplate(
 	[]string{"\n    <p class=\"mt-quarter\">", "</p>\n  "},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "p"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "p"}},
 )
 
 var _tStoryCard6 = gx.NewTemplate(
 	[]string{"\n    "},
 	[]int{},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}},
+	[]gx.TemplateRoot{},
 ).With()
 
 var _tStoryCard7 = gx.NewTemplate(
 	[]string{"\n      "},
 	[]int{},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}},
+	[]gx.TemplateRoot{},
 ).With()
 
 var _tStoryCard8 = gx.NewTemplate(
 	[]string{"\n        <li class=\"label border border-border px-quarter text-muted-foreground\">", "</li>\n      "},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "li"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "li"}},
 )
 
 var _tStoryCard9 = gx.NewTemplate(
 	[]string{"<ul class=\"mt-half flex flex-wrap gap-quarter\" aria-label=\"concepts\">", "</ul>\n  "},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "ul"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "ul"}},
 )
 
 var _tStoryCard10 = gx.NewTemplate(
 	[]string{"\n        <li><a", "><img", ">", "</a></li>\n      "},
 	[]int{1, 2, 2},
 	[]gx.TemplateEl{{Slot: 0, Start: 13, EndStatic: 3, End: 4}, {Slot: 1, Start: 1, EndStatic: 2, End: 1}},
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "li"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "li"}},
 )
 
 var _tStoryCard11 = gx.NewTemplate(
 	[]string{"<ul class=\"flex flex-wrap items-center gap-x-half\">", "</ul>\n    "},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "ul"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "ul"}},
 )
 
 var _tStoryCard12 = gx.NewTemplate(
 	[]string{"\n      <p>", "</p>\n    "},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "p"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "p"}},
 )
 
 var _tStoryCard13 = gx.NewTemplate(
 	[]string{"\n      <p class=\"label mt-quarter\">", "</p>\n    "},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "p"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "p"}},
 )
 
 var _tStoryCard14 = gx.NewTemplate(
 	[]string{"<footer class=\"mt-half text-small text-muted-foreground\">", "</footer>\n  ", "\n"},
 	[]int{1, 0},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "footer"}, {El: -1, Slot: -1}, {El: -1, Slot: 1}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "footer"}, {El: -1, Slot: 1}},
 )
 
 var _tStoryCard15 = gx.NewTemplate(
 	[]string{"<article", ">", "</article>\n"},
 	[]int{0, 1},
 	[]gx.TemplateEl{{Slot: 0, Start: 0, EndStatic: 2, End: 10}},
-	[]gx.TemplateRoot{{El: 0, Slot: -1}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: 0, Slot: -1}},
 )

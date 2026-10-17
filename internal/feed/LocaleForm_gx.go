@@ -46,5 +46,5 @@ var _tLocaleForm0 = gx.NewTemplate(
 	[]string{"<form", ">\n  <fieldset class=\"flex gap-line\">\n    <legend class=\"sr-only\">", "</legend>\n    <label class=\"flex min-h-target items-center gap-quarter\"><input", "> English</label>\n    <label class=\"flex min-h-target items-center gap-quarter\"><input", "> Français</label>\n  </fieldset>\n  <button class=\"label min-h-target border border-foreground px-half hover:bg-foreground hover:text-background\" type=\"submit\">", "</button>\n</form>\n"},
 	[]int{0, 3, 3, 3, 2},
 	[]gx.TemplateEl{{Slot: 0, Start: 0, EndStatic: 5, End: 17}, {Slot: 2, Start: 72, EndStatic: 3, End: 1}, {Slot: 3, Start: 80, EndStatic: 4, End: 1}},
-	[]gx.TemplateRoot{{El: 0, Slot: -1}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: 0, Slot: -1}},
 )

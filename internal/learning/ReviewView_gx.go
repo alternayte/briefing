@@ -135,96 +135,96 @@ var _tReviewView0 = gx.NewTemplate(
 	[]string{"", "\n<h1 class=\"pt-line text-headline leading-tight font-semibold\">", "</h1>\n<p class=\"mt-half text-muted-foreground\">", "</p>\n"},
 	[]int{0, 1, 1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: 0}, {El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "h1"}, {El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "p"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: 0}, {El: -1, Slot: -1, Name: "h1"}, {El: -1, Slot: -1, Name: "p"}},
 )
 
 var _tReviewView1 = gx.NewTemplate(
 	[]string{"\n  "},
 	[]int{},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}},
+	[]gx.TemplateRoot{},
 ).With()
 
 var _tReviewView2 = gx.NewTemplate(
 	[]string{"\n    "},
 	[]int{},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}},
+	[]gx.TemplateRoot{},
 ).With()
 
 var _tReviewView3 = gx.NewTemplate(
 	[]string{"\n      <p class=\"font-semibold text-success\">", "</p>\n    "},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "p"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "p"}},
 )
 
 var _tReviewView4 = gx.NewTemplate(
 	[]string{"\n      <p class=\"font-semibold text-destructive\">", "</p>\n    "},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "p"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "p"}},
 )
 
 var _tReviewView5 = gx.NewTemplate(
 	[]string{"\n    <p class=\"mt-quarter\">", "</p>\n    <p class=\"mt-quarter text-small text-muted-foreground\">", "</p>\n  "},
 	[]int{1, 1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "p"}, {El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "p"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "p"}, {El: -1, Slot: -1, Name: "p"}},
 )
 
 var _tReviewView6 = gx.NewTemplate(
 	[]string{"<section", ">", "</section>\n"},
 	[]int{0, 1},
 	[]gx.TemplateEl{{Slot: 0, Start: 0, EndStatic: 2, End: 10}},
-	[]gx.TemplateRoot{{El: 0, Slot: -1}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: 0, Slot: -1}},
 )
 
 var _tReviewView7 = gx.NewTemplate(
 	[]string{"\n"},
 	[]int{},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}},
+	[]gx.TemplateRoot{},
 ).With()
 
 var _tReviewView8 = gx.NewTemplate(
 	[]string{"\n  <p class=\"mt-line text-muted-foreground italic\">", "</p>\n"},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "p"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "p"}},
 )
 
 var _tReviewView9 = gx.NewTemplate(
 	[]string{"\n    <p class=\"label text-muted-foreground\">", " · ", "</p>\n    <h2", ">", "</h2>\n    "},
 	[]int{1, 1, 0, 1},
 	[]gx.TemplateEl{{Slot: 2, Start: 9, EndStatic: 4, End: 5}},
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "p"}, {El: -1, Slot: -1}, {El: 0, Slot: -1}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "p"}, {El: 0, Slot: -1}},
 )
 
 var _tReviewView10 = gx.NewTemplate(
 	[]string{"\n      "},
 	[]int{},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}},
+	[]gx.TemplateRoot{},
 ).With()
 
 var _tReviewView11 = gx.NewTemplate(
 	[]string{"\n        <li>", "</li>\n      "},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "li"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "li"}},
 )
 
 var _tReviewView12 = gx.NewTemplate(
 	[]string{"<ol class=\"mt-half grid gap-quarter\">", "</ol>\n  "},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "ol"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "ol"}},
 )
 
 var _tReviewView13 = gx.NewTemplate(
 	[]string{"<section class=\"mt-line border-t-2 border-foreground pt-half\" aria-labelledby=\"question\">", "</section>\n"},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "section"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "section"}},
 )

@@ -8,6 +8,8 @@ import (
 )
 
 type FeedbackGroupProps struct {
+	// StoryID names the group, so a feedback answer can patch it.
+	StoryID int64
 	// Buttons are the four feedback forms of one story.
 	Buttons []FeedbackButtonProps
 	// Msg is the catalog of the request locale.
@@ -21,25 +23,25 @@ func FeedbackGroup(p FeedbackGroupProps) gx.Node {
 		}
 	}
 	var _b gx.Builder
-//line FeedbackGroup.gx:12:1
+//line FeedbackGroup.gx:14:1
 	var _b1 gx.Builder
-//line FeedbackGroup.gx:12:95
+//line FeedbackGroup.gx:14:122
 	_b1.Add(_tFeedbackGroup0)
-//line FeedbackGroup.gx:13:3
+//line FeedbackGroup.gx:15:3
 	for _, b := range p.Buttons {
-//line FeedbackGroup.gx:13:32
+//line FeedbackGroup.gx:15:32
 		_b1.Add(_tFeedbackGroup1.With(
-//line FeedbackGroup.gx:14:5
+//line FeedbackGroup.gx:16:5
 			FeedbackButton(FeedbackButtonProps{F: b.F, Label: b.Label, Kind: b.Kind, From: b.From, Chosen: b.Chosen}),
 		))
 	}
-//line FeedbackGroup.gx:15:4
+//line FeedbackGroup.gx:17:4
 	_b1.Add(_tFeedbackGroup2)
-//line FeedbackGroup.gx:12:1
+//line FeedbackGroup.gx:14:1
 	_b.Add(_tFeedbackGroup3.With(
-//line FeedbackGroup.gx:12:1
-		gx.Open("div", gx.Attrs{gx.Attr{Key: "class", Value: "mt-half flex flex-wrap gap-quarter", Kind: gx.AttrText}, gx.Attr{Key: "role", Value: "group", Kind: gx.AttrText}, gx.Attr{Key: "aria-label", Value: p.Msg.FeedbackLabel, Kind: gx.AttrText}}),
-//line FeedbackGroup.gx:12:1
+//line FeedbackGroup.gx:14:1
+		gx.Open("div", gx.Attrs{gx.Attr{Key: "class", Value: "mt-half flex flex-wrap gap-quarter", Kind: gx.AttrText}, gx.Attr{Key: "id", Value: feedbackID(p.StoryID), Kind: gx.AttrText}, gx.Attr{Key: "role", Value: "group", Kind: gx.AttrText}, gx.Attr{Key: "aria-label", Value: p.Msg.FeedbackLabel, Kind: gx.AttrText}}),
+//line FeedbackGroup.gx:14:1
 		_b1.Node(),
 	))
 	return _b.Node()
@@ -49,26 +51,26 @@ var _tFeedbackGroup0 = gx.NewTemplate(
 	[]string{"\n  "},
 	[]int{},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}},
+	[]gx.TemplateRoot{},
 ).With()
 
 var _tFeedbackGroup1 = gx.NewTemplate(
 	[]string{"\n    ", "\n  "},
 	[]int{0},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: 0}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: 0}},
 )
 
 var _tFeedbackGroup2 = gx.NewTemplate(
 	[]string{"\n"},
 	[]int{},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}},
+	[]gx.TemplateRoot{},
 ).With()
 
 var _tFeedbackGroup3 = gx.NewTemplate(
 	[]string{"<div", ">", "</div>\n"},
 	[]int{0, 1},
 	[]gx.TemplateEl{{Slot: 0, Start: 0, EndStatic: 2, End: 6}},
-	[]gx.TemplateRoot{{El: 0, Slot: -1}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: 0, Slot: -1}},
 )

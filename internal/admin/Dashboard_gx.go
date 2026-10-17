@@ -292,194 +292,194 @@ var _tDashboard0 = gx.NewTemplate(
 	[]string{"", "\n<h1 class=\"pt-line text-headline leading-tight font-semibold\">", "</h1>\n\n"},
 	[]int{0, 1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: 0}, {El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "h1"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: 0}, {El: -1, Slot: -1, Name: "h1"}},
 )
 
 var _tDashboard1 = gx.NewTemplate(
 	[]string{"\n  <h2", ">", "</h2>\n  "},
 	[]int{0, 1},
 	[]gx.TemplateEl{{Slot: 0, Start: 3, EndStatic: 2, End: 5}},
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: 0, Slot: -1}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: 0, Slot: -1}},
 )
 
 var _tDashboard2 = gx.NewTemplate(
 	[]string{"\n    <p class=\"mt-half border-l-2 border-destructive pl-half text-small text-destructive\" role=\"status\">", "</p>\n  "},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "p"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "p"}},
 )
 
 var _tDashboard3 = gx.NewTemplate(
 	[]string{"\n  <p class=\"mt-half text-deck\">", " <span class=\"text-small text-muted-foreground\">/ ", " ", "</span></p>\n  "},
 	[]int{1, 2, 2},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "p"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "p"}},
 )
 
 var _tDashboard4 = gx.NewTemplate(
 	[]string{"\n    <p class=\"mt-quarter text-small text-muted-foreground\">", "</p>\n  "},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "p"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "p"}},
 )
 
 var _tDashboard5 = gx.NewTemplate(
 	[]string{"\n    "},
 	[]int{},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}},
+	[]gx.TemplateRoot{},
 ).With()
 
 var _tDashboard6 = gx.NewTemplate(
 	[]string{"\n      <thead class=\"label text-muted-foreground\"><tr class=\"border-b border-border\"><th class=\"py-quarter text-left font-normal\">", "</th><th class=\"pl-half text-right font-normal\">", "</th><th class=\"pl-half text-right font-normal\">", "</th></tr></thead>\n      "},
 	[]int{3, 3, 3},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "thead"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "thead"}},
 )
 
 var _tDashboard7 = gx.NewTemplate(
 	[]string{"\n        "},
 	[]int{},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}},
+	[]gx.TemplateRoot{},
 ).With()
 
 var _tDashboard8 = gx.NewTemplate(
 	[]string{"\n          <tr class=\"border-b border-border\"><td class=\"py-quarter\">", " <span class=\"text-muted-foreground\">· ", "</span></td><td class=\"pl-half text-right\">", "</td><td class=\"pl-half text-right\">", "</td></tr>\n        "},
 	[]int{2, 3, 2, 2},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "tr"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "tr"}},
 )
 
 var _tDashboard9 = gx.NewTemplate(
 	[]string{"\n      "},
 	[]int{},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}},
+	[]gx.TemplateRoot{},
 ).With()
 
 var _tDashboard10 = gx.NewTemplate(
 	[]string{"<tbody>", "</tbody>\n    "},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "tbody"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "tbody"}},
 )
 
 var _tDashboard11 = gx.NewTemplate(
 	[]string{"<table class=\"mt-half w-full text-small tabular-nums\">", "</table>\n  "},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "table"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "table"}},
 )
 
 var _tDashboard12 = gx.NewTemplate(
 	[]string{"\n"},
 	[]int{},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}},
+	[]gx.TemplateRoot{},
 ).With()
 
 var _tDashboard13 = gx.NewTemplate(
 	[]string{"<section class=\"mt-line\" aria-labelledby=\"spend\">", "</section>\n\n"},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "section"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "section"}},
 )
 
 var _tDashboard14 = gx.NewTemplate(
 	[]string{"\n          <p class=\"leading-tight\">", " <span class=\"label text-muted-foreground\">", "</span></p>\n          <p class=\"text-small text-muted-foreground\"><span class=\"label\">", "</span> ", "</p>\n          "},
 	[]int{1, 2, 2, 1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "p"}, {El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "p"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "p"}, {El: -1, Slot: -1, Name: "p"}},
 )
 
 var _tDashboard15 = gx.NewTemplate(
 	[]string{"\n            <p class=\"text-small break-words text-destructive\"><span class=\"label\">", "</span> ", "</p>\n          "},
 	[]int{2, 1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "p"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "p"}},
 )
 
 var _tDashboard16 = gx.NewTemplate(
 	[]string{"<div class=\"min-w-0\">", "</div>\n        ", "\n      "},
 	[]int{1, 0},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "div"}, {El: -1, Slot: -1}, {El: -1, Slot: 1}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "div"}, {El: -1, Slot: 1}},
 )
 
 var _tDashboard17 = gx.NewTemplate(
 	[]string{"<li", ">", "</li>\n    "},
 	[]int{0, 1},
 	[]gx.TemplateEl{{Slot: 0, Start: 0, EndStatic: 2, End: 5}},
-	[]gx.TemplateRoot{{El: 0, Slot: -1}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: 0, Slot: -1}},
 )
 
 var _tDashboard18 = gx.NewTemplate(
 	[]string{"\n  "},
 	[]int{},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}},
+	[]gx.TemplateRoot{},
 ).With()
 
 var _tDashboard19 = gx.NewTemplate(
 	[]string{"<ul class=\"divide-y divide-border\">", "</ul>\n"},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "ul"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "ul"}},
 )
 
 var _tDashboard20 = gx.NewTemplate(
 	[]string{"<section class=\"mt-line\" aria-labelledby=\"sources\">", "</section>\n\n"},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "section"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "section"}},
 )
 
 var _tDashboard21 = gx.NewTemplate(
 	[]string{"\n    <thead class=\"label text-muted-foreground\"><tr class=\"border-b border-border\"><th class=\"py-quarter text-left font-normal\">", "</th><th class=\"pl-half text-left font-normal\">", "</th><th class=\"pl-half text-right font-normal\">", "</th></tr></thead>\n    "},
 	[]int{3, 3, 3},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "thead"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "thead"}},
 )
 
 var _tDashboard22 = gx.NewTemplate(
 	[]string{"\n        <tr class=\"border-b border-border\"><td class=\"py-quarter\">", "</td><td class=\"pl-half\">", "</td><td class=\"pl-half text-right\">", "</td></tr>\n      "},
 	[]int{2, 2, 2},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "tr"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "tr"}},
 )
 
 var _tDashboard23 = gx.NewTemplate(
 	[]string{"<tbody>", "</tbody>\n  "},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "tbody"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "tbody"}},
 )
 
 var _tDashboard24 = gx.NewTemplate(
 	[]string{"<table class=\"mt-half w-full text-small tabular-nums\">", "</table>\n  <h3 class=\"label mt-line text-muted-foreground\">", "</h3>\n  "},
 	[]int{1, 1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "table"}, {El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "h3"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "table"}, {El: -1, Slot: -1, Name: "h3"}},
 )
 
 var _tDashboard25 = gx.NewTemplate(
 	[]string{"\n      <li class=\"border-b border-border py-quarter text-small\"><span class=\"label\">", "</span> <span class=\"text-muted-foreground\">", "</span><br><span class=\"break-words\">", "</span></li>\n    "},
 	[]int{2, 2, 2},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "li"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "li"}},
 )
 
 var _tDashboard26 = gx.NewTemplate(
 	[]string{"<ul class=\"mt-quarter\">", "</ul>\n"},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "ul"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "ul"}},
 )
 
 var _tDashboard27 = gx.NewTemplate(
 	[]string{"<section class=\"mt-line\" aria-labelledby=\"jobs\">", "</section>\n"},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "section"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "section"}},
 )

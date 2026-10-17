@@ -14,7 +14,7 @@ props {
   Msg i18n.Messages
 }
 
-<article class="py-line" aria-labelledby={"story-" + gx.TextValue(p.Card.StoryID)}>
+<article id={entryID(p.Card.StoryID)} class="py-line" aria-labelledby={"story-" + gx.TextValue(p.Card.StoryID)}>
   if p.Card.Updated {
     <p class="label text-accent">{p.Msg.StoryUpdated}</p>
   }
@@ -48,5 +48,5 @@ props {
       <p class="label mt-quarter">{p.Card.Reason}</p>
     }
   </footer>
-  <FeedbackGroup buttons={p.Card.Feedback} msg={p.Msg} />
+  <FeedbackGroup storyID={p.Card.StoryID} buttons={p.Card.Feedback} msg={p.Msg} />
 </article>

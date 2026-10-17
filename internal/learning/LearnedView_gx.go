@@ -146,77 +146,77 @@ var _tLearnedView0 = gx.NewTemplate(
 	[]string{"", "\n<h1 class=\"pt-line text-headline leading-tight font-semibold\">", "</h1>\n<p class=\"mt-half text-muted-foreground\">", "</p>\n<section class=\"mt-line\" aria-labelledby=\"week\">\n  <h2", ">", "</h2>\n  <p class=\"mt-quarter tabular-nums\">", "</p>\n</section>\n"},
 	[]int{0, 1, 1, 1, 2, 2},
 	[]gx.TemplateEl{{Slot: 3, Start: 56, EndStatic: 5, End: 5}},
-	[]gx.TemplateRoot{{El: -1, Slot: 0}, {El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "h1"}, {El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "p"}, {El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "section"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: 0}, {El: -1, Slot: -1, Name: "h1"}, {El: -1, Slot: -1, Name: "p"}, {El: -1, Slot: -1, Name: "section"}},
 )
 
 var _tLearnedView1 = gx.NewTemplate(
 	[]string{"\n  <p class=\"mt-line text-muted-foreground italic\">", "</p>\n"},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "p"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "p"}},
 )
 
 var _tLearnedView2 = gx.NewTemplate(
 	[]string{"\n"},
 	[]int{},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}},
+	[]gx.TemplateRoot{},
 ).With()
 
 var _tLearnedView3 = gx.NewTemplate(
 	[]string{"\n  "},
 	[]int{},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}},
+	[]gx.TemplateRoot{},
 ).With()
 
 var _tLearnedView4 = gx.NewTemplate(
 	[]string{"\n    <h2 class=\"label border-b border-foreground pb-quarter\">", " (", ")</h2>\n    "},
 	[]int{1, 1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "h2"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "h2"}},
 )
 
 var _tLearnedView5 = gx.NewTemplate(
 	[]string{"\n      "},
 	[]int{},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}},
+	[]gx.TemplateRoot{},
 ).With()
 
 var _tLearnedView6 = gx.NewTemplate(
 	[]string{"\n        "},
 	[]int{},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}},
+	[]gx.TemplateRoot{},
 ).With()
 
 var _tLearnedView7 = gx.NewTemplate(
 	[]string{"\n          <dt class=\"font-semibold\">", "</dt>\n          <dd class=\"text-small text-muted-foreground\">", "</dd>\n          "},
 	[]int{1, 1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "dt"}, {El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "dd"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "dt"}, {El: -1, Slot: -1, Name: "dd"}},
 )
 
 var _tLearnedView8 = gx.NewTemplate(
 	[]string{"\n            "},
 	[]int{},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}},
+	[]gx.TemplateRoot{},
 ).With()
 
 var _tLearnedView9 = gx.NewTemplate(
 	[]string{"\n              <span class=\"label text-muted-foreground\">", "</span>\n              "},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "span"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "span"}},
 )
 
 var _tLearnedView10 = gx.NewTemplate(
 	[]string{"\n                "},
 	[]int{},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}},
+	[]gx.TemplateRoot{},
 ).With()
 
 var _tLearnedView11 = gx.NewTemplate(
@@ -230,40 +230,40 @@ var _tLearnedView12 = gx.NewTemplate(
 	[]string{"\n                <a", ">", "</a>\n              "},
 	[]int{0, 1},
 	[]gx.TemplateEl{{Slot: 0, Start: 17, EndStatic: 2, End: 4}},
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: 0, Slot: -1}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: 0, Slot: -1}},
 )
 
 var _tLearnedView13 = gx.NewTemplate(
 	[]string{"<dd class=\"mt-quarter text-small\">", "</dd>\n          "},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "dd"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "dd"}},
 )
 
 var _tLearnedView14 = gx.NewTemplate(
 	[]string{"<div class=\"py-half\">", "</div>\n      "},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "div"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "div"}},
 )
 
 var _tLearnedView15 = gx.NewTemplate(
 	[]string{"\n    "},
 	[]int{},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}},
+	[]gx.TemplateRoot{},
 ).With()
 
 var _tLearnedView16 = gx.NewTemplate(
 	[]string{"<dl class=\"divide-y divide-border\">", "</dl>\n  "},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "dl"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "dl"}},
 )
 
 var _tLearnedView17 = gx.NewTemplate(
 	[]string{"<section class=\"mt-line\">", "</section>\n"},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "section"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "section"}},
 )

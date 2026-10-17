@@ -61,9 +61,7 @@ func Login(p LoginProps) gx.Node {
 	}
 //line Login.gx:28:4
 	_b1.Add(_tLogin3.With(
-//line Login.gx:31:5
-		gx.Open("a", gx.Attrs{gx.Attr{Key: "class", Value: "label inline-flex min-h-target w-full items-center justify-center bg-primary px-line text-primary-foreground hover:bg-accent hover:text-accent-foreground", Kind: gx.AttrText}, gx.Attr{Key: "href", Value: "/api/auth/oauth/github?redirect_to=/", Kind: gx.AttrURL}, gx.Attr{Key: "data-gx-nav", Value: "off", Kind: gx.AttrText}}),
-//line Login.gx:31:232
+//line Login.gx:31:214
 		gx.Text(p.Msg.LoginGitHub),
 	))
 //line Login.gx:34:3
@@ -98,47 +96,47 @@ var _tLogin0 = gx.NewTemplate(
 	[]string{"", "\n"},
 	[]int{0},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: 0}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: 0}},
 )
 
 var _tLogin1 = gx.NewTemplate(
 	[]string{"\n  <h1", ">", "</h1>\n  <p class=\"mt-half text-deck leading-tight text-muted-foreground italic\">", "</p>\n\n  "},
 	[]int{0, 1, 1},
 	[]gx.TemplateEl{{Slot: 0, Start: 3, EndStatic: 2, End: 5}},
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: 0, Slot: -1}, {El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "p"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: 0, Slot: -1}, {El: -1, Slot: -1, Name: "p"}},
 )
 
 var _tLogin2 = gx.NewTemplate(
 	[]string{"\n    <p", ">", "</p>\n  "},
 	[]int{0, 1},
 	[]gx.TemplateEl{{Slot: 0, Start: 5, EndStatic: 2, End: 4}},
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: 0, Slot: -1}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: 0, Slot: -1}},
 )
 
 var _tLogin3 = gx.NewTemplate(
-	[]string{"\n\n  <div class=\"mt-line border-t border-border pt-line\">\n    <a", ">", "</a>\n  </div>\n\n  "},
-	[]int{1, 2},
-	[]gx.TemplateEl{{Slot: 0, Start: 61, EndStatic: 2, End: 4}},
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "div"}, {El: -1, Slot: -1}},
+	[]string{"\n\n  <div class=\"mt-line border-t border-border pt-line\">\n    <a class=\"label inline-flex min-h-target w-full items-center justify-center bg-primary px-line text-primary-foreground hover:bg-accent hover:text-accent-foreground\" href=\"/api/auth/oauth/github?redirect_to=/\">", "</a>\n  </div>\n\n  "},
+	[]int{2},
+	nil,
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "div"}},
 )
 
 var _tLogin4 = gx.NewTemplate(
 	[]string{"\n    <p class=\"label my-half flex items-center gap-half text-muted-foreground before:h-px before:flex-1 before:bg-border after:h-px after:flex-1 after:bg-border\">", "</p>\n    <form", ">\n      <label", ">", "</label>\n      <input", ">\n      <button class=\"label mt-half min-h-target border border-foreground px-line hover:bg-foreground hover:text-background\" type=\"submit\">", "</button>\n    </form>\n  "},
 	[]int{1, 0, 1, 2, 1, 2},
 	[]gx.TemplateEl{{Slot: 1, Start: 9, EndStatic: 6, End: 21}, {Slot: 2, Start: 8, EndStatic: 4, End: 8}, {Slot: 4, Start: 15, EndStatic: 5, End: 1}},
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "p"}, {El: -1, Slot: -1}, {El: 0, Slot: -1}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "p"}, {El: 0, Slot: -1}},
 )
 
 var _tLogin5 = gx.NewTemplate(
 	[]string{"\n"},
 	[]int{},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}},
+	[]gx.TemplateRoot{},
 ).With()
 
 var _tLogin6 = gx.NewTemplate(
 	[]string{"<section class=\"mx-auto max-w-column pt-line\" aria-labelledby=\"login-title\">", "</section>\n"},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "section"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "section"}},
 )

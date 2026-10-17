@@ -61,26 +61,26 @@ var _tInterestAddForm0 = gx.NewTemplate(
 	[]string{"\n  "},
 	[]int{},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}},
+	[]gx.TemplateRoot{},
 ).With()
 
 var _tInterestAddForm1 = gx.NewTemplate(
 	[]string{"\n    <input", ">\n  "},
 	[]int{0},
 	[]gx.TemplateEl{{Slot: 0, Start: 5, EndStatic: 1, End: 1}},
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: 0, Slot: -1}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: 0, Slot: -1}},
 )
 
 var _tInterestAddForm2 = gx.NewTemplate(
 	[]string{"\n  <input", ">\n  <button class=\"label min-h-target border border-foreground px-half hover:bg-foreground hover:text-background\" type=\"submit\">", "</button>\n"},
 	[]int{0, 1},
 	[]gx.TemplateEl{{Slot: 0, Start: 3, EndStatic: 1, End: 1}},
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: 0, Slot: -1}, {El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "button"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: 0, Slot: -1}, {El: -1, Slot: -1, Name: "button"}},
 )
 
 var _tInterestAddForm3 = gx.NewTemplate(
 	[]string{"<form", ">", "</form>\n"},
 	[]int{0, 1},
 	[]gx.TemplateEl{{Slot: 0, Start: 0, EndStatic: 2, End: 7}},
-	[]gx.TemplateRoot{{El: 0, Slot: -1}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: 0, Slot: -1}},
 )

@@ -45,5 +45,5 @@ var _tVerify0 = gx.NewTemplate(
 	[]string{"", "\n<section class=\"mx-auto max-w-column pt-line\" aria-labelledby=\"verify-title\">\n  <h1", ">", "</h1>\n  <p class=\"mt-half\">", "</p>\n  <form class=\"mt-line border-t border-border pt-line\" method=\"post\" action=\"/api/auth/magic-link/verify\">\n    <input", ">\n    <input", ">\n    <button class=\"label inline-flex min-h-target w-full items-center justify-center bg-primary px-line text-primary-foreground hover:bg-accent hover:text-accent-foreground\" type=\"submit\">", "</button>\n  </form>\n</section>\n"},
 	[]int{0, 1, 2, 2, 2, 2, 3},
 	[]gx.TemplateEl{{Slot: 1, Start: 81, EndStatic: 3, End: 5}, {Slot: 4, Start: 116, EndStatic: 5, End: 1}, {Slot: 5, Start: 6, EndStatic: 6, End: 1}},
-	[]gx.TemplateRoot{{El: -1, Slot: 0}, {El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "section"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: 0}, {El: -1, Slot: -1, Name: "section"}},
 )

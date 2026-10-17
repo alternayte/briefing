@@ -67,13 +67,3 @@ func TestLoginErrorCodesMapToMessages(t *testing.T) {
 		}
 	}
 }
-
-// The OAuth start redirects off-origin; Gx client navigation would fetch it
-// and fail on CORS, so the link must opt out.
-func TestGitHubLinkOptsOutOfClientNavigation(t *testing.T) {
-	rec := httptest.NewRecorder()
-	LoginPage.ServeHTTP(rec, withWeb(httptest.NewRequest("GET", "/login", nil), platform.Config{}, i18n.EN))
-	if !strings.Contains(rec.Body.String(), `href="/api/auth/oauth/github?redirect_to=/" data-gx-nav="off"`) {
-		t.Error("GitHub sign-in link lacks data-gx-nav=off")
-	}
-}

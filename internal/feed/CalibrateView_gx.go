@@ -112,96 +112,96 @@ var _tCalibrateView0 = gx.NewTemplate(
 	[]string{"", "\n"},
 	[]int{0},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: 0}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: 0}},
 )
 
 var _tCalibrateView1 = gx.NewTemplate(
 	[]string{"\n  <h1", ">", "</h1>\n  <p class=\"mt-half text-muted-foreground\">", "</p>\n  "},
 	[]int{0, 1, 1},
 	[]gx.TemplateEl{{Slot: 0, Start: 3, EndStatic: 2, End: 5}},
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: 0, Slot: -1}, {El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "p"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: 0, Slot: -1}, {El: -1, Slot: -1, Name: "p"}},
 )
 
 var _tCalibrateView2 = gx.NewTemplate(
 	[]string{"\n    <p class=\"mt-line text-small text-muted-foreground\">", "</p>\n  "},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "p"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "p"}},
 )
 
 var _tCalibrateView3 = gx.NewTemplate(
 	[]string{"\n  "},
 	[]int{},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}},
+	[]gx.TemplateRoot{},
 ).With()
 
 var _tCalibrateView4 = gx.NewTemplate(
 	[]string{"\n    "},
 	[]int{},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}},
+	[]gx.TemplateRoot{},
 ).With()
 
 var _tCalibrateView5 = gx.NewTemplate(
 	[]string{"\n      "},
 	[]int{},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}},
+	[]gx.TemplateRoot{},
 ).With()
 
 var _tCalibrateView6 = gx.NewTemplate(
 	[]string{"\n        <h2 class=\"text-body leading-tight font-semibold\">", "</h2>\n        <p class=\"mt-quarter line-clamp-3 text-small text-muted-foreground\">", "</p>\n        "},
 	[]int{1, 1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "h2"}, {El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "p"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "h2"}, {El: -1, Slot: -1, Name: "p"}},
 )
 
 var _tCalibrateView7 = gx.NewTemplate(
 	[]string{"\n          "},
 	[]int{},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}},
+	[]gx.TemplateRoot{},
 ).With()
 
 var _tCalibrateView8 = gx.NewTemplate(
 	[]string{"\n            ", "\n          "},
 	[]int{0},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: 0}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: 0}},
 )
 
 var _tCalibrateView9 = gx.NewTemplate(
 	[]string{"\n        "},
 	[]int{},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}},
+	[]gx.TemplateRoot{},
 ).With()
 
 var _tCalibrateView10 = gx.NewTemplate(
 	[]string{"<div class=\"mt-quarter flex flex-wrap gap-half\">", "</div>\n      "},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "div"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "div"}},
 )
 
 var _tCalibrateView11 = gx.NewTemplate(
 	[]string{"<li class=\"py-half\">", "</li>\n    "},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "li"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "li"}},
 )
 
 var _tCalibrateView12 = gx.NewTemplate(
 	[]string{"<ol class=\"mt-line divide-y divide-border border-y border-border\">", "</ol>\n  <div class=\"mt-line\">\n    ", "\n  </div>\n"},
 	[]int{1, 1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "ol"}, {El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "div"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "ol"}, {El: -1, Slot: -1, Name: "div"}},
 )
 
 var _tCalibrateView13 = gx.NewTemplate(
 	[]string{"<section class=\"pt-line\" aria-labelledby=\"calibrate-title\">", "</section>\n"},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "section"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "section"}},
 )

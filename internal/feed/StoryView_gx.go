@@ -95,9 +95,7 @@ func StoryView(p StoryViewProps) gx.Node {
 //line StoryView.gx:51:4
 	_b1.Add(_tStoryView6.With(
 //line StoryView.gx:52:3
-		gx.Open("div", gx.Attrs{gx.Attr{Key: "id", Value: "feedback", Kind: gx.AttrText}}),
-//line StoryView.gx:52:22
-		FeedbackGroup(FeedbackGroupProps{Buttons: p.Feedback, Msg: p.Msg}),
+		FeedbackGroup(FeedbackGroupProps{StoryID: p.StoryID, Buttons: p.Feedback, Msg: p.Msg}),
 	))
 //line StoryView.gx:53:3
 	if !p.LinkCard {
@@ -446,299 +444,299 @@ var _tStoryView0 = gx.NewTemplate(
 	[]string{"", "\n<nav class=\"pt-half\"><a", ">← ", "</a></nav>\n"},
 	[]int{0, 1, 2},
 	[]gx.TemplateEl{{Slot: 1, Start: 22, EndStatic: 3, End: 4}},
-	[]gx.TemplateRoot{{El: -1, Slot: 0}, {El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "nav"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: 0}, {El: -1, Slot: -1, Name: "nav"}},
 )
 
 var _tStoryView1 = gx.NewTemplate(
 	[]string{"\n  "},
 	[]int{},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}},
+	[]gx.TemplateRoot{},
 ).With()
 
 var _tStoryView2 = gx.NewTemplate(
 	[]string{"\n    <p class=\"label text-accent\">", "</p>\n  "},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "p"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "p"}},
 )
 
 var _tStoryView3 = gx.NewTemplate(
 	[]string{"\n    <p class=\"label text-muted-foreground\">", "</p>\n  "},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "p"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "p"}},
 )
 
 var _tStoryView4 = gx.NewTemplate(
 	[]string{"\n  <h1", ">", "</h1>\n  "},
 	[]int{0, 1},
 	[]gx.TemplateEl{{Slot: 0, Start: 3, EndStatic: 2, End: 5}},
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: 0, Slot: -1}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: 0, Slot: -1}},
 )
 
 var _tStoryView5 = gx.NewTemplate(
 	[]string{"\n    <p class=\"mt-quarter text-small text-muted-foreground\">", "</p>\n  "},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "p"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "p"}},
 )
 
 var _tStoryView6 = gx.NewTemplate(
-	[]string{"\n  <div", ">", "</div>\n  "},
-	[]int{0, 1},
-	[]gx.TemplateEl{{Slot: 0, Start: 3, EndStatic: 2, End: 6}},
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: 0, Slot: -1}, {El: -1, Slot: -1}},
+	[]string{"\n  ", "\n  "},
+	[]int{0},
+	nil,
+	[]gx.TemplateRoot{{El: -1, Slot: 0}},
 )
 
 var _tStoryView7 = gx.NewTemplate(
 	[]string{"\n    <p class=\"mt-half\">", "</p>\n    <section class=\"mt-line\" aria-labelledby=\"why\">\n      <h2", ">", "</h2>\n      <p class=\"mt-quarter\">", "</p>\n    </section>\n    <section class=\"mt-line\" aria-labelledby=\"new\">\n      <h2", ">", "</h2>\n      <p class=\"mt-quarter\">", "</p>\n    </section>\n    "},
 	[]int{1, 1, 2, 2, 1, 2, 2},
 	[]gx.TemplateEl{{Slot: 1, Start: 63, EndStatic: 3, End: 5}, {Slot: 4, Start: 78, EndStatic: 6, End: 5}},
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "p"}, {El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "section"}, {El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "section"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "p"}, {El: -1, Slot: -1, Name: "section"}, {El: -1, Slot: -1, Name: "section"}},
 )
 
 var _tStoryView8 = gx.NewTemplate(
 	[]string{"\n      <h2", ">", "</h2>\n      "},
 	[]int{0, 1},
 	[]gx.TemplateEl{{Slot: 0, Start: 7, EndStatic: 2, End: 5}},
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: 0, Slot: -1}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: 0, Slot: -1}},
 )
 
 var _tStoryView9 = gx.NewTemplate(
 	[]string{"\n        "},
 	[]int{},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}},
+	[]gx.TemplateRoot{},
 ).With()
 
 var _tStoryView10 = gx.NewTemplate(
 	[]string{"\n          "},
 	[]int{},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}},
+	[]gx.TemplateRoot{},
 ).With()
 
 var _tStoryView11 = gx.NewTemplate(
 	[]string{"\n            <p>", "</p>\n          "},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "p"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "p"}},
 )
 
 var _tStoryView12 = gx.NewTemplate(
 	[]string{"<div class=\"mt-quarter grid gap-half\">", "</div>\n      "},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "div"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "div"}},
 )
 
 var _tStoryView13 = gx.NewTemplate(
 	[]string{"\n          <p class=\"mt-quarter text-small text-muted-foreground\" role=\"status\">", "</p>\n        "},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "p"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "p"}},
 )
 
 var _tStoryView14 = gx.NewTemplate(
 	[]string{"\n          <div class=\"mt-quarter\">", "</div>\n        "},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "div"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "div"}},
 )
 
 var _tStoryView15 = gx.NewTemplate(
 	[]string{"\n      "},
 	[]int{},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}},
+	[]gx.TemplateRoot{},
 ).With()
 
 var _tStoryView16 = gx.NewTemplate(
 	[]string{"\n    "},
 	[]int{},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}},
+	[]gx.TemplateRoot{},
 ).With()
 
 var _tStoryView17 = gx.NewTemplate(
 	[]string{"<section", ">", "</section>\n    "},
 	[]int{0, 1},
 	[]gx.TemplateEl{{Slot: 0, Start: 0, EndStatic: 2, End: 10}},
-	[]gx.TemplateRoot{{El: 0, Slot: -1}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: 0, Slot: -1}},
 )
 
 var _tStoryView18 = gx.NewTemplate(
 	[]string{"", "\n            "},
 	[]int{0},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: 0}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: 0}},
 )
 
 var _tStoryView19 = gx.NewTemplate(
 	[]string{"\n              <a", ">[", "]</a>\n            "},
 	[]int{0, 1},
 	[]gx.TemplateEl{{Slot: 0, Start: 15, EndStatic: 2, End: 5}},
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: 0, Slot: -1}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: 0, Slot: -1}},
 )
 
 var _tStoryView20 = gx.NewTemplate(
 	[]string{"<li>", "</li>\n        "},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "li"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "li"}},
 )
 
 var _tStoryView21 = gx.NewTemplate(
 	[]string{"<ul class=\"mt-quarter grid gap-quarter\">", "</ul>\n    "},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "ul"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "ul"}},
 )
 
 var _tStoryView22 = gx.NewTemplate(
 	[]string{"<section class=\"mt-line\" aria-labelledby=\"claims\">", "</section>\n  "},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "section"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "section"}},
 )
 
 var _tStoryView23 = gx.NewTemplate(
 	[]string{"\n          <div>\n            <dt class=\"font-semibold\">", " <span", ">", "</span></dt>\n            <dd class=\"text-small text-muted-foreground\">", "</dd>\n          </div>\n        "},
 	[]int{2, 2, 3, 2},
 	[]gx.TemplateEl{{Slot: 1, Start: 1, EndStatic: 3, End: 7}},
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "div"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "div"}},
 )
 
 var _tStoryView24 = gx.NewTemplate(
 	[]string{"<dl class=\"mt-quarter grid gap-half\">", "</dl>\n    "},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "dl"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "dl"}},
 )
 
 var _tStoryView25 = gx.NewTemplate(
 	[]string{"<section class=\"mt-line\" aria-labelledby=\"concepts\">", "</section>\n  "},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "section"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "section"}},
 )
 
 var _tStoryView26 = gx.NewTemplate(
 	[]string{"\n    <h2", ">", "</h2>\n    "},
 	[]int{0, 1},
 	[]gx.TemplateEl{{Slot: 0, Start: 5, EndStatic: 2, End: 5}},
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: 0, Slot: -1}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: 0, Slot: -1}},
 )
 
 var _tStoryView27 = gx.NewTemplate(
 	[]string{"\n      <p class=\"mt-half text-small text-muted-foreground\" role=\"status\">", "</p>\n    "},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "p"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "p"}},
 )
 
 var _tStoryView28 = gx.NewTemplate(
 	[]string{"\n          <p><span class=\"label text-muted-foreground\">[", "] ", "</span><br><a", ">", "</a></p>\n          "},
 	[]int{2, 2, 1, 2},
 	[]gx.TemplateEl{{Slot: 2, Start: 11, EndStatic: 4, End: 4}},
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "p"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "p"}},
 )
 
 var _tStoryView29 = gx.NewTemplate(
 	[]string{"\n            "},
 	[]int{},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}},
+	[]gx.TemplateRoot{},
 ).With()
 
 var _tStoryView30 = gx.NewTemplate(
 	[]string{"\n              <summary class=\"label min-h-target cursor-pointer text-muted-foreground\">", "</summary>\n              "},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "summary"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "summary"}},
 )
 
 var _tStoryView31 = gx.NewTemplate(
 	[]string{"\n                "},
 	[]int{},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}},
+	[]gx.TemplateRoot{},
 ).With()
 
 var _tStoryView32 = gx.NewTemplate(
 	[]string{"\n                  <p>", "</p>\n                "},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "p"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "p"}},
 )
 
 var _tStoryView33 = gx.NewTemplate(
 	[]string{"\n              "},
 	[]int{},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}},
+	[]gx.TemplateRoot{},
 ).With()
 
 var _tStoryView34 = gx.NewTemplate(
 	[]string{"<div class=\"mt-quarter grid gap-half text-small\">", "</div>\n            "},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "div"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "div"}},
 )
 
 var _tStoryView35 = gx.NewTemplate(
 	[]string{"<details class=\"mt-quarter\" open>", "</details>\n          "},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "details"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "details"}},
 )
 
 var _tStoryView36 = gx.NewTemplate(
 	[]string{"\n            ", "\n          "},
 	[]int{0},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: 0}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: 0}},
 )
 
 var _tStoryView37 = gx.NewTemplate(
 	[]string{"<details class=\"mt-quarter\" lang=\"en\">", "</details>\n          "},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "details"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "details"}},
 )
 
 var _tStoryView38 = gx.NewTemplate(
 	[]string{"\n            <p class=\"mt-quarter text-small text-muted-foreground italic\">", "</p>\n          "},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "p"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "p"}},
 )
 
 var _tStoryView39 = gx.NewTemplate(
 	[]string{"<li class=\"py-half\">", "</li>\n      "},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "li"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "li"}},
 )
 
 var _tStoryView40 = gx.NewTemplate(
 	[]string{"<ol class=\"divide-y divide-border\">", "</ol>\n  "},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "ol"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "ol"}},
 )
 
 var _tStoryView41 = gx.NewTemplate(
 	[]string{"<section", ">", "</section>\n"},
 	[]int{0, 1},
 	[]gx.TemplateEl{{Slot: 0, Start: 0, EndStatic: 2, End: 10}},
-	[]gx.TemplateRoot{{El: 0, Slot: -1}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: 0, Slot: -1}},
 )
 
 var _tStoryView42 = gx.NewTemplate(
 	[]string{"<article class=\"pt-half\" aria-labelledby=\"headline\">", "</article>\n"},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "article"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "article"}},
 )

@@ -49,7 +49,7 @@ props {
   if len(p.Meta) > 0 {
     <p class="mt-quarter text-small text-muted-foreground">{strings.Join(p.Meta, " · ")}</p>
   }
-  <div id="feedback"><FeedbackGroup buttons={p.Feedback} msg={p.Msg} /></div>
+  <FeedbackGroup storyID={p.StoryID} buttons={p.Feedback} msg={p.Msg} />
   if !p.LinkCard {
     <p class="mt-half">{p.Summary}</p>
     <section class="mt-line" aria-labelledby="why">

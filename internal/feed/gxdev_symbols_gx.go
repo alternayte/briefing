@@ -79,6 +79,7 @@ func GxDevSymbols() gx.DevPackage {
 			"entryScanReturning":     reflect.ValueOf(entryScanReturning),
 			"errTopic":               reflect.ValueOf(&errTopic).Elem(),
 			"feedbackButtons":        reflect.ValueOf(feedbackButtons),
+			"feedbackID":             reflect.ValueOf(feedbackID),
 			"feedbackLabels":         reflect.ValueOf(feedbackLabels),
 			"fromPage":               reflect.ValueOf(fromPage),
 			"givenFeedback":          reflect.ValueOf(givenFeedback),
