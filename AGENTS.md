@@ -28,3 +28,4 @@ No code and no test commands exist yet.
 - review item: a multiple-choice question for spaced review of a story.
 - feed entry: one story in one user's feed, with its score and state.
 - link card: a feed entry shown without a summary, because the story has too little text.
+- done: a feed entry the reader took off Today with Done, Clear read, "Knew it" or "Not relevant". It still counts toward the daily budget. Avoid: archived, hidden, dismissed, cleared.
