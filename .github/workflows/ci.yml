@@ -22,6 +22,7 @@ jobs:
         run: |
           if [ -f drel.yaml ]; then go tool drel generate; fi
           if [ -f gx.toml ]; then go run ./cmd/gx generate; fi
+          if [ -f gx.toml ]; then go run ./cmd/gx build -main ./cmd/briefing -o "$RUNNER_TEMP/briefing"; fi
           git diff --exit-code
       - name: Gx check
         if: hashFiles('gx.toml') != ''

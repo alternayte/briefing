@@ -18,6 +18,13 @@ check:
     # generators always run; each takes about a second.
     if [ -f drel.yaml ]; then go tool drel generate; fi
     if [ -f gx.toml ]; then go run ./cmd/gx generate && go run ./cmd/gx check; fi
+    # gx build writes the stylesheet from the classes in .gx files and the
+    # theme; gx generate leaves it alone, so a new class needs gx build.
+    if echo "$changed" | grep -qE '\.(gx|css)$'; then
+        before=$(shasum gxstyles/styles_gx.go)
+        go run ./cmd/gx build -main ./cmd/briefing -o "$(mktemp -d)/briefing" >/dev/null
+        if [ "$before" != "$(shasum gxstyles/styles_gx.go)" ]; then echo "gxstyles: the stylesheet was stale; gx build rewrote it, commit gxstyles/styles_gx.go"; exit 1; fi
+    fi
     if echo "$changed" | grep -qE '^go\.(mod|sum)$'; then
         pkgs="./..."
     else
