@@ -1,0 +1,21 @@
+package feed
+
+import "github.com/alternayte/briefing/internal/feed/route"
+
+props {
+  // F is the done form: one story, or every read story with AllSeen.
+  F route.DoneForm
+  // Label is the button text.
+  Label string = ""
+  StoryID int64 = 0
+  AllSeen bool = false
+}
+
+<form {...p.F.Attrs()}>
+  if p.AllSeen {
+    <input type="hidden" name={p.F.AllSeen.Name} value="true" />
+  } else {
+    <input type="hidden" name={p.F.StoryID.Name} value={gx.TextValue(p.StoryID)} />
+  }
+  <button type="submit" class="label min-h-target border border-border px-half text-muted-foreground hover:border-foreground hover:text-foreground">{p.Label}</button>
+</form>

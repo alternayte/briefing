@@ -205,6 +205,8 @@ var SettingsPage = gx.Page(func(c *gx.Ctx, in route.Settings) (SettingsViewProps
 	p.Locale.Current, p.Locale.Label, p.Locale.Save = string(locale), msg.OnboardingLanguage, msg.SettingsSave
 	p.Budget = SetBudget.Props(&route.SetBudget{Budget: profile.DailyBudget})
 	p.Budget.Current, p.Budget.Label, p.Budget.Hint, p.Budget.Save = profile.DailyBudget, msg.SettingsBudget, msg.SettingsBudgetHint, msg.SettingsSave
+	p.Timezone = accounts.SetTimezone.Props(&accountsroute.SetTimezone{Timezone: profile.Timezone})
+	p.Timezone.Current, p.Timezone.Label, p.Timezone.Hint, p.Timezone.Save = profile.Location().String(), msg.SettingsTimezone, msg.SettingsTimezoneHint, msg.SettingsSave
 
 	interests, err := listInterests(ctx, w.engine, profile.ID())
 	if err != nil {

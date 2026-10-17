@@ -29,6 +29,7 @@ func GxDevSymbols() gx.DevPackage {
 		Types: map[string]reflect.Type{
 			"DashboardProps":    reflect.TypeFor[DashboardProps](),
 			"Failure":           reflect.TypeFor[Failure](),
+			"Flag":              reflect.TypeFor[Flag](),
 			"JobCount":          reflect.TypeFor[JobCount](),
 			"SourceRow":         reflect.TypeFor[SourceRow](),
 			"SpendRow":          reflect.TypeFor[SpendRow](),

@@ -9,12 +9,15 @@ props {
   Label string = ""
   Kind string = ""
   From string = ""
-  // Chosen marks feedback the reader already gave.
+  // Chosen marks feedback the reader already gave; a second click undoes it.
   Chosen bool = false
 }
 
 <form {...p.F.Attrs()}>
   <input type="hidden" name={p.F.Kind.Name} value={p.Kind} />
   <input type="hidden" name={p.F.From.Name} value={p.From} />
+  if p.Chosen {
+    <input type="hidden" name={p.F.Undo.Name} value="true" />
+  }
   <button type="submit" aria-pressed={p.Chosen} class="label min-h-target border border-border px-half text-muted-foreground hover:border-foreground hover:text-foreground" class:border-foreground={p.Chosen} class:bg-foreground={p.Chosen} class:text-background={p.Chosen}>{p.Label}</button>
 </form>

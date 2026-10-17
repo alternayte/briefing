@@ -55,3 +55,13 @@ type RevokeToken struct {
 }
 
 func (in *RevokeToken) Rules() gx.Rules { return gx.Rules{} }
+
+// SetTimezone sets the reader's IANA time zone. Auto marks the zone the
+// browser reports by itself; it applies only while the profile has none.
+type SetTimezone struct {
+	gx.Route `POST /settings/timezone`
+	Timezone string
+	Auto     bool
+}
+
+func (in *SetTimezone) Rules() gx.Rules { return gx.Rules{} }

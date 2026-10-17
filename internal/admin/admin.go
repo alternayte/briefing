@@ -4,6 +4,7 @@ package admin
 import (
 	"context"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/alternayte/drel"
@@ -63,6 +64,14 @@ type Failure struct {
 	Kind  string
 	At    string
 	Error string
+}
+
+// Flag is one summary a reader flagged as misleading.
+type Flag struct {
+	StoryURL string
+	Headline string
+	Reader   string
+	At       string
 }
 
 type SpendRow struct {
@@ -130,6 +139,26 @@ var Page = gx.Page(func(c *gx.Ctx, _ route.Admin) (DashboardProps, error) {
 			}
 			f.At = i18n.DateTime(locale, at)
 			p.Failures = append(p.Failures, f)
+		}
+		rows.Close()
+		rows, err = tx.Query(ctx, `
+			SELECT e.story_id, COALESCE((SELECT headline FROM summaries WHERE story_id = e.story_id ORDER BY revision DESC LIMIT 1), ''),
+				COALESCE(NULLIF(p.display_name, ''), u.email), e.created_at
+			FROM learning_events e JOIN auth_users u ON u.id = e.user_id LEFT JOIN profiles p ON p.id = e.user_id
+			WHERE e.kind = 'misleading' ORDER BY e.id DESC LIMIT 50`)
+		if err != nil {
+			return err
+		}
+		for rows.Next() {
+			var f Flag
+			var storyID int64
+			var at time.Time
+			if err := rows.Scan(&storyID, &f.Headline, &f.Reader, &at); err != nil {
+				rows.Close()
+				return err
+			}
+			f.StoryURL, f.At = "/s/"+strconv.FormatInt(storyID, 10), i18n.DateTime(locale, at)
+			p.Flags = append(p.Flags, f)
 		}
 		rows.Close()
 		rows, err = tx.Query(ctx, `SELECT stage, model, calls, cost_usd::float8 FROM llm_usage WHERE day = $1::date ORDER BY cost_usd DESC`, now.Format(time.DateOnly))

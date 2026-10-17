@@ -30,6 +30,12 @@
           "notNull": false
         },
         {
+          "name": "timezone",
+          "type": "text",
+          "notNull": true,
+          "default": "''"
+        },
+        {
           "name": "created_at",
           "type": "timestamptz",
           "notNull": true,

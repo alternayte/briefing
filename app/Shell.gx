@@ -12,6 +12,10 @@ props {
   Lang string
   // SignOut is the sign-out form, or nil when nobody is signed in.
   SignOut *accounts.SignOutButtonProps = nil
+  // Timezone is the hidden form that sends the browser's time zone, with
+  // TimezoneScript, while the profile has none.
+  Timezone *accounts.TimezoneAutoProps = nil
+  TimezoneScript gx.Node = nil
   // Children is the page.
   Children gx.Node
 }
@@ -33,3 +37,8 @@ props {
   </div>
 </header>
 <main id="main" class="mx-auto max-w-column px-half pb-line">{p.Children}</main>
+{gx.Toaster()}
+if p.Timezone != nil {
+  <accounts.TimezoneAuto f={p.Timezone.F} />
+  {p.TimezoneScript}
+}

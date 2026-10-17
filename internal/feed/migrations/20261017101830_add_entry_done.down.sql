@@ -1,0 +1,1 @@
+-- WARNING: cannot drop enum value 'done' from "entrystate"; removing an enum value requires recreating the type. Apply manually.

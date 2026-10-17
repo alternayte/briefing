@@ -20,33 +20,54 @@ const moreLimit = 10
 // first.
 var HomePage = gx.Page(func(c *gx.Ctx, _ route.Home) (HomeProps, error) {
 	ctx := c.R.Context()
-	w, profile := webFrom(ctx), accounts.CurrentProfile(ctx)
-	if profile.OnboardedAt == nil {
+	if accounts.CurrentProfile(ctx).OnboardedAt == nil {
 		return HomeProps{}, gx.Redirect(route.Onboarding{})
 	}
-	now := w.now().UTC()
-	p := HomeProps{Msg: i18n.For(i18n.FromContext(ctx)), LoadedAt: now.Unix()}
+	return loadHome(ctx)
+}, Home)
+
+// loadHome builds the feed of the current reader: Today, Done today and
+// More, on the reader's local day.
+func loadHome(ctx context.Context) (HomeProps, error) {
+	w, profile := webFrom(ctx), accounts.CurrentProfile(ctx)
+	v := w.viewOf(ctx, profile)
+	msg := i18n.For(v.locale)
+	p := HomeProps{Msg: msg, LoadedAt: v.now.Unix(), Budget: profile.DailyBudget, Zone: profile.Location().String(),
+		ClearRead: doneButton(0, true, msg.FeedClearRead)}
 	err := w.engine.WithTx(ctx, func(ctx context.Context) (err error) {
 		tx := drel.MustFromContext(ctx)
-		if p.Today, err = todayCards(ctx, tx, profile.ID(), now, i18n.FromContext(ctx)); err != nil {
+		if p.Today, err = todayCards(ctx, tx, profile.ID(), v); err != nil {
 			return err
 		}
-		due, err := learningDue(ctx, tx, profile.ID(), now, w)
+		if p.Done, err = doneCards(ctx, tx, profile.ID(), v); err != nil {
+			return err
+		}
+		due, err := learningDue(ctx, tx, profile.ID(), v.now, v.loc, w)
 		if err != nil {
 			return err
 		}
 		if len(due) > 0 {
-			p.ReviewCard = i18n.Count(i18n.FromContext(ctx), len(due), p.Msg.ReviewCardOne, p.Msg.ReviewCard)
+			p.ReviewCard = i18n.Count(v.locale, len(due), p.Msg.ReviewCardOne, p.Msg.ReviewCard)
 		}
-		p.CaughtUp = len(p.Today) > 0
+		p.CaughtUp = len(p.Today)+len(p.Done) > 0
 		for _, c := range p.Today {
 			p.CaughtUp = p.CaughtUp && c.Seen && !c.Updated
 		}
-		p.More, err = moreCards(ctx, tx, profile.ID(), now.Add(-w.tuning.Cluster.OpenWindow), moreLimit, i18n.FromContext(ctx))
+		p.More, err = moreCards(ctx, tx, profile.ID(), v.now.Add(-w.tuning.Cluster.OpenWindow), moreLimit, v)
 		return err
 	})
 	return p, err
-}, Home)
+}
+
+// patchHome answers an action of the feed page with its new lists, so the
+// reader keeps their place.
+func patchHome(c *gx.Ctx) error {
+	p, err := loadHome(c.R.Context())
+	if err != nil {
+		return err
+	}
+	return c.Patch(HomeFeed(p, p.Today, p.Done, p.More, p.CaughtUp))
+}
 
 // FreshAction tells an open feed that stories arrived after it loaded. The
 // page calls it every minute and shows a banner when the count is not zero.
@@ -64,7 +85,7 @@ var FreshAction = gx.Action(func(c *gx.Ctx, in route.Fresh) error {
 				f.delivered_at > to_timestamp($3)
 				OR (f.shown_revision > 0 AND f.shown_revision < s.revision AND EXISTS (
 					SELECT 1 FROM summaries m WHERE m.story_id = s.id AND m.revision = s.revision AND m.created_at > to_timestamp($3))))`,
-			profile.ID(), w.now().UTC().Format("2006-01-02"), in.Since).Scan(&n)
+			profile.ID(), accounts.LocalDay(w.now(), profile.Location()), in.Since).Scan(&n)
 	})
 	if err != nil || n == 0 {
 		return err
@@ -74,8 +95,8 @@ var FreshAction = gx.Action(func(c *gx.Ctx, in route.Fresh) error {
 })
 
 // Routes lists every page, action and form of the slice.
-var Routes = gx.Collect(HomePage, FreshAction, StoryPage, TodayAction, StoryAction, SearchAction, Feedback, Explain, TranslateArticle, SettingsPage, SetLocale, SetBudget, InterestsList, InterestsAdd, InterestsRemove, OnboardingPage, SaveInterests, CalibratePage, Rate, Finish)
+var Routes = gx.Collect(HomePage, FreshAction, StoryPage, TodayAction, StoryAction, SearchAction, Feedback, DoneAction, RestoreAction, Explain, TranslateArticle, SettingsPage, SetLocale, SetBudget, InterestsList, InterestsAdd, InterestsRemove, OnboardingPage, SaveInterests, CalibratePage, Rate, Finish)
 
-func learningDue(ctx context.Context, tx *drel.Tx, userID uuid.UUID, now time.Time, w *Web) ([]learning.DueItem, error) {
-	return learning.Due(ctx, tx, userID, now, w.tuning.Review)
+func learningDue(ctx context.Context, tx *drel.Tx, userID uuid.UUID, now time.Time, loc *time.Location, w *Web) ([]learning.DueItem, error) {
+	return learning.Due(ctx, tx, userID, now, loc, w.tuning.Review)
 }

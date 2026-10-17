@@ -1,0 +1,16 @@
+package feed
+
+import "github.com/alternayte/briefing/internal/feed/route"
+
+props {
+  // F is the restore form of one story.
+  F route.RestoreForm
+  // Label is the button text.
+  Label string = ""
+  StoryID int64 = 0
+}
+
+<form {...p.F.Attrs()}>
+  <input type="hidden" name={p.F.StoryID.Name} value={gx.TextValue(p.StoryID)} />
+  <button type="submit" class="label min-h-target border border-border px-half text-muted-foreground hover:border-foreground hover:text-foreground">{p.Label}</button>
+</form>

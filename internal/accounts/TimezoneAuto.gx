@@ -1,0 +1,14 @@
+package accounts
+
+import "github.com/alternayte/briefing/internal/accounts/route"
+
+props {
+  // F is the time zone form; the script fills it with the browser's zone
+  // and submits it once.
+  F route.SetTimezoneForm
+}
+
+<form {...p.F.Attrs()} hidden>
+  <input type="hidden" name={p.F.Timezone.Name} />
+  <input type="hidden" name={p.F.Auto.Name} value="true" />
+</form>

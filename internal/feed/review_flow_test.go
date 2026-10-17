@@ -33,11 +33,11 @@ func TestUsefulSchedulesReviewAndAnswersMoveTheLadder(t *testing.T) {
 		if err := rate(ctx, e, user, story, "useful", day, tu); err != nil {
 			t.Fatal(err)
 		}
-		if due, _ := learning.Due(ctx, tx, user, day, tu); len(due) != 0 {
+		if due, _ := learning.Due(ctx, tx, user, day, time.UTC, tu); len(due) != 0 {
 			t.Errorf("%d questions due on the day of the rating", len(due))
 		}
 		tomorrow := day.Add(24 * time.Hour)
-		due, err := learning.Due(ctx, tx, user, tomorrow, tu)
+		due, err := learning.Due(ctx, tx, user, tomorrow, time.UTC, tu)
 		if err != nil || len(due) != 2 {
 			t.Fatalf("due tomorrow: %d (%v)", len(due), err)
 		}
@@ -51,7 +51,7 @@ func TestUsefulSchedulesReviewAndAnswersMoveTheLadder(t *testing.T) {
 			t.Errorf("right answer: %+v", right)
 		}
 		next := tomorrow.Add(24 * time.Hour)
-		due, _ = learning.Due(ctx, tx, user, next, tu)
+		due, _ = learning.Due(ctx, tx, user, next, time.UTC, tu)
 		if len(due) != 1 || due[0].ID != q1 {
 			t.Errorf("the wrong answer must come back the next day, due = %+v", due)
 		}
@@ -83,14 +83,14 @@ func TestAtMostFiveReviewsADay(t *testing.T) {
 			ids = append(ids, id)
 			_, _ = tx.Exec(ctx, `INSERT INTO review_schedules (user_id, review_item_id, due_at, interval_days) VALUES ($1, $2, $3, 1)`, user, id, day.Add(-time.Hour))
 		}
-		due, _ := learning.Due(ctx, tx, user, day, tu)
+		due, _ := learning.Due(ctx, tx, user, day, time.UTC, tu)
 		if len(due) != tu.MaxDueCard {
 			t.Fatalf("%d due, want %d", len(due), tu.MaxDueCard)
 		}
 		for _, d := range due[:3] {
 			_, _ = learning.AnswerReview(ctx, e, user, d.ID, 0, day, tu)
 		}
-		due, _ = learning.Due(ctx, tx, user, day, tu)
+		due, _ = learning.Due(ctx, tx, user, day, time.UTC, tu)
 		if len(due) != tu.MaxDueCard-3 {
 			t.Errorf("%d due after 3 answers, want %d", len(due), tu.MaxDueCard-3)
 		}

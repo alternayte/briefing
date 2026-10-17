@@ -179,3 +179,40 @@
   font-variant-caps: all-small-caps;
   font-weight: 600;
 }
+
+/* The Gx toaster: notices pinned to the foot of the column, in the paper and
+   ink of the page; an error carries the red rule. */
+@layer components {
+  [data-gx-toaster] {
+    position: fixed;
+    inset-inline: 0;
+    bottom: var(--spacing-half);
+    z-index: 50;
+    display: grid;
+    gap: var(--spacing-quarter);
+    width: min(100% - 2 * var(--spacing-half), var(--container-column));
+    margin-inline: auto;
+    pointer-events: none;
+  }
+  [data-gx-toast] {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-half);
+    padding: var(--spacing-quarter) var(--spacing-half);
+    border: 2px solid var(--foreground);
+    background: var(--popover);
+    color: var(--popover-foreground);
+    font-size: var(--text-small);
+    pointer-events: auto;
+  }
+  [data-gx-toast][data-kind="error"] {
+    border-left-width: 6px;
+    border-color: var(--destructive);
+  }
+  [data-gx-toast] [data-gx-close] {
+    min-width: var(--spacing-target);
+    min-height: var(--spacing-target);
+    color: var(--muted-foreground);
+  }
+}

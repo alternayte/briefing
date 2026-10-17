@@ -1,0 +1,1 @@
+ALTER TABLE "profiles" ADD COLUMN "timezone" text NOT NULL DEFAULT '';

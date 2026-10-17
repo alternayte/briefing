@@ -70,17 +70,38 @@ type Explain struct {
 
 func (in *Explain) Rules() gx.Rules { return gx.Rules{} }
 
-// Feedback records what the reader thinks of a story. From names the page to
-// return to: "story" or the feed.
+// Feedback records what the reader thinks of a story, or with Undo removes
+// it. From names the page to return to: "story" or the feed.
 type Feedback struct {
 	gx.Route `POST /s/{StoryID}/feedback`
 	StoryID  int64
 	Kind     string
 	From     string
+	Undo     bool
 }
 
 func (in *Feedback) Rules() gx.Rules {
 	return gx.Rules{gx.Field(&in.Kind, gx.Required, gx.OneOf("useful", "knew", "irrelevant", "misleading"))}
+}
+
+// Done takes stories off Today: one story, or with AllSeen every story of
+// today that the reader opened or rated.
+type Done struct {
+	gx.Route `POST /feed/done`
+	StoryID  int64
+	AllSeen  bool
+}
+
+func (in *Done) Rules() gx.Rules { return gx.Rules{} }
+
+// Restore returns a story the reader marked done to Today.
+type Restore struct {
+	gx.Route `POST /feed/restore`
+	StoryID  int64
+}
+
+func (in *Restore) Rules() gx.Rules {
+	return gx.Rules{gx.Field(&in.StoryID, gx.Required)}
 }
 
 // Settings is the settings page. Feed carries a notice code from AddRSS.

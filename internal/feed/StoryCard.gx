@@ -22,13 +22,15 @@ props {
     <p class="label text-muted-foreground" lang="en">{p.Msg.FeedTranslating}</p>
   }
   <h2 id={"story-" + gx.TextValue(p.Card.StoryID)} class="text-deck leading-tight font-semibold" class:text-muted-foreground={p.Card.Seen}><a href={route.Read{ID: p.Card.StoryID}} class="hover:text-accent">{p.Card.Headline}</a></h2>
-  if p.Card.LinkCard {
+  if p.Card.Flagged {
+    <p class="mt-quarter border-l-2 border-destructive pl-half text-small">{p.Msg.FeedFlagged}</p>
+  } else if p.Card.LinkCard {
     <p class="mt-quarter text-small text-muted-foreground">{p.Card.Summary}</p>
     <p class="mt-quarter text-small">{p.Msg.FeedLinkCard} <a href={p.Card.LinkURL} rel="noopener" class="text-accent underline underline-offset-2">{p.Card.Sources[0].Domain}</a></p>
   } else {
     <p class="mt-quarter">{p.Card.Summary}</p>
   }
-  if len(p.Card.Concepts) > 0 {
+  if len(p.Card.Concepts) > 0 && !p.Card.Flagged {
     <ul class="mt-half flex flex-wrap gap-quarter" aria-label="concepts">
       for _, name := range p.Card.Concepts {
         <li class="label border border-border px-quarter text-muted-foreground">{name}</li>
@@ -48,5 +50,13 @@ props {
       <p class="label mt-quarter">{p.Card.Reason}</p>
     }
   </footer>
-  <FeedbackGroup storyID={p.Card.StoryID} buttons={p.Card.Feedback} msg={p.Msg} />
+  <div class="flex flex-wrap items-end justify-between gap-x-half">
+    <FeedbackGroup storyID={p.Card.StoryID} buttons={p.Card.Feedback} msg={p.Msg} />
+    if p.Card.Place == placeToday {
+      <DoneButton f={p.Card.Done.F} label={p.Card.Done.Label} storyID={p.Card.StoryID} />
+    }
+    if p.Card.Restore != nil {
+      <RestoreButton f={p.Card.Restore.F} label={p.Card.Restore.Label} storyID={p.Card.StoryID} />
+    }
+  </div>
 </article>

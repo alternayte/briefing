@@ -11,59 +11,158 @@ import (
 
 	"github.com/alternayte/briefing/internal/accounts"
 	"github.com/alternayte/briefing/internal/feed/route"
-	"github.com/alternayte/briefing/internal/i18n"
 )
 
 // FeedbackResult is what an assistant gets back from feed_feedback.
 type FeedbackResult struct {
 	StoryID int64  `json:"story_id"`
 	Kind    string `json:"kind"`
+	Undo    bool   `json:"undo,omitempty"`
 }
 
 // Records the reader's feedback on a story: "useful" (worth reading; it also
 // schedules the story's review questions), "knew" (the reader already knew
-// it, so similar stories rank lower), "irrelevant" (not for this reader) or
-// "misleading" (the entry misstates its sources). Use it when the reader says
-// so about a story you showed them. Returns the story id and the recorded kind.
+// it, so similar stories rank lower; the story leaves Today), "irrelevant"
+// (not for this reader; the story leaves Today) or "misleading" (the entry
+// misstates its sources; its summary is hidden for the reader). With undo
+// true it removes that feedback and reverses its effect; feedback that is
+// not there changes nothing, so a retry is safe. Use it when the reader says
+// so about a story you showed them. Returns the story id and the kind.
 var Feedback = gx.Form(func(c *gx.Ctx, in *route.Feedback) error {
 	ctx := c.R.Context()
 	profile := accounts.CurrentProfile(ctx)
 	w := webFrom(ctx)
-	if err := rate(ctx, w.engine, profile.ID(), in.StoryID, in.Kind, w.now().UTC(), w.tuning.Review); err != nil {
+	var err error
+	if in.Undo {
+		err = unrate(ctx, w.engine, profile.ID(), in.StoryID, in.Kind)
+	} else {
+		err = rate(ctx, w.engine, profile.ID(), in.StoryID, in.Kind, w.now().UTC(), w.tuning.Review)
+	}
+	if err != nil {
 		return err
 	}
-	gx.ToolResult(c, FeedbackResult{StoryID: in.StoryID, Kind: in.Kind})
+	gx.ToolResult(c, FeedbackResult{StoryID: in.StoryID, Kind: in.Kind, Undo: in.Undo})
 	if !fromPage(c.R) {
 		if in.From == "story" {
 			return c.Redirect(route.Read{ID: in.StoryID})
 		}
 		return c.Redirect(route.Home{})
 	}
-	// In the page the answer patches the story in place, so the reader keeps
-	// their place in the feed.
-	l := i18n.FromContext(ctx)
-	msg := i18n.For(l)
-	return w.engine.WithTx(ctx, func(ctx context.Context) error {
-		tx := drel.MustFromContext(ctx)
-		if in.From == "story" {
-			given, err := givenFeedback(ctx, tx, profile.ID(), in.StoryID)
-			if err != nil {
-				return err
-			}
-			return c.Patch(FeedbackGroup(FeedbackGroupProps{StoryID: in.StoryID, Buttons: feedbackButtons(in.StoryID, "story", given, feedbackLabels(msg)), Msg: msg}))
-		}
-		cards, err := queryCards(ctx, tx, l, cardSelect+` WHERE s.id = $2`, profile.ID(), in.StoryID)
-		if err != nil || len(cards) == 0 {
+	// In the page the answer patches the page in place, so the reader keeps
+	// their place.
+	if in.From == "story" {
+		p, err := storyView(ctx, route.Read{ID: in.StoryID}, false)
+		if err != nil {
 			return err
 		}
-		return c.Patch(StoryCard(StoryCardProps{Card: cards[0], Msg: msg}))
-	})
+		return c.Patch(FeedbackGroup(FeedbackGroupProps{StoryID: in.StoryID, Buttons: p.Feedback, Msg: p.Msg}), StoryViewSummary(p, p.Flagged))
+	}
+	return patchHome(c)
 }, FeedbackButton).Tool()
 
-// entryID is the element id of a story card, which a feedback answer patches.
+// DoneResult is what an assistant gets back from feed_done and
+// feed_restore: how many stories changed.
+type DoneResult struct {
+	Changed int64 `json:"changed"`
+}
+
+// Takes stories off Today and lists them under "Done today": one story by
+// its story_id, or with all_seen true every story of today the reader opened
+// or rated. A story marked done comes back to Today when its summary is
+// updated. Done stories still count toward the daily budget. Use it when the
+// reader is done with a story or wants to clear what they read. Returns how
+// many stories changed.
+var DoneAction = gx.Form(func(c *gx.Ctx, in *route.Done) error {
+	ctx := c.R.Context()
+	w, profile := webFrom(ctx), accounts.CurrentProfile(ctx)
+	if in.StoryID == 0 && !in.AllSeen {
+		return gx.FieldError(&in.StoryID, "required")
+	}
+	n, err := markDone(ctx, w.engine, profile.ID(), in.StoryID, in.AllSeen, accounts.LocalDay(w.now(), profile.Location()))
+	if err != nil {
+		return err
+	}
+	gx.ToolResult(c, DoneResult{Changed: n})
+	if !fromPage(c.R) {
+		return c.Redirect(route.Home{})
+	}
+	return patchHome(c)
+}, DoneButton).Tool()
+
+// Brings a story the reader marked done back to Today, by its story_id. A
+// story the reader marked "knew" or "irrelevant" comes back only when that
+// feedback is undone with feed_feedback. Returns how many stories changed.
+var RestoreAction = gx.Form(func(c *gx.Ctx, in *route.Restore) error {
+	ctx := c.R.Context()
+	w, profile := webFrom(ctx), accounts.CurrentProfile(ctx)
+	n, err := restore(ctx, w.engine, profile.ID(), in.StoryID)
+	if err != nil {
+		return err
+	}
+	gx.ToolResult(c, DoneResult{Changed: n})
+	if !fromPage(c.R) {
+		return c.Redirect(route.Home{})
+	}
+	return patchHome(c)
+}, RestoreButton).Tool()
+
+// markDone sets delivered entries done: one story, or with allSeen every
+// read entry of day. It keeps the revision the reader saw, so a newer one
+// brings the story back.
+func markDone(ctx context.Context, engine *drel.Engine, userID uuid.UUID, storyID int64, allSeen bool, day string) (int64, error) {
+	var n int64
+	err := engine.WithTx(ctx, func(ctx context.Context) (err error) {
+		tx := drel.MustFromContext(ctx)
+		if allSeen {
+			n, err = tx.Exec(ctx, `
+				UPDATE feed_entries f SET state = 'done', shown_revision = s.revision, updated_at = now()
+				FROM stories s WHERE s.id = f.story_id AND f.user_id = $1 AND f.delivered_on = $2::date AND f.state = 'seen'`, userID, day)
+			return err
+		}
+		n, err = tx.Exec(ctx, `
+			UPDATE feed_entries f SET state = 'done', shown_revision = s.revision, updated_at = now()
+			FROM stories s WHERE s.id = f.story_id AND f.user_id = $1 AND f.story_id = $2 AND f.delivered_on IS NOT NULL`, userID, storyID)
+		return err
+	})
+	return n, err
+}
+
+// restore returns a done entry to Today as seen, unless the reader marked
+// the story knew or irrelevant.
+func restore(ctx context.Context, engine *drel.Engine, userID uuid.UUID, storyID int64) (int64, error) {
+	var n int64
+	err := engine.WithTx(ctx, func(ctx context.Context) (err error) {
+		n, err = drel.MustFromContext(ctx).Exec(ctx, `
+			UPDATE feed_entries SET state = 'seen', updated_at = now()
+			WHERE user_id = $1 AND story_id = $2 AND state = 'done' AND delivered_on IS NOT NULL AND NOT EXISTS (
+				SELECT 1 FROM learning_events WHERE user_id = $1 AND story_id = $2 AND kind IN ('knew', 'irrelevant'))`, userID, storyID)
+		return err
+	})
+	return n, err
+}
+
+// doneButton builds the Done form of one story, or with allSeen the Clear
+// read form.
+func doneButton(storyID int64, allSeen bool, label string) DoneButtonProps {
+	var b DoneButtonProps
+	b.GxSetForm((&route.Done{StoryID: storyID, AllSeen: allSeen}).GxFormValue(nil))
+	b.Label, b.StoryID, b.AllSeen = label, storyID, allSeen
+	return b
+}
+
+// restoreButton builds the Restore form of one story.
+func restoreButton(storyID int64, label string) RestoreButtonProps {
+	var b RestoreButtonProps
+	b.GxSetForm((&route.Restore{StoryID: storyID}).GxFormValue(nil))
+	b.Label, b.StoryID = label, storyID
+	return b
+}
+
+// entryID is the element id of a story card.
 func entryID(storyID int64) string { return "entry-" + strconv.FormatInt(storyID, 10) }
 
-// feedbackID is the element id of the feedback buttons of a story.
+// feedbackID is the element id of the feedback buttons of a story, which a
+// feedback answer on the story page patches.
 func feedbackID(storyID int64) string { return "feedback-" + strconv.FormatInt(storyID, 10) }
 
 // fromPage reports whether the request comes from the Gx runtime in an open

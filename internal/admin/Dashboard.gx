@@ -11,6 +11,8 @@ props {
   Jobs []JobCount = nil
   // Failures lists the latest failed job attempts.
   Failures []Failure = nil
+  // Flags lists the latest summaries readers flagged as misleading.
+  Flags []Flag = nil
   // Spend lists today's model spend by stage and model.
   Spend []SpendRow = nil
   // SpendTotal and SpendCap are formatted amounts.
@@ -80,4 +82,20 @@ props {
       <li class="border-b border-border py-quarter text-small"><span class="label">{f.Kind}</span> <span class="text-muted-foreground">{f.At}</span><br /><span class="break-words">{f.Error}</span></li>
     }
   </ul>
+</section>
+
+<section class="mt-line" aria-labelledby="flags">
+  <h2 id="flags" class="label border-b border-foreground pb-quarter">{p.Msg.AdminFlags}</h2>
+  if len(p.Flags) == 0 {
+    <p class="mt-quarter text-small text-muted-foreground">{p.Msg.AdminNoFlags}</p>
+  } else {
+    <table class="mt-quarter w-full text-small">
+      <thead><tr class="border-b border-foreground text-left"><th class="label py-quarter">{p.Msg.AdminStory}</th><th class="label pl-half">{p.Msg.AdminReader}</th><th class="label pl-half">{p.Msg.AdminFlaggedAt}</th></tr></thead>
+      <tbody>
+        for _, f := range p.Flags {
+          <tr class="border-b border-border"><td class="py-quarter"><a href={gx.URL(f.StoryURL)} class="underline underline-offset-2 hover:text-accent">{f.Headline}</a></td><td class="pl-half">{f.Reader}</td><td class="pl-half text-muted-foreground">{f.At}</td></tr>
+        }
+      </tbody>
+    </table>
+  }
 </section>

@@ -1,0 +1,23 @@
+package accounts
+
+import "github.com/alternayte/briefing/internal/accounts/route"
+
+props {
+  // F is the time zone form.
+  F route.SetTimezoneForm
+  // Current is the reader's zone; Label, Hint and Save are in the request
+  // locale.
+  Current string = ""
+  Label string = ""
+  Hint string = ""
+  Save string = ""
+}
+
+<form {...p.F.Attrs()} class="grid gap-quarter">
+  <label for={p.F.Timezone.ID} class="sr-only">{p.Label}</label>
+  <div class="flex flex-wrap items-end gap-half">
+    <input name={p.F.Timezone.Name} id={p.F.Timezone.ID} type="text" value={p.Current} placeholder="Europe/Paris" maxlength="64" autocomplete="off" spellcheck="false" aria-describedby="timezone-hint" class="min-h-target min-w-0 flex-1 border-0 border-b border-input bg-transparent text-body focus:border-foreground focus:outline-none" />
+    <button type="submit" class="label min-h-target border border-foreground px-half hover:bg-foreground hover:text-background">{p.Save}</button>
+  </div>
+  <p id="timezone-hint" class="text-small text-muted-foreground">{p.Hint}</p>
+</form>

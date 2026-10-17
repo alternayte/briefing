@@ -41,7 +41,7 @@ var Entries = struct {
 }
 
 func EntryStateValues() []EntryState {
-	return []EntryState{EntryState("candidate"), EntryState("delivered"), EntryState("seen")}
+	return []EntryState{EntryState("candidate"), EntryState("delivered"), EntryState("seen"), EntryState("done")}
 }
 
 func (r EntryState) IsValid() bool {

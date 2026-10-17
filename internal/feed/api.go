@@ -11,7 +11,6 @@ import (
 
 	"github.com/alternayte/briefing/internal/accounts"
 	"github.com/alternayte/briefing/internal/feed/route"
-	"github.com/alternayte/briefing/internal/i18n"
 )
 
 const (
@@ -34,6 +33,10 @@ type StoryJSON struct {
 	Reason     string       `json:"reason,omitempty"`
 	Seen       bool         `json:"seen"`
 	Updated    bool         `json:"updated,omitempty"`
+	// Done marks a story the reader took off Today; Flagged one they marked
+	// misleading.
+	Done    bool `json:"done,omitempty"`
+	Flagged bool `json:"flagged,omitempty"`
 }
 
 type SourceJSON struct {
@@ -45,7 +48,7 @@ func (w *Web) storyJSON(c Card) StoryJSON {
 	s := StoryJSON{
 		ID: c.StoryID, URL: fmt.Sprintf("%s/s/%d", w.baseURL, c.StoryID), Headline: c.Headline, Summary: c.Summary,
 		LinkOnly: c.LinkCard, Concepts: c.Concepts, Publishers: c.Publishers, Confidence: c.Level,
-		Reason: c.Reason, Seen: c.Seen, Updated: c.Updated, Sources: []SourceJSON{},
+		Reason: c.Reason, Seen: c.Seen, Updated: c.Updated, Done: c.Place == placeDone, Flagged: c.Flagged, Sources: []SourceJSON{},
 	}
 	for _, src := range c.Sources {
 		s.Sources = append(s.Sources, SourceJSON{Publisher: src.Domain, URL: string(src.URL)})
@@ -62,34 +65,38 @@ type BriefJSON struct {
 	ReviewsDue int         `json:"reviews_due"`
 }
 
-// Returns the reader's brief for today: the stories delivered today, best
-// first, then more stories that did not fit the daily budget. Each story has
+// Returns the reader's brief for today, their local day: the stories
+// delivered today, best first, then the ones they took off Today with done
+// true, then more stories that did not fit the daily budget. Each story has
 // its id, a link, the headline and summary in the reader's language, its
 // concepts, its sources and why it was chosen. reviews_due counts the review
 // questions waiting. Use it for a morning briefing or "what's new".
 var TodayAction = gx.Action(func(c *gx.Ctx, _ route.Today) error {
 	ctx := c.R.Context()
 	w, profile := webFrom(ctx), accounts.CurrentProfile(ctx)
-	locale := i18n.FromContext(ctx)
-	now := w.now().UTC()
-	brief := BriefJSON{Date: now.Format(time.DateOnly), Language: string(locale), Today: []StoryJSON{}, More: []StoryJSON{}}
+	v := w.viewOf(ctx, profile)
+	brief := BriefJSON{Date: v.day(), Language: string(v.locale), Today: []StoryJSON{}, More: []StoryJSON{}}
 	err := w.engine.WithTx(ctx, func(ctx context.Context) error {
 		tx := drel.MustFromContext(ctx)
-		today, err := todayCards(ctx, tx, profile.ID(), now, locale)
+		today, err := todayCards(ctx, tx, profile.ID(), v)
 		if err != nil {
 			return err
 		}
-		more, err := moreCards(ctx, tx, profile.ID(), now.Add(-w.tuning.Cluster.OpenWindow), moreLimit, locale)
+		done, err := doneCards(ctx, tx, profile.ID(), v)
 		if err != nil {
 			return err
 		}
-		for _, card := range today {
+		more, err := moreCards(ctx, tx, profile.ID(), v.now.Add(-w.tuning.Cluster.OpenWindow), moreLimit, v)
+		if err != nil {
+			return err
+		}
+		for _, card := range append(today, done...) {
 			brief.Today = append(brief.Today, w.storyJSON(card))
 		}
 		for _, card := range more {
 			brief.More = append(brief.More, w.storyJSON(card))
 		}
-		brief.ReviewsDue, err = dueCount(ctx, tx, profile.ID(), now, w)
+		brief.ReviewsDue, err = dueCount(ctx, tx, profile.ID(), v, w)
 		return err
 	})
 	gx.ToolResult(c, brief)
@@ -125,17 +132,18 @@ type ConceptJSON struct {
 var StoryAction = gx.Action(func(c *gx.Ctx, in route.Story) error {
 	ctx := c.R.Context()
 	w, profile := webFrom(ctx), accounts.CurrentProfile(ctx)
-	locale := i18n.FromContext(ctx)
+	v := w.viewOf(ctx, profile)
+	locale := v.locale
 	var out StoryDetailJSON
 	found := false
 	err := w.engine.WithTx(ctx, func(ctx context.Context) error {
 		tx := drel.MustFromContext(ctx)
-		cards, err := cardsByIDs(ctx, tx, profile.ID(), []int64{in.ID}, locale)
+		cards, err := cardsByIDs(ctx, tx, profile.ID(), []int64{in.ID}, v)
 		if err != nil || len(cards) == 0 {
 			return err
 		}
 		var p StoryViewProps
-		if found, err = loadStory(ctx, tx, in.ID, profile.ID(), locale, &p); err != nil || !found {
+		if found, err = loadStory(ctx, tx, in.ID, profile.ID(), v, &p); err != nil || !found {
 			return err
 		}
 		out = StoryDetailJSON{StoryJSON: w.storyJSON(cards[0]), WhyItMatters: p.Why, WhatIsNew: p.New}
@@ -181,7 +189,6 @@ type SearchJSON struct {
 var SearchAction = gx.Action(func(c *gx.Ctx, in route.Search) error {
 	ctx := c.R.Context()
 	w, profile := webFrom(ctx), accounts.CurrentProfile(ctx)
-	locale := i18n.FromContext(ctx)
 	now := w.now().UTC()
 	to, err := parseDay(in.To, now)
 	if err != nil {
@@ -206,7 +213,7 @@ var SearchAction = gx.Action(func(c *gx.Ctx, in route.Search) error {
 		if err != nil || len(ids) == 0 {
 			return err
 		}
-		cards, err := cardsByIDs(ctx, tx, profile.ID(), ids, locale)
+		cards, err := cardsByIDs(ctx, tx, profile.ID(), ids, w.viewOf(ctx, profile))
 		for _, card := range cards {
 			res.Stories = append(res.Stories, w.storyJSON(card))
 		}
@@ -245,7 +252,7 @@ func parseDay(s string, fallback time.Time) (time.Time, error) {
 	return time.Parse(time.DateOnly, s)
 }
 
-func dueCount(ctx context.Context, tx *drel.Tx, userID uuid.UUID, now time.Time, w *Web) (int, error) {
-	due, err := learningDue(ctx, tx, userID, now, w)
+func dueCount(ctx context.Context, tx *drel.Tx, userID uuid.UUID, v view, w *Web) (int, error) {
+	due, err := learningDue(ctx, tx, userID, v.now, v.loc, w)
 	return len(due), err
 }

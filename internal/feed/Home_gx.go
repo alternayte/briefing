@@ -13,9 +13,16 @@ type HomeProps struct {
 	Msg i18n.Messages
 	// LoadedAt is when the page was built, as Unix seconds.
 	LoadedAt int64
-	// Today holds the stories delivered today; More the ones that waited.
+	// Today holds the stories delivered today; Done the ones the reader took
+	// off Today; More the ones that waited.
 	Today []Card
+	Done  []Card
 	More  []Card
+	// ClearRead is the form that marks every read story of today done.
+	ClearRead DoneButtonProps
+	// Budget and Zone feed the help: the daily budget and the time zone.
+	Budget int
+	Zone   string
 	// CaughtUp is true when the reader saw every story of today.
 	CaughtUp bool
 	// ReviewCard words the due questions, or is empty.
@@ -29,152 +36,224 @@ func Home(p HomeProps) gx.Node {
 		}
 	}
 	var _b gx.Builder
-//line Home.gx:22:1
+//line Home.gx:29:1
 	_b.Add(_tHome0.With(
-//line Home.gx:22:1
+//line Home.gx:29:1
 		gx.Head(gx.HeadProps{Title: p.Msg.FeedTitle + " · " + p.Msg.AppName, Meta: nil, Links: nil, Lang: "", HtmlClass: "", BodyClass: ""}),
 	))
-//line Home.gx:23:1
+//line Home.gx:30:1
 	var _b1 gx.Builder
-//line Home.gx:23:56
+//line Home.gx:30:56
 	_b1.Add(_tHome1)
-//line Home.gx:24:3
+//line Home.gx:31:3
 	text := ""
-//line Home.gx:24:13
+//line Home.gx:31:13
 	_b1.Add(_tHome1)
-//line Home.gx:25:3
+//line Home.gx:32:3
 	show := ""
-//line Home.gx:25:13
+//line Home.gx:32:13
 	_b1.Add(_tHome1)
-//line Home.gx:26:3
+//line Home.gx:33:3
 	var _b2 gx.Builder
-//line Home.gx:26:72
+//line Home.gx:33:72
 	_b2.Add(_tHome2)
-//line Home.gx:27:5
+//line Home.gx:34:5
 	if text != "" {
-//line Home.gx:27:20
+//line Home.gx:34:20
 		_b2.Add(_tHome3.With(
-//line Home.gx:28:123
+//line Home.gx:35:123
 			gx.Text(text),
-//line Home.gx:28:168
+//line Home.gx:35:168
 			gx.Text(show),
 		))
 	}
-//line Home.gx:29:6
+//line Home.gx:36:6
 	_b2.Add(_tHome1)
-//line Home.gx:26:3
+//line Home.gx:33:3
 	_b1.Add(_tHome4.With(
-//line Home.gx:26:3
+//line Home.gx:33:3
 		gx.OpenFragment("p", gx.Attrs{gx.Attr{Key: "id", Value: "home-fresh", Kind: gx.AttrText}, gx.Attr{Key: "role", Value: "status", Kind: gx.AttrText}, gx.Attr{Key: "aria-live", Value: "polite", Kind: gx.AttrText}}),
-//line Home.gx:26:3
+//line Home.gx:33:3
 		_b2.Node(),
 	))
-//line Home.gx:23:1
+//line Home.gx:30:1
 	_b.Add(_tHome5.With(
-//line Home.gx:23:1
+//line Home.gx:30:1
 		gx.Open("div", gx.Attrs{gx.On("interval(60s)", "GET", (route.Fresh{Since: p.LoadedAt}).URL(), "")}),
-//line Home.gx:23:1
+//line Home.gx:30:1
 		_b1.Node(),
-//line Home.gx:32:21
+//line Home.gx:39:21
 		gx.Text(p.Msg.FeedTitle),
 	))
-//line Home.gx:33:1
+//line Home.gx:40:1
 	if p.ReviewCard != "" {
-//line Home.gx:33:24
+//line Home.gx:40:24
 		_b.Add(_tHome6.With(
-//line Home.gx:35:33
+//line Home.gx:42:33
 			gx.Text(p.ReviewCard),
-//line Home.gx:36:37
+//line Home.gx:43:37
 			gx.Text(p.Msg.ReviewOpen),
 		))
 	}
-//line Home.gx:38:2
-	_b.Add(_tHome7)
-//line Home.gx:39:1
-	if len(p.Today) == 0 {
-//line Home.gx:39:23
-		_b.Add(_tHome8.With(
-//line Home.gx:40:51
+//line Home.gx:45:2
+	_b.Add(_tHome7.With(
+//line Home.gx:47:3
+		DoneButton(DoneButtonProps{F: p.ClearRead.F, Label: p.Msg.FeedClearRead, StoryID: 0, AllSeen: true}),
+//line Home.gx:48:3
+		HelpDialog(HelpDialogProps{Msg: p.Msg, Budget: p.Budget, Zone: p.Zone}),
+	))
+//line Home.gx:50:1
+	today := p.Today
+//line Home.gx:50:17
+	_b.Add(_tHome8)
+//line Home.gx:51:1
+	done := p.Done
+//line Home.gx:51:15
+	_b.Add(_tHome8)
+//line Home.gx:52:1
+	more := p.More
+//line Home.gx:52:15
+	_b.Add(_tHome8)
+//line Home.gx:53:1
+	caughtUp := p.CaughtUp
+//line Home.gx:53:23
+	_b.Add(_tHome8)
+//line Home.gx:54:1
+	var _b3 gx.Builder
+//line Home.gx:54:67
+	_b3.Add(_tHome1)
+//line Home.gx:55:3
+	if len(today) == 0 && len(done) == 0 {
+//line Home.gx:55:41
+		_b3.Add(_tHome9.With(
+//line Home.gx:56:53
 			gx.Text(p.Msg.FeedEmpty),
 		))
 	}
-//line Home.gx:41:2
-	_b.Add(_tHome7)
-//line Home.gx:42:1
-	var _b3 gx.Builder
-//line Home.gx:42:36
+//line Home.gx:57:4
 	_b3.Add(_tHome1)
-//line Home.gx:43:3
-	for _, c := range p.Today {
-//line Home.gx:43:30
-		_b3.Add(_tHome9.With(
-//line Home.gx:44:9
+//line Home.gx:58:3
+	var _b4 gx.Builder
+//line Home.gx:58:38
+	_b4.Add(_tHome2)
+//line Home.gx:59:5
+	for _, c := range today {
+//line Home.gx:59:30
+		_b4.Add(_tHome10.With(
+//line Home.gx:60:11
 			StoryCard(StoryCardProps{Card: c, Msg: p.Msg}),
 		))
 	}
-//line Home.gx:45:4
-	_b3.Add(_tHome7)
-//line Home.gx:42:1
-	_b.Add(_tHome10.With(
-//line Home.gx:42:1
-		_b3.Node(),
+//line Home.gx:61:6
+	_b4.Add(_tHome1)
+//line Home.gx:58:3
+	_b3.Add(_tHome11.With(
+//line Home.gx:58:3
+		_b4.Node(),
 	))
-//line Home.gx:47:1
-	if p.CaughtUp {
-//line Home.gx:47:16
-		_b.Add(_tHome11.With(
-//line Home.gx:49:30
+//line Home.gx:63:3
+	if caughtUp {
+//line Home.gx:63:16
+		_b3.Add(_tHome12.With(
+//line Home.gx:65:32
 			gx.Text(p.Msg.FeedCaughtUp),
-//line Home.gx:50:49
+//line Home.gx:66:51
 			gx.Text(p.Msg.FeedCaughtUpHint),
 		))
 	}
-//line Home.gx:52:2
-	_b.Add(_tHome7)
-//line Home.gx:53:1
-	if len(p.More) > 0 {
-//line Home.gx:53:21
-		_b.Add(_tHome1)
-//line Home.gx:54:3
-		var _b4 gx.Builder
-//line Home.gx:54:57
-		_b4.Add(_tHome12.With(
-//line Home.gx:55:64
-			gx.Text(p.Msg.FeedMore),
-//line Home.gx:55:82
-			gx.Int(int64(len(p.More))),
-		))
-//line Home.gx:56:5
+//line Home.gx:68:4
+	_b3.Add(_tHome1)
+//line Home.gx:69:3
+	if len(done) > 0 {
+//line Home.gx:69:21
+		_b3.Add(_tHome2)
+//line Home.gx:70:5
 		var _b5 gx.Builder
-//line Home.gx:56:40
-		_b5.Add(_tHome13)
-//line Home.gx:57:7
-		for _, c := range p.More {
-//line Home.gx:57:33
-			_b5.Add(_tHome14.With(
-//line Home.gx:58:13
+//line Home.gx:70:59
+		_b5.Add(_tHome13.With(
+//line Home.gx:71:66
+			gx.Text(p.Msg.FeedDoneToday),
+//line Home.gx:71:89
+			gx.Int(int64(len(done))),
+		))
+//line Home.gx:72:7
+		var _b6 gx.Builder
+//line Home.gx:72:42
+		_b6.Add(_tHome14)
+//line Home.gx:73:9
+		for _, c := range done {
+//line Home.gx:73:33
+			_b6.Add(_tHome15.With(
+//line Home.gx:74:15
 				StoryCard(StoryCardProps{Card: c, Msg: p.Msg}),
 			))
 		}
-//line Home.gx:59:8
-		_b5.Add(_tHome2)
-//line Home.gx:56:5
-		_b4.Add(_tHome15.With(
-//line Home.gx:56:5
+//line Home.gx:75:10
+		_b6.Add(_tHome16)
+//line Home.gx:72:7
+		_b5.Add(_tHome17.With(
+//line Home.gx:72:7
+			_b6.Node(),
+		))
+//line Home.gx:70:5
+		_b3.Add(_tHome18.With(
+//line Home.gx:70:5
 			_b5.Node(),
 		))
-//line Home.gx:54:3
-		_b.Add(_tHome16.With(
-//line Home.gx:54:3
-			_b4.Node(),
+	}
+//line Home.gx:78:4
+	_b3.Add(_tHome1)
+//line Home.gx:79:3
+	if len(more) > 0 {
+//line Home.gx:79:21
+		_b3.Add(_tHome2)
+//line Home.gx:80:5
+		var _b7 gx.Builder
+//line Home.gx:80:59
+		_b7.Add(_tHome13.With(
+//line Home.gx:81:66
+			gx.Text(p.Msg.FeedMore),
+//line Home.gx:81:84
+			gx.Int(int64(len(more))),
+		))
+//line Home.gx:82:7
+		var _b8 gx.Builder
+//line Home.gx:82:42
+		_b8.Add(_tHome14)
+//line Home.gx:83:9
+		for _, c := range more {
+//line Home.gx:83:33
+			_b8.Add(_tHome15.With(
+//line Home.gx:84:15
+				StoryCard(StoryCardProps{Card: c, Msg: p.Msg}),
+			))
+		}
+//line Home.gx:85:10
+		_b8.Add(_tHome16)
+//line Home.gx:82:7
+		_b7.Add(_tHome17.With(
+//line Home.gx:82:7
+			_b8.Node(),
+		))
+//line Home.gx:80:5
+		_b3.Add(_tHome18.With(
+//line Home.gx:80:5
+			_b7.Node(),
 		))
 	}
-//line Home.gx:62:2
-	_b.Add(_tHome7)
+//line Home.gx:88:4
+	_b3.Add(_tHome8)
+//line Home.gx:54:1
+	_b.Add(_tHome19.With(
+//line Home.gx:54:1
+		gx.OpenFragment("div", gx.Attrs{gx.Attr{Key: "id", Value: "home-feed", Kind: gx.AttrText}}),
+//line Home.gx:54:1
+		_b3.Node(),
+	))
 	return _b.Node()
 }
 
-//line Home.gx:26:3
+//line Home.gx:33:3
 func HomeFresh(text string, show string) gx.Node {
 	if gx.Dev {
 		if _n, _ok := gx.DevRender("github.com/alternayte/briefing/internal/feed", "HomeFresh", text, show); _ok {
@@ -182,28 +261,171 @@ func HomeFresh(text string, show string) gx.Node {
 		}
 	}
 	var _b gx.Builder
-//line Home.gx:26:3
-	var _b6 gx.Builder
-//line Home.gx:26:72
-	_b6.Add(_tHome2)
-//line Home.gx:27:5
+//line Home.gx:33:3
+	var _b9 gx.Builder
+//line Home.gx:33:72
+	_b9.Add(_tHome2)
+//line Home.gx:34:5
 	if text != "" {
-//line Home.gx:27:20
-		_b6.Add(_tHome3.With(
-//line Home.gx:28:123
+//line Home.gx:34:20
+		_b9.Add(_tHome3.With(
+//line Home.gx:35:123
 			gx.Text(text),
-//line Home.gx:28:168
+//line Home.gx:35:168
 			gx.Text(show),
 		))
 	}
-//line Home.gx:29:6
-	_b6.Add(_tHome1)
-//line Home.gx:26:3
-	_b.Add(_tHome17.With(
-//line Home.gx:26:3
+//line Home.gx:36:6
+	_b9.Add(_tHome1)
+//line Home.gx:33:3
+	_b.Add(_tHome20.With(
+//line Home.gx:33:3
 		gx.OpenFragment("p", gx.Attrs{gx.Attr{Key: "id", Value: "home-fresh", Kind: gx.AttrText}, gx.Attr{Key: "role", Value: "status", Kind: gx.AttrText}, gx.Attr{Key: "aria-live", Value: "polite", Kind: gx.AttrText}}),
-//line Home.gx:26:3
-		_b6.Node(),
+//line Home.gx:33:3
+		_b9.Node(),
+	))
+	return _b.Node()
+}
+
+//line Home.gx:54:1
+func HomeFeed(p HomeProps, today []Card, done []Card, more []Card, caughtUp bool) gx.Node {
+	if gx.Dev {
+		if _n, _ok := gx.DevRender("github.com/alternayte/briefing/internal/feed", "HomeFeed", p, today, done, more, caughtUp); _ok {
+			return _n
+		}
+	}
+	var _b gx.Builder
+//line Home.gx:54:1
+	var _b10 gx.Builder
+//line Home.gx:54:67
+	_b10.Add(_tHome1)
+//line Home.gx:55:3
+	if len(today) == 0 && len(done) == 0 {
+//line Home.gx:55:41
+		_b10.Add(_tHome9.With(
+//line Home.gx:56:53
+			gx.Text(p.Msg.FeedEmpty),
+		))
+	}
+//line Home.gx:57:4
+	_b10.Add(_tHome1)
+//line Home.gx:58:3
+	var _b11 gx.Builder
+//line Home.gx:58:38
+	_b11.Add(_tHome2)
+//line Home.gx:59:5
+	for _, c := range today {
+//line Home.gx:59:30
+		_b11.Add(_tHome10.With(
+//line Home.gx:60:11
+			StoryCard(StoryCardProps{Card: c, Msg: p.Msg}),
+		))
+	}
+//line Home.gx:61:6
+	_b11.Add(_tHome1)
+//line Home.gx:58:3
+	_b10.Add(_tHome11.With(
+//line Home.gx:58:3
+		_b11.Node(),
+	))
+//line Home.gx:63:3
+	if caughtUp {
+//line Home.gx:63:16
+		_b10.Add(_tHome12.With(
+//line Home.gx:65:32
+			gx.Text(p.Msg.FeedCaughtUp),
+//line Home.gx:66:51
+			gx.Text(p.Msg.FeedCaughtUpHint),
+		))
+	}
+//line Home.gx:68:4
+	_b10.Add(_tHome1)
+//line Home.gx:69:3
+	if len(done) > 0 {
+//line Home.gx:69:21
+		_b10.Add(_tHome2)
+//line Home.gx:70:5
+		var _b12 gx.Builder
+//line Home.gx:70:59
+		_b12.Add(_tHome13.With(
+//line Home.gx:71:66
+			gx.Text(p.Msg.FeedDoneToday),
+//line Home.gx:71:89
+			gx.Int(int64(len(done))),
+		))
+//line Home.gx:72:7
+		var _b13 gx.Builder
+//line Home.gx:72:42
+		_b13.Add(_tHome14)
+//line Home.gx:73:9
+		for _, c := range done {
+//line Home.gx:73:33
+			_b13.Add(_tHome15.With(
+//line Home.gx:74:15
+				StoryCard(StoryCardProps{Card: c, Msg: p.Msg}),
+			))
+		}
+//line Home.gx:75:10
+		_b13.Add(_tHome16)
+//line Home.gx:72:7
+		_b12.Add(_tHome17.With(
+//line Home.gx:72:7
+			_b13.Node(),
+		))
+//line Home.gx:70:5
+		_b10.Add(_tHome18.With(
+//line Home.gx:70:5
+			_b12.Node(),
+		))
+	}
+//line Home.gx:78:4
+	_b10.Add(_tHome1)
+//line Home.gx:79:3
+	if len(more) > 0 {
+//line Home.gx:79:21
+		_b10.Add(_tHome2)
+//line Home.gx:80:5
+		var _b14 gx.Builder
+//line Home.gx:80:59
+		_b14.Add(_tHome13.With(
+//line Home.gx:81:66
+			gx.Text(p.Msg.FeedMore),
+//line Home.gx:81:84
+			gx.Int(int64(len(more))),
+		))
+//line Home.gx:82:7
+		var _b15 gx.Builder
+//line Home.gx:82:42
+		_b15.Add(_tHome14)
+//line Home.gx:83:9
+		for _, c := range more {
+//line Home.gx:83:33
+			_b15.Add(_tHome15.With(
+//line Home.gx:84:15
+				StoryCard(StoryCardProps{Card: c, Msg: p.Msg}),
+			))
+		}
+//line Home.gx:85:10
+		_b15.Add(_tHome16)
+//line Home.gx:82:7
+		_b14.Add(_tHome17.With(
+//line Home.gx:82:7
+			_b15.Node(),
+		))
+//line Home.gx:80:5
+		_b10.Add(_tHome18.With(
+//line Home.gx:80:5
+			_b14.Node(),
+		))
+	}
+//line Home.gx:88:4
+	_b10.Add(_tHome8)
+//line Home.gx:54:1
+	_b.Add(_tHome21.With(
+//line Home.gx:54:1
+		gx.OpenFragment("div", gx.Attrs{gx.Attr{Key: "id", Value: "home-feed", Kind: gx.AttrText}}),
+//line Home.gx:54:1
+		_b10.Node(),
 	))
 	return _b.Node()
 }
@@ -258,78 +480,106 @@ var _tHome6 = gx.NewTemplate(
 )
 
 var _tHome7 = gx.NewTemplate(
+	[]string{"\n<div class=\"mt-half flex items-center justify-end gap-quarter\">\n  ", "\n  ", "\n</div>\n"},
+	[]int{1, 1},
+	nil,
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "div"}},
+)
+
+var _tHome8 = gx.NewTemplate(
 	[]string{"\n"},
 	[]int{},
 	nil,
 	[]gx.TemplateRoot{},
 ).With()
 
-var _tHome8 = gx.NewTemplate(
-	[]string{"\n  <p class=\"pt-line text-muted-foreground italic\">", "</p>\n"},
+var _tHome9 = gx.NewTemplate(
+	[]string{"\n    <p class=\"pt-line text-muted-foreground italic\">", "</p>\n  "},
 	[]int{1},
 	nil,
 	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "p"}},
 )
 
-var _tHome9 = gx.NewTemplate(
-	[]string{"\n    <li>", "</li>\n  "},
+var _tHome10 = gx.NewTemplate(
+	[]string{"\n      <li>", "</li>\n    "},
 	[]int{1},
 	nil,
 	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "li"}},
-)
-
-var _tHome10 = gx.NewTemplate(
-	[]string{"<ol class=\"divide-y divide-border\">", "</ol>\n"},
-	[]int{1},
-	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "ol"}},
 )
 
 var _tHome11 = gx.NewTemplate(
-	[]string{"\n  <section class=\"mt-line border-t-2 border-foreground pt-half\" aria-live=\"polite\">\n    <p class=\"font-semibold\">", "</p>\n    <p class=\"text-small text-muted-foreground\">", "</p>\n  </section>\n"},
-	[]int{2, 2},
-	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "section"}},
-)
-
-var _tHome12 = gx.NewTemplate(
-	[]string{"\n    <summary class=\"label min-h-target cursor-pointer py-half\">", " (", ")</summary>\n    "},
-	[]int{1, 1},
-	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "summary"}},
-)
-
-var _tHome13 = gx.NewTemplate(
-	[]string{"\n      "},
-	[]int{},
-	nil,
-	[]gx.TemplateRoot{},
-).With()
-
-var _tHome14 = gx.NewTemplate(
-	[]string{"\n        <li>", "</li>\n      "},
-	[]int{1},
-	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "li"}},
-)
-
-var _tHome15 = gx.NewTemplate(
 	[]string{"<ol class=\"divide-y divide-border\">", "</ol>\n  "},
 	[]int{1},
 	nil,
 	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "ol"}},
 )
 
+var _tHome12 = gx.NewTemplate(
+	[]string{"\n    <section class=\"mt-line border-t-2 border-foreground pt-half\" aria-live=\"polite\">\n      <p class=\"font-semibold\">", "</p>\n      <p class=\"text-small text-muted-foreground\">", "</p>\n    </section>\n  "},
+	[]int{2, 2},
+	nil,
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "section"}},
+)
+
+var _tHome13 = gx.NewTemplate(
+	[]string{"\n      <summary class=\"label min-h-target cursor-pointer py-half\">", " (", ")</summary>\n      "},
+	[]int{1, 1},
+	nil,
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "summary"}},
+)
+
+var _tHome14 = gx.NewTemplate(
+	[]string{"\n        "},
+	[]int{},
+	nil,
+	[]gx.TemplateRoot{},
+).With()
+
+var _tHome15 = gx.NewTemplate(
+	[]string{"\n          <li>", "</li>\n        "},
+	[]int{1},
+	nil,
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "li"}},
+)
+
 var _tHome16 = gx.NewTemplate(
-	[]string{"<details class=\"mt-line border-t-2 border-foreground\">", "</details>\n"},
+	[]string{"\n      "},
+	[]int{},
+	nil,
+	[]gx.TemplateRoot{},
+).With()
+
+var _tHome17 = gx.NewTemplate(
+	[]string{"<ol class=\"divide-y divide-border\">", "</ol>\n    "},
+	[]int{1},
+	nil,
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "ol"}},
+)
+
+var _tHome18 = gx.NewTemplate(
+	[]string{"<details class=\"mt-line border-t-2 border-foreground\">", "</details>\n  "},
 	[]int{1},
 	nil,
 	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "details"}},
 )
 
-var _tHome17 = gx.NewTemplate(
+var _tHome19 = gx.NewTemplate(
+	[]string{"<div", ">", "</div>\n"},
+	[]int{0, 1},
+	[]gx.TemplateEl{{Slot: 0, Start: 0, EndStatic: 2, End: 6}},
+	[]gx.TemplateRoot{{El: 0, Slot: -1}},
+)
+
+var _tHome20 = gx.NewTemplate(
 	[]string{"<p", ">", "</p>"},
 	[]int{0, 1},
 	[]gx.TemplateEl{{Slot: 0, Start: 0, EndStatic: 2, End: 4}},
+	[]gx.TemplateRoot{{El: 0, Slot: -1}},
+)
+
+var _tHome21 = gx.NewTemplate(
+	[]string{"<div", ">", "</div>"},
+	[]int{0, 1},
+	[]gx.TemplateEl{{Slot: 0, Start: 0, EndStatic: 2, End: 6}},
 	[]gx.TemplateRoot{{El: 0, Slot: -1}},
 )

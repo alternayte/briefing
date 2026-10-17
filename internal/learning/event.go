@@ -20,7 +20,7 @@ const (
 )
 
 // Event is one thing a user did that says something about what they know.
-// Events are only ever added.
+// Events are only added, except a feedback event, which the reader can undo.
 type Event struct {
 	drel.Model[int64] `db:"table=learning_events,index=idx_learning_events_user_kind[user_id,kind,created_at]"`
 	UserID            uuid.UUID      `db:"user_id,references=auth_users.id,on_delete=cascade"`

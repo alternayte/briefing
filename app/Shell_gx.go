@@ -15,6 +15,10 @@ type ShellProps struct {
 	Lang string
 	// SignOut is the sign-out form, or nil when nobody is signed in.
 	SignOut *accounts.SignOutButtonProps
+	// Timezone is the hidden form that sends the browser's time zone, with
+	// TimezoneScript, while the profile has none.
+	Timezone       *accounts.TimezoneAutoProps
+	TimezoneScript gx.Node
 	// Children is the page.
 	Children gx.Node
 }
@@ -26,56 +30,70 @@ func Shell(p ShellProps) gx.Node {
 		}
 	}
 	var _b gx.Builder
-//line Shell.gx:19:1
+//line Shell.gx:23:1
 	_b.Add(_tShell0.With(
-//line Shell.gx:19:1
+//line Shell.gx:23:1
 		gx.Head(gx.HeadProps{Title: p.Msg.AppName, Meta: nil, Links: nil, Lang: p.Lang, HtmlClass: "", BodyClass: "min-h-dvh"}),
-//line Shell.gx:20:139
+//line Shell.gx:24:139
 		gx.Text(p.Msg.SkipToContent),
 	))
-//line Shell.gx:21:1
+//line Shell.gx:25:1
 	var _b1 gx.Builder
-//line Shell.gx:21:54
+//line Shell.gx:25:54
 	_b1.Add(_tShell1)
-//line Shell.gx:22:3
+//line Shell.gx:26:3
 	var _b2 gx.Builder
-//line Shell.gx:22:116
+//line Shell.gx:26:116
 	_b2.Add(_tShell2.With(
-//line Shell.gx:23:78
+//line Shell.gx:27:78
 		gx.Text(p.Msg.AppName),
 	))
-//line Shell.gx:24:5
+//line Shell.gx:28:5
 	if p.SignOut != nil {
-//line Shell.gx:24:26
+//line Shell.gx:28:26
 		_b2.Add(_tShell3.With(
-//line Shell.gx:26:117
+//line Shell.gx:30:117
 			gx.Text(p.Msg.FeedTitle),
-//line Shell.gx:27:123
+//line Shell.gx:31:123
 			gx.Text(p.Msg.ReviewTitle),
-//line Shell.gx:28:124
+//line Shell.gx:32:124
 			gx.Text(p.Msg.LearnedTitle),
-//line Shell.gx:29:125
+//line Shell.gx:33:125
 			gx.Text(p.Msg.SettingsTitle),
-//line Shell.gx:30:9
+//line Shell.gx:34:9
 			accounts.SignOutButton(accounts.SignOutButtonProps{F: p.SignOut.F, Label: p.SignOut.Label}),
 		))
 	}
-//line Shell.gx:32:6
+//line Shell.gx:36:6
 	_b2.Add(_tShell1)
-//line Shell.gx:22:3
+//line Shell.gx:26:3
 	_b1.Add(_tShell4.With(
-//line Shell.gx:22:3
+//line Shell.gx:26:3
 		_b2.Node(),
 	))
-//line Shell.gx:21:1
+//line Shell.gx:25:1
 	_b.Add(_tShell5.With(
-//line Shell.gx:21:1
+//line Shell.gx:25:1
 		_b1.Node(),
-//line Shell.gx:35:1
+//line Shell.gx:39:1
 		gx.Open("main", gx.Attrs{gx.Attr{Key: "class", Value: "mx-auto max-w-column px-half pb-line", Kind: gx.AttrText}, gx.Attr{Key: "id", Value: "main", Kind: gx.AttrText}}),
-//line Shell.gx:35:62
+//line Shell.gx:39:62
 		p.Children,
+//line Shell.gx:40:1
+		gx.Toaster(),
 	))
+//line Shell.gx:41:1
+	if p.Timezone != nil {
+//line Shell.gx:41:23
+		_b.Add(_tShell6.With(
+//line Shell.gx:42:3
+			accounts.TimezoneAuto(accounts.TimezoneAutoProps{F: p.Timezone.F}),
+//line Shell.gx:43:3
+			p.TimezoneScript,
+		))
+	}
+//line Shell.gx:44:2
+	_b.Add(_tShell7)
 	return _b.Node()
 }
 
@@ -83,40 +101,54 @@ var _tShell0 = gx.NewTemplate(
 	[]string{"", "\n<a class=\"label sr-only focus:not-sr-only focus:absolute focus:left-half focus:top-half focus:bg-background focus:p-quarter\" href=\"#main\">", "</a>\n"},
 	[]int{0, 1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: 0}, {El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "a"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: 0}, {El: -1, Slot: -1, Name: "a"}},
 )
 
 var _tShell1 = gx.NewTemplate(
 	[]string{"\n  "},
 	[]int{},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}},
+	[]gx.TemplateRoot{},
 ).With()
 
 var _tShell2 = gx.NewTemplate(
 	[]string{"\n    <a class=\"text-masthead leading-tight font-bold tracking-tight\" href=\"/\">", "</a>\n    "},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "a"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "a"}},
 )
 
 var _tShell3 = gx.NewTemplate(
 	[]string{"\n      <nav class=\"flex w-full flex-wrap items-center gap-x-half sm:w-auto sm:justify-end\">\n        <a class=\"label min-h-target inline-flex items-center text-muted-foreground hover:text-foreground\" href=\"/\">", "</a>\n        <a class=\"label min-h-target inline-flex items-center text-muted-foreground hover:text-foreground\" href=\"/review\">", "</a>\n        <a class=\"label min-h-target inline-flex items-center text-muted-foreground hover:text-foreground\" href=\"/learned\">", "</a>\n        <a class=\"label min-h-target inline-flex items-center text-muted-foreground hover:text-foreground\" href=\"/settings\">", "</a>\n        ", "\n      </nav>\n    "},
 	[]int{2, 2, 2, 2, 1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1}, {El: -1, Slot: -1, Name: "nav"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "nav"}},
 )
 
 var _tShell4 = gx.NewTemplate(
 	[]string{"<div class=\"flex flex-wrap items-baseline justify-between gap-y-quarter border-b-2 border-foreground pb-quarter\">", "</div>\n"},
 	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "div"}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "div"}},
 )
 
 var _tShell5 = gx.NewTemplate(
-	[]string{"<header class=\"mx-auto max-w-column px-half pt-line\">", "</header>\n<main", ">", "</main>\n"},
-	[]int{1, 0, 1},
+	[]string{"<header class=\"mx-auto max-w-column px-half pt-line\">", "</header>\n<main", ">", "</main>\n", "\n"},
+	[]int{1, 0, 1, 0},
 	[]gx.TemplateEl{{Slot: 1, Start: 10, EndStatic: 3, End: 7}},
-	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "header"}, {El: -1, Slot: -1}, {El: 0, Slot: -1}, {El: -1, Slot: -1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "header"}, {El: 0, Slot: -1}, {El: -1, Slot: 3}},
 )
+
+var _tShell6 = gx.NewTemplate(
+	[]string{"\n  ", "\n  ", "\n"},
+	[]int{0, 0},
+	nil,
+	[]gx.TemplateRoot{{El: -1, Slot: 0}, {El: -1, Slot: 1}},
+)
+
+var _tShell7 = gx.NewTemplate(
+	[]string{"\n"},
+	[]int{},
+	nil,
+	[]gx.TemplateRoot{},
+).With()

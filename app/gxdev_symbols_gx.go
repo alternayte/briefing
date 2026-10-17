@@ -21,6 +21,9 @@ func GxDevSymbols() gx.DevPackage {
 			"Layout": reflect.ValueOf(&Layout).Elem(),
 			"Shell":  reflect.ValueOf(Shell),
 		},
+		Consts: map[string]constant.Value{
+			"timezoneJS": gx.DevString("const f = document.querySelector(\"form[data-gx-form=setTimezone][hidden]\");\nconst zone = Intl.DateTimeFormat().resolvedOptions().timeZone;\nif (f && zone) { f.elements[0].value = zone; f.requestSubmit(); }"),
+		},
 		Types: map[string]reflect.Type{
 			"ShellProps": reflect.TypeFor[ShellProps](),
 		},

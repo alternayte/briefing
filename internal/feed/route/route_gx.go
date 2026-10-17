@@ -29,6 +29,102 @@ func (in Calibrate) URL() string {
 	return gx.BasePath() + b.String()
 }
 
+// Pattern returns the method and pattern of Done.
+func (Done) Pattern() string { return "POST /feed/done" }
+
+// GxBindForm fills Done and returns one message key per field
+// that did not convert (REQ-FRM-07).
+func (in *Done) GxBindForm(r *http.Request) (map[string]string, error) {
+	errs := map[string]string{}
+	{
+		if v := gx.FormText(r, "storyID"); v != "" {
+			x, err := strconv.ParseInt(v, 10, 64)
+			if err != nil {
+				errs["storyID"] = "invalid"
+			} else {
+				in.StoryID = int64(x)
+			}
+		}
+	}
+	{
+		if v := gx.FormText(r, "allSeen"); v != "" {
+			x, err := gx.ParseBool(v)
+			if err != nil {
+				errs["allSeen"] = "invalid"
+			} else {
+				in.AllSeen = bool(x)
+			}
+		}
+	}
+	return errs, nil
+}
+
+// Bind fills Done from the request.
+func (in *Done) Bind(r *http.Request) error {
+	errs, err := in.GxBindForm(r)
+	if err != nil {
+		return err
+	}
+	for _, name := range gx.FieldNames(errs) {
+		return fmt.Errorf("gx: %s: %s", name, errs[name])
+	}
+	return nil
+}
+
+// URL returns the path of Done.
+func (in Done) URL() string {
+	var b strings.Builder
+	b.WriteString("/")
+	b.WriteString("feed")
+	b.WriteString("/")
+	b.WriteString("done")
+	return gx.BasePath() + b.String()
+}
+
+// DoneForm is the generated form value of Done (REQ-FRM-03).
+type DoneForm struct {
+	gx.FormMeta
+	StoryID gx.FormField[int64]
+	AllSeen gx.FormField[bool]
+}
+
+// GxFormValue fills the form value of Done (REQ-FRM-03).
+func (in *Done) GxFormValue(errs map[string]string) gx.FormValue {
+	f := DoneForm{FormMeta: gx.FormMeta{Name: "done", ID: "done-form", Action: in.URL(), Method: "POST", Enctype: "", Tool: "feed_done"}}
+	f.StoryID = gx.FormField[int64]{Name: "storyID", ID: gx.FieldID("done", "storyID"), Value: in.StoryID, ErrorKey: errs["storyID"], Error: gx.Translate(errs["storyID"], gx.DefaultMessage(errs["storyID"])), Constraints: nil, ValidateURL: gx.ValidateURL(in.URL(), "storyID")}
+	f.AllSeen = gx.FormField[bool]{Name: "allSeen", ID: gx.FieldID("done", "allSeen"), Value: in.AllSeen, ErrorKey: errs["allSeen"], Error: gx.Translate(errs["allSeen"], gx.DefaultMessage(errs["allSeen"])), Constraints: nil, ValidateURL: gx.ValidateURL(in.URL(), "allSeen")}
+	return f
+}
+
+// GxFieldName returns the form field name of a field pointer (REQ-FRM-02).
+func (in *Done) GxFieldName(ptr any) string {
+	switch ptr {
+	case any(&in.StoryID):
+		return "storyID"
+	case any(&in.AllSeen):
+		return "allSeen"
+	}
+	return ""
+}
+
+// GxNewForm returns a fresh Done (REQ-FRM-02).
+func (in *Done) GxNewForm() gx.FormInput { return &Done{} }
+
+// GxRunForm calls the form handler with the concrete input type (REQ-FRM-02).
+func (in *Done) GxRunForm(ctx *gx.Ctx, fn any) error {
+	return fn.(func(*gx.Ctx, *Done) error)(ctx, in)
+}
+
+// GxTool describes Done as a tool.
+func (Done) GxTool() gx.ToolInfo {
+	return gx.ToolInfo{
+		Name:        "feed_done",
+		Description: "Takes stories off Today and lists them under \"Done today\": one story by its story_id, or with all_seen true every story of today the reader opened or rated. A story marked done comes back to Today when its summary is updated. Done stories still count toward the daily budget. Use it when the reader is done with a story or wants to clear what they read. Returns how many stories changed.",
+		Schema:      "{\"additionalProperties\":false,\"properties\":{\"allSeen\":{\"type\":\"boolean\"},\"storyID\":{\"type\":\"integer\"}},\"type\":\"object\"}",
+		Fields:      []gx.ToolField{{Name: "storyID", In: "form"}, {Name: "allSeen", In: "form"}},
+	}
+}
+
 // Pattern returns the method and pattern of Explain.
 func (Explain) Pattern() string { return "POST /s/{StoryID}/explain" }
 
@@ -136,6 +232,16 @@ func (in *Feedback) GxBindForm(r *http.Request) (map[string]string, error) {
 			in.From = string(v)
 		}
 	}
+	{
+		if v := gx.FormText(r, "undo"); v != "" {
+			x, err := gx.ParseBool(v)
+			if err != nil {
+				errs["undo"] = "invalid"
+			} else {
+				in.Undo = bool(x)
+			}
+		}
+	}
 	return errs, nil
 }
 
@@ -169,6 +275,7 @@ type FeedbackForm struct {
 	StoryID gx.FormField[int64]
 	Kind    gx.FormField[string]
 	From    gx.FormField[string]
+	Undo    gx.FormField[bool]
 }
 
 // GxFormValue fills the form value of Feedback (REQ-FRM-03).
@@ -177,6 +284,7 @@ func (in *Feedback) GxFormValue(errs map[string]string) gx.FormValue {
 	f.StoryID = gx.FormField[int64]{Name: "", ID: gx.FieldID("feedback", ""), Value: in.StoryID, ErrorKey: errs[""], Error: gx.Translate(errs[""], gx.DefaultMessage(errs[""])), Constraints: nil, ValidateURL: gx.ValidateURL(in.URL(), "")}
 	f.Kind = gx.FormField[string]{Name: "kind", ID: gx.FieldID("feedback", "kind"), Value: in.Kind, ErrorKey: errs["kind"], Error: gx.Translate(errs["kind"], gx.DefaultMessage(errs["kind"])), Constraints: gx.Attrs{gx.Bool("required", true)}, ValidateURL: gx.ValidateURL(in.URL(), "kind")}
 	f.From = gx.FormField[string]{Name: "from", ID: gx.FieldID("feedback", "from"), Value: in.From, ErrorKey: errs["from"], Error: gx.Translate(errs["from"], gx.DefaultMessage(errs["from"])), Constraints: nil, ValidateURL: gx.ValidateURL(in.URL(), "from")}
+	f.Undo = gx.FormField[bool]{Name: "undo", ID: gx.FieldID("feedback", "undo"), Value: in.Undo, ErrorKey: errs["undo"], Error: gx.Translate(errs["undo"], gx.DefaultMessage(errs["undo"])), Constraints: nil, ValidateURL: gx.ValidateURL(in.URL(), "undo")}
 	return f
 }
 
@@ -189,6 +297,8 @@ func (in *Feedback) GxFieldName(ptr any) string {
 		return "kind"
 	case any(&in.From):
 		return "from"
+	case any(&in.Undo):
+		return "undo"
 	}
 	return ""
 }
@@ -205,9 +315,9 @@ func (in *Feedback) GxRunForm(ctx *gx.Ctx, fn any) error {
 func (Feedback) GxTool() gx.ToolInfo {
 	return gx.ToolInfo{
 		Name:        "feed_feedback",
-		Description: "Records the reader's feedback on a story: \"useful\" (worth reading; it also schedules the story's review questions), \"knew\" (the reader already knew it, so similar stories rank lower), \"irrelevant\" (not for this reader) or \"misleading\" (the entry misstates its sources). Use it when the reader says so about a story you showed them. Returns the story id and the recorded kind.",
-		Schema:      "{\"additionalProperties\":false,\"properties\":{\"StoryID\":{\"type\":\"integer\"},\"from\":{\"type\":\"string\"},\"kind\":{\"enum\":[\"useful\",\"knew\",\"irrelevant\",\"misleading\"],\"type\":\"string\"}},\"required\":[\"StoryID\",\"kind\"],\"type\":\"object\"}",
-		Fields:      []gx.ToolField{{Name: "StoryID", In: "path"}, {Name: "kind", In: "form"}, {Name: "from", In: "form"}},
+		Description: "Records the reader's feedback on a story: \"useful\" (worth reading; it also schedules the story's review questions), \"knew\" (the reader already knew it, so similar stories rank lower; the story leaves Today), \"irrelevant\" (not for this reader; the story leaves Today) or \"misleading\" (the entry misstates its sources; its summary is hidden for the reader). With undo true it removes that feedback and reverses its effect; feedback that is not there changes nothing, so a retry is safe. Use it when the reader says so about a story you showed them. Returns the story id and the kind.",
+		Schema:      "{\"additionalProperties\":false,\"properties\":{\"StoryID\":{\"type\":\"integer\"},\"from\":{\"type\":\"string\"},\"kind\":{\"enum\":[\"useful\",\"knew\",\"irrelevant\",\"misleading\"],\"type\":\"string\"},\"undo\":{\"type\":\"boolean\"}},\"required\":[\"StoryID\",\"kind\"],\"type\":\"object\"}",
+		Fields:      []gx.ToolField{{Name: "StoryID", In: "path"}, {Name: "kind", In: "form"}, {Name: "from", In: "form"}, {Name: "undo", In: "form"}},
 	}
 }
 
@@ -670,6 +780,88 @@ func (in Read) URL() string {
 	return gx.BasePath() + b.String()
 }
 
+// Pattern returns the method and pattern of Restore.
+func (Restore) Pattern() string { return "POST /feed/restore" }
+
+// GxBindForm fills Restore and returns one message key per field
+// that did not convert (REQ-FRM-07).
+func (in *Restore) GxBindForm(r *http.Request) (map[string]string, error) {
+	errs := map[string]string{}
+	{
+		if v := gx.FormText(r, "storyID"); v != "" {
+			x, err := strconv.ParseInt(v, 10, 64)
+			if err != nil {
+				errs["storyID"] = "invalid"
+			} else {
+				in.StoryID = int64(x)
+			}
+		}
+	}
+	return errs, nil
+}
+
+// Bind fills Restore from the request.
+func (in *Restore) Bind(r *http.Request) error {
+	errs, err := in.GxBindForm(r)
+	if err != nil {
+		return err
+	}
+	for _, name := range gx.FieldNames(errs) {
+		return fmt.Errorf("gx: %s: %s", name, errs[name])
+	}
+	return nil
+}
+
+// URL returns the path of Restore.
+func (in Restore) URL() string {
+	var b strings.Builder
+	b.WriteString("/")
+	b.WriteString("feed")
+	b.WriteString("/")
+	b.WriteString("restore")
+	return gx.BasePath() + b.String()
+}
+
+// RestoreForm is the generated form value of Restore (REQ-FRM-03).
+type RestoreForm struct {
+	gx.FormMeta
+	StoryID gx.FormField[int64]
+}
+
+// GxFormValue fills the form value of Restore (REQ-FRM-03).
+func (in *Restore) GxFormValue(errs map[string]string) gx.FormValue {
+	f := RestoreForm{FormMeta: gx.FormMeta{Name: "restore", ID: "restore-form", Action: in.URL(), Method: "POST", Enctype: "", Tool: "feed_restore"}}
+	f.StoryID = gx.FormField[int64]{Name: "storyID", ID: gx.FieldID("restore", "storyID"), Value: in.StoryID, ErrorKey: errs["storyID"], Error: gx.Translate(errs["storyID"], gx.DefaultMessage(errs["storyID"])), Constraints: gx.Attrs{gx.Bool("required", true)}, ValidateURL: gx.ValidateURL(in.URL(), "storyID")}
+	return f
+}
+
+// GxFieldName returns the form field name of a field pointer (REQ-FRM-02).
+func (in *Restore) GxFieldName(ptr any) string {
+	switch ptr {
+	case any(&in.StoryID):
+		return "storyID"
+	}
+	return ""
+}
+
+// GxNewForm returns a fresh Restore (REQ-FRM-02).
+func (in *Restore) GxNewForm() gx.FormInput { return &Restore{} }
+
+// GxRunForm calls the form handler with the concrete input type (REQ-FRM-02).
+func (in *Restore) GxRunForm(ctx *gx.Ctx, fn any) error {
+	return fn.(func(*gx.Ctx, *Restore) error)(ctx, in)
+}
+
+// GxTool describes Restore as a tool.
+func (Restore) GxTool() gx.ToolInfo {
+	return gx.ToolInfo{
+		Name:        "feed_restore",
+		Description: "Brings a story the reader marked done back to Today, by its story_id. A story the reader marked \"knew\" or \"irrelevant\" comes back only when that feedback is undone with feed_feedback. Returns how many stories changed.",
+		Schema:      "{\"additionalProperties\":false,\"properties\":{\"storyID\":{\"type\":\"integer\"}},\"required\":[\"storyID\"],\"type\":\"object\"}",
+		Fields:      []gx.ToolField{{Name: "storyID", In: "form"}},
+	}
+}
+
 // Pattern returns the method and pattern of SaveInterests.
 func (SaveInterests) Pattern() string { return "POST /onboarding" }
 
@@ -1091,7 +1283,7 @@ func (in Today) URL() string {
 func (Today) GxTool() gx.ToolInfo {
 	return gx.ToolInfo{
 		Name:        "feed_today",
-		Description: "Returns the reader's brief for today: the stories delivered today, best first, then more stories that did not fit the daily budget. Each story has its id, a link, the headline and summary in the reader's language, its concepts, its sources and why it was chosen. reviews_due counts the review questions waiting. Use it for a morning briefing or \"what's new\".",
+		Description: "Returns the reader's brief for today, their local day: the stories delivered today, best first, then the ones they took off Today with done true, then more stories that did not fit the daily budget. Each story has its id, a link, the headline and summary in the reader's language, its concepts, its sources and why it was chosen. reviews_due counts the review questions waiting. Use it for a morning briefing or \"what's new\".",
 		Schema:      "{\"additionalProperties\":false,\"properties\":{},\"type\":\"object\"}",
 		Fields:      []gx.ToolField{},
 	}

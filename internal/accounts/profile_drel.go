@@ -16,6 +16,7 @@ var Profiles = struct {
 	Locale      drel.StringColumn
 	DailyBudget drel.OrderedColumn[int]
 	OnboardedAt drel.ComparableColumn[*time.Time]
+	Timezone    drel.StringColumn
 	CreatedAt   drel.TimeColumn
 	UpdatedAt   drel.TimeColumn
 }{
@@ -24,6 +25,7 @@ var Profiles = struct {
 	Locale:      drel.NewStringCol("locale"),
 	DailyBudget: drel.NewOrderedCol[int]("daily_budget"),
 	OnboardedAt: drel.NewComparableCol[*time.Time]("onboarded_at"),
+	Timezone:    drel.NewStringCol("timezone"),
 	CreatedAt:   drel.NewTimeCol("created_at"),
 	UpdatedAt:   drel.NewTimeCol("updated_at"),
 }
@@ -31,7 +33,7 @@ var Profiles = struct {
 func scanProfile(row drel.Row) (*Profile, error) {
 	p := &Profile{}
 	idPtr, createdAtPtr, updatedAtPtr := p.ScanPtrs()
-	err := row.Scan(idPtr, &p.DisplayName, &p.Locale, &p.DailyBudget, &p.OnboardedAt, createdAtPtr, updatedAtPtr)
+	err := row.Scan(idPtr, &p.DisplayName, &p.Locale, &p.DailyBudget, &p.OnboardedAt, &p.Timezone, createdAtPtr, updatedAtPtr)
 	if err != nil {
 		return nil, err
 	}
@@ -43,10 +45,11 @@ type profileSnapshot struct {
 	Locale      string
 	DailyBudget int
 	OnboardedAt *time.Time
+	Timezone    string
 }
 
 func snapshotProfile(p *Profile) any {
-	return profileSnapshot{DisplayName: p.DisplayName, Locale: p.Locale, DailyBudget: p.DailyBudget, OnboardedAt: p.OnboardedAt}
+	return profileSnapshot{DisplayName: p.DisplayName, Locale: p.Locale, DailyBudget: p.DailyBudget, OnboardedAt: p.OnboardedAt, Timezone: p.Timezone}
 }
 
 func diffProfile(p *Profile, snap any) []drel.FieldChange {
@@ -63,6 +66,9 @@ func diffProfile(p *Profile, snap any) []drel.FieldChange {
 	}
 	if p.OnboardedAt != s.OnboardedAt {
 		changes = append(changes, drel.FieldChange{Column: "onboarded_at", Value: p.OnboardedAt})
+	}
+	if p.Timezone != s.Timezone {
+		changes = append(changes, drel.FieldChange{Column: "timezone", Value: p.Timezone})
 	}
 	return changes
 }
@@ -84,15 +90,17 @@ func profileColumnValue(p *Profile, idx int) any {
 	case 4:
 		return p.OnboardedAt
 	case 5:
-		return p.CreatedAt()
+		return p.Timezone
 	case 6:
+		return p.CreatedAt()
+	case 7:
 		return p.UpdatedAt()
 	}
 	return nil
 }
 
 func profileInsertColumns(p *Profile) ([]string, []any) {
-	return []string{"display_name", "locale", "daily_budget", "onboarded_at"}, []any{p.DisplayName, p.Locale, p.DailyBudget, p.OnboardedAt}
+	return []string{"display_name", "locale", "daily_budget", "onboarded_at", "timezone"}, []any{p.DisplayName, p.Locale, p.DailyBudget, p.OnboardedAt, p.Timezone}
 }
 
 func profileScanReturning(p *Profile, row drel.Row) error {
@@ -116,7 +124,7 @@ func profileScanGenerated(p *Profile, row drel.Row) error {
 
 var ProfileMeta = drel.ModelMeta[Profile]{
 	Table:         "profiles",
-	Columns:       []string{"id", "display_name", "locale", "daily_budget", "onboarded_at", "created_at", "updated_at"},
+	Columns:       []string{"id", "display_name", "locale", "daily_budget", "onboarded_at", "timezone", "created_at", "updated_at"},
 	PKColumns:     []string{"id"},
 	Scan:          scanProfile,
 	Snapshot:      snapshotProfile,

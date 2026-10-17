@@ -31,6 +31,9 @@ const (
 	EntryDelivered EntryState = "delivered"
 	// EntrySeen was opened or marked by the user.
 	EntrySeen EntryState = "seen"
+	// EntryDone was taken off Today by the reader: Done, Clear read, "Knew
+	// it" or "Not relevant". A delivered one still counts toward the budget.
+	EntryDone EntryState = "done"
 )
 
 // Entry is one story in one user's feed.

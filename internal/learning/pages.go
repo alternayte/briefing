@@ -57,7 +57,7 @@ var ReviewPage = gx.Page(func(c *gx.Ctx, in route.Review) (ReviewViewProps, erro
 				return err
 			}
 		}
-		items, err := Due(ctx, tx, profile.ID(), w.now(), w.tuning.Review)
+		items, err := Due(ctx, tx, profile.ID(), w.now(), profile.Location(), w.tuning.Review)
 		if err != nil {
 			return err
 		}
@@ -109,7 +109,7 @@ var ReviewDueAction = gx.Action(func(c *gx.Ctx, _ route.ReviewDue) error {
 	w, profile := webFrom(ctx), accounts.CurrentProfile(ctx)
 	return w.engine.WithTx(ctx, func(ctx context.Context) error {
 		tx := drel.MustFromContext(ctx)
-		items, err := Due(ctx, tx, profile.ID(), w.now(), w.tuning.Review)
+		items, err := Due(ctx, tx, profile.ID(), w.now(), profile.Location(), w.tuning.Review)
 		if err == nil {
 			err = translateDue(ctx, tx, items, i18n.FromContext(ctx))
 		}

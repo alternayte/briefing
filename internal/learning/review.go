@@ -9,6 +9,7 @@ import (
 	"github.com/alternayte/drel"
 	"github.com/google/uuid"
 
+	"github.com/alternayte/briefing/internal/accounts"
 	"github.com/alternayte/briefing/internal/platform"
 )
 
@@ -27,11 +28,12 @@ type DueItem struct {
 	answer      int
 }
 
-// Due returns the questions due now, at most as many as the day has left.
-func Due(ctx context.Context, tx *drel.Tx, userID uuid.UUID, now time.Time, t platform.ReviewTuning) ([]DueItem, error) {
+// Due returns the questions due now, at most as many as the reader's day,
+// which starts at midnight in loc, has left.
+func Due(ctx context.Context, tx *drel.Tx, userID uuid.UUID, now time.Time, loc *time.Location, t platform.ReviewTuning) ([]DueItem, error) {
 	var answered int
 	if err := tx.QueryRow(ctx, `SELECT count(*) FROM learning_events WHERE user_id = $1
-		AND kind IN ('reviewed_correct', 'reviewed_wrong') AND created_at >= $2`, userID, now.UTC().Truncate(24*time.Hour)).Scan(&answered); err != nil {
+		AND kind IN ('reviewed_correct', 'reviewed_wrong') AND created_at >= $2`, userID, accounts.StartOfDay(now, loc)).Scan(&answered); err != nil {
 		return nil, err
 	}
 	left := t.MaxDueCard - answered

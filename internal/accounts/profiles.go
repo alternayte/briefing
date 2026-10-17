@@ -104,3 +104,22 @@ func (s *ProfileStore) SetDailyBudget(ctx context.Context, userID uuid.UUID, bud
 	}
 	return nil
 }
+
+// SetTimezone sets the reader's IANA zone. An unknown name is an error.
+func (s *ProfileStore) SetTimezone(ctx context.Context, userID uuid.UUID, name string) error {
+	if _, err := time.LoadLocation(name); err != nil || name == "" {
+		return fmt.Errorf("unknown time zone %q", name)
+	}
+	err := s.engine.WithTx(ctx, func(ctx context.Context) error {
+		p, err := txProfiles(ctx).FindByID(ctx, userID)
+		if err != nil {
+			return err
+		}
+		p.Timezone = name
+		return nil
+	})
+	if err != nil {
+		return fmt.Errorf("set time zone of %s: %w", userID, err)
+	}
+	return nil
+}

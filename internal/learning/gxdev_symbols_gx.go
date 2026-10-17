@@ -50,6 +50,7 @@ func GxDevSymbols() gx.DevPackage {
 			"StateMastered":               reflect.ValueOf(StateMastered),
 			"StateMet":                    reflect.ValueOf(StateMet),
 			"StateNone":                   reflect.ValueOf(StateNone),
+			"UnscheduleStory":             reflect.ValueOf(UnscheduleStory),
 			"diffEvent":                   reflect.ValueOf(diffEvent),
 			"diffReviewschedule":          reflect.ValueOf(diffReviewschedule),
 			"eventColumnValue":            reflect.ValueOf(eventColumnValue),

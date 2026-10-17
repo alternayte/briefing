@@ -41,3 +41,28 @@ func TestCountPicksThePluralOfTheLocale(t *testing.T) {
 		}
 	}
 }
+
+func TestAgoSaysHowFreshCoverageIs(t *testing.T) {
+	paris, err := time.LoadLocation("Europe/Paris")
+	if err != nil {
+		t.Fatal(err)
+	}
+	now := time.Date(2026, 10, 17, 10, 0, 0, 0, time.UTC)
+	cases := []struct {
+		got, want string
+	}{
+		{Ago(EN, now.Add(-20*time.Second), now, paris), "just now"},
+		{Ago(EN, now.Add(-12*time.Minute), now, paris), "12 min ago"},
+		{Ago(EN, now.Add(-3*time.Hour), now, paris), "3 h ago"},
+		{Ago(FR, now.Add(-3*time.Hour), now, paris), "il y a 3 h"},
+		{Ago(EN, now.Add(-30*time.Hour), now, paris), "yesterday"},
+		{Ago(FR, now.Add(-30*time.Hour), now, paris), "hier"},
+		{Ago(EN, now.Add(-72*time.Hour), now, paris), "14 Oct"},
+		{Ago(FR, now.Add(-72*time.Hour), now, paris), "14 oct."},
+	}
+	for _, c := range cases {
+		if c.got != c.want {
+			t.Errorf("got %q, want %q", c.got, c.want)
+		}
+	}
+}

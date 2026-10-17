@@ -19,6 +19,13 @@ props {
   New string = ""
   LinkCard bool = false
   Updated bool = false
+  // Flagged hides the summary: the reader flagged it as misleading.
+  Flagged bool = false
+  // Dates says when the story was first reported and last updated.
+  Dates string = ""
+  // Budget and Zone feed the help: the daily budget and the time zone.
+  Budget int = 0
+  Zone string = ""
   Meta []string = nil
   Claims []ClaimView = nil
   Concepts []ConceptView = nil
@@ -46,11 +53,19 @@ props {
     <p class="label text-muted-foreground">{p.Msg.FeedTranslating}</p>
   }
   <h1 id="headline" class="text-headline leading-tight font-semibold">{p.Headline}</h1>
+  <p class="mt-quarter text-small text-muted-foreground">{p.Dates}</p>
   if len(p.Meta) > 0 {
-    <p class="mt-quarter text-small text-muted-foreground">{strings.Join(p.Meta, " · ")}</p>
+    <p class="text-small text-muted-foreground">{strings.Join(p.Meta, " · ")}</p>
   }
-  <FeedbackGroup storyID={p.StoryID} buttons={p.Feedback} msg={p.Msg} />
-  if !p.LinkCard {
+  <div class="flex flex-wrap items-end justify-between gap-x-half">
+    <FeedbackGroup storyID={p.StoryID} buttons={p.Feedback} msg={p.Msg} />
+    <HelpDialog msg={p.Msg} budget={p.Budget} zone={p.Zone} />
+  </div>
+  flagged := p.Flagged
+  <div #summary(flagged bool)>
+  if flagged {
+    <p class="mt-half border-l-2 border-destructive pl-half">{p.Msg.FeedFlagged}</p>
+  } else if !p.LinkCard {
     <p class="mt-half">{p.Summary}</p>
     <section class="mt-line" aria-labelledby="why">
       <h2 id="why" class="label border-b border-foreground pb-quarter">{p.Msg.StoryWhy}</h2>
@@ -89,6 +104,7 @@ props {
       </ul>
     </section>
   }
+  </div>
   if len(p.Concepts) > 0 {
     <section class="mt-line" aria-labelledby="concepts">
       <h2 id="concepts" class="label border-b border-foreground pb-quarter">{p.Msg.StoryConcepts}</h2>

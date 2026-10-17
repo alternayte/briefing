@@ -314,6 +314,97 @@ func (in *SendLink) GxRunForm(ctx *gx.Ctx, fn any) error {
 	return fn.(func(*gx.Ctx, *SendLink) error)(ctx, in)
 }
 
+// Pattern returns the method and pattern of SetTimezone.
+func (SetTimezone) Pattern() string { return "POST /settings/timezone" }
+
+// GxBindForm fills SetTimezone and returns one message key per field
+// that did not convert (REQ-FRM-07).
+func (in *SetTimezone) GxBindForm(r *http.Request) (map[string]string, error) {
+	errs := map[string]string{}
+	{
+		if v := gx.FormText(r, "timezone"); v != "" {
+			in.Timezone = string(v)
+		}
+	}
+	{
+		if v := gx.FormText(r, "auto"); v != "" {
+			x, err := gx.ParseBool(v)
+			if err != nil {
+				errs["auto"] = "invalid"
+			} else {
+				in.Auto = bool(x)
+			}
+		}
+	}
+	return errs, nil
+}
+
+// Bind fills SetTimezone from the request.
+func (in *SetTimezone) Bind(r *http.Request) error {
+	errs, err := in.GxBindForm(r)
+	if err != nil {
+		return err
+	}
+	for _, name := range gx.FieldNames(errs) {
+		return fmt.Errorf("gx: %s: %s", name, errs[name])
+	}
+	return nil
+}
+
+// URL returns the path of SetTimezone.
+func (in SetTimezone) URL() string {
+	var b strings.Builder
+	b.WriteString("/")
+	b.WriteString("settings")
+	b.WriteString("/")
+	b.WriteString("timezone")
+	return gx.BasePath() + b.String()
+}
+
+// SetTimezoneForm is the generated form value of SetTimezone (REQ-FRM-03).
+type SetTimezoneForm struct {
+	gx.FormMeta
+	Timezone gx.FormField[string]
+	Auto     gx.FormField[bool]
+}
+
+// GxFormValue fills the form value of SetTimezone (REQ-FRM-03).
+func (in *SetTimezone) GxFormValue(errs map[string]string) gx.FormValue {
+	f := SetTimezoneForm{FormMeta: gx.FormMeta{Name: "setTimezone", ID: "setTimezone-form", Action: in.URL(), Method: "POST", Enctype: "", Tool: "accounts_set_timezone"}}
+	f.Timezone = gx.FormField[string]{Name: "timezone", ID: gx.FieldID("setTimezone", "timezone"), Value: in.Timezone, ErrorKey: errs["timezone"], Error: gx.Translate(errs["timezone"], gx.DefaultMessage(errs["timezone"])), Constraints: nil, ValidateURL: gx.ValidateURL(in.URL(), "timezone")}
+	f.Auto = gx.FormField[bool]{Name: "auto", ID: gx.FieldID("setTimezone", "auto"), Value: in.Auto, ErrorKey: errs["auto"], Error: gx.Translate(errs["auto"], gx.DefaultMessage(errs["auto"])), Constraints: nil, ValidateURL: gx.ValidateURL(in.URL(), "auto")}
+	return f
+}
+
+// GxFieldName returns the form field name of a field pointer (REQ-FRM-02).
+func (in *SetTimezone) GxFieldName(ptr any) string {
+	switch ptr {
+	case any(&in.Timezone):
+		return "timezone"
+	case any(&in.Auto):
+		return "auto"
+	}
+	return ""
+}
+
+// GxNewForm returns a fresh SetTimezone (REQ-FRM-02).
+func (in *SetTimezone) GxNewForm() gx.FormInput { return &SetTimezone{} }
+
+// GxRunForm calls the form handler with the concrete input type (REQ-FRM-02).
+func (in *SetTimezone) GxRunForm(ctx *gx.Ctx, fn any) error {
+	return fn.(func(*gx.Ctx, *SetTimezone) error)(ctx, in)
+}
+
+// GxTool describes SetTimezone as a tool.
+func (SetTimezone) GxTool() gx.ToolInfo {
+	return gx.ToolInfo{
+		Name:        "accounts_set_timezone",
+		Description: "SetTimezone sets the reader's time zone, an IANA name such as Europe/Paris. The reader's day starts at midnight in it: today's briefing, its daily budget and the daily review cap. With auto, the zone applies only while the reader has none; the page sends it from the browser.",
+		Schema:      "{\"additionalProperties\":false,\"properties\":{\"auto\":{\"type\":\"boolean\"},\"timezone\":{\"type\":\"string\"}},\"type\":\"object\"}",
+		Fields:      []gx.ToolField{{Name: "timezone", In: "form"}, {Name: "auto", In: "form"}},
+	}
+}
+
 // Pattern returns the method and pattern of SignOut.
 func (SignOut) Pattern() string { return "POST /logout" }
 

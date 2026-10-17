@@ -13,11 +13,40 @@ var monthsFR = []string{"janv.", "févr.", "mars", "avr.", "mai", "juin", "juil.
 // DateTime formats a time as day, short month, year and 24-hour time, in UTC.
 func DateTime(l Locale, t time.Time) string {
 	t = t.UTC()
-	months := monthsEN
-	if l == FR {
-		months = monthsFR
+	return fmt.Sprintf("%d %s %d, %02d:%02d", t.Day(), months(l)[t.Month()-1], t.Year(), t.Hour(), t.Minute())
+}
+
+// DateTimeIn formats a time as day, short month and 24-hour time in loc.
+func DateTimeIn(l Locale, t time.Time, loc *time.Location) string {
+	t = t.In(loc)
+	return fmt.Sprintf("%d %s %02d:%02d", t.Day(), months(l)[t.Month()-1], t.Hour(), t.Minute())
+}
+
+// Ago says how long before now t was: minutes, then hours within a day,
+// "yesterday" on the reader's previous day, then a short date.
+func Ago(l Locale, t, now time.Time, loc *time.Location) string {
+	m := For(l)
+	d := now.Sub(t)
+	switch {
+	case d < time.Minute:
+		return m.AgoJustNow
+	case d < time.Hour:
+		return fmt.Sprintf(m.AgoMinutes, int(d/time.Minute))
+	case d < 24*time.Hour:
+		return fmt.Sprintf(m.AgoHours, int(d/time.Hour))
 	}
-	return fmt.Sprintf("%d %s %d, %02d:%02d", t.Day(), months[t.Month()-1], t.Year(), t.Hour(), t.Minute())
+	t, now = t.In(loc), now.In(loc)
+	if y, mo, day := now.AddDate(0, 0, -1).Date(); t.Year() == y && t.Month() == mo && t.Day() == day {
+		return m.AgoYesterday
+	}
+	return fmt.Sprintf("%d %s", t.Day(), months(l)[t.Month()-1])
+}
+
+func months(l Locale) []string {
+	if l == FR {
+		return monthsFR
+	}
+	return monthsEN
 }
 
 // Int formats a whole number with the locale's thousands separator.

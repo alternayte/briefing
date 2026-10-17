@@ -16,6 +16,8 @@ type DashboardProps struct {
 	Jobs []JobCount
 	// Failures lists the latest failed job attempts.
 	Failures []Failure
+	// Flags lists the latest summaries readers flagged as misleading.
+	Flags []Flag
 	// Spend lists today's model spend by stage and model.
 	Spend []SpendRow
 	// SpendTotal and SpendCap are formatted amounts.
@@ -32,258 +34,326 @@ func Dashboard(p DashboardProps) gx.Node {
 		}
 	}
 	var _b gx.Builder
-//line Dashboard.gx:23:1
+//line Dashboard.gx:25:1
 	_b.Add(_tDashboard0.With(
-//line Dashboard.gx:23:1
+//line Dashboard.gx:25:1
 		gx.Head(gx.HeadProps{Title: p.Msg.AdminTitle + " · " + p.Msg.AppName, Meta: nil, Links: nil, Lang: "", HtmlClass: "", BodyClass: ""}),
-//line Dashboard.gx:24:63
+//line Dashboard.gx:26:63
 		gx.Text(p.Msg.AdminTitle),
 	))
-//line Dashboard.gx:26:1
+//line Dashboard.gx:28:1
 	var _b1 gx.Builder
-//line Dashboard.gx:26:50
+//line Dashboard.gx:28:50
 	_b1.Add(_tDashboard1.With(
-//line Dashboard.gx:27:3
+//line Dashboard.gx:29:3
 		gx.Open("h2", gx.Attrs{gx.Attr{Key: "class", Value: "label border-b border-foreground pb-quarter", Kind: gx.AttrText}, gx.Attr{Key: "id", Value: "spend", Kind: gx.AttrText}}),
-//line Dashboard.gx:27:70
+//line Dashboard.gx:29:70
 		gx.Text(p.Msg.AdminSpend),
 	))
-//line Dashboard.gx:28:3
+//line Dashboard.gx:30:3
 	if p.CapReached {
-//line Dashboard.gx:28:20
+//line Dashboard.gx:30:20
 		_b1.Add(_tDashboard2.With(
-//line Dashboard.gx:29:104
+//line Dashboard.gx:31:104
 			gx.Text(p.Msg.AdminCapReached),
 		))
 	}
-//line Dashboard.gx:30:4
+//line Dashboard.gx:32:4
 	_b1.Add(_tDashboard3.With(
-//line Dashboard.gx:31:32
+//line Dashboard.gx:33:32
 		gx.Text(p.SpendTotal),
-//line Dashboard.gx:31:96
+//line Dashboard.gx:33:96
 		gx.Text(p.Msg.AdminCap),
-//line Dashboard.gx:31:113
+//line Dashboard.gx:33:113
 		gx.Text(p.SpendCap),
 	))
-//line Dashboard.gx:32:3
+//line Dashboard.gx:34:3
 	if len(p.Spend) == 0 {
-//line Dashboard.gx:32:25
+//line Dashboard.gx:34:25
 		_b1.Add(_tDashboard4.With(
-//line Dashboard.gx:33:60
+//line Dashboard.gx:35:60
 			gx.Text(p.Msg.AdminNoSpendToday),
 		))
 	} else {
-//line Dashboard.gx:34:11
+//line Dashboard.gx:36:11
 		_b1.Add(_tDashboard5)
-//line Dashboard.gx:35:5
+//line Dashboard.gx:37:5
 		var _b2 gx.Builder
-//line Dashboard.gx:35:59
+//line Dashboard.gx:37:59
 		_b2.Add(_tDashboard6.With(
-//line Dashboard.gx:36:130
+//line Dashboard.gx:38:130
 			gx.Text(p.Msg.AdminStage),
-//line Dashboard.gx:36:196
+//line Dashboard.gx:38:196
 			gx.Text(p.Msg.AdminCalls),
-//line Dashboard.gx:36:262
+//line Dashboard.gx:38:262
 			gx.Text(p.Msg.AdminCost),
 		))
-//line Dashboard.gx:37:7
+//line Dashboard.gx:39:7
 		var _b3 gx.Builder
-//line Dashboard.gx:37:14
+//line Dashboard.gx:39:14
 		_b3.Add(_tDashboard7)
-//line Dashboard.gx:38:9
+//line Dashboard.gx:40:9
 		for _, r := range p.Spend {
-//line Dashboard.gx:38:36
+//line Dashboard.gx:40:36
 			_b3.Add(_tDashboard8.With(
-//line Dashboard.gx:39:69
+//line Dashboard.gx:41:69
 				gx.Text(r.Stage),
-//line Dashboard.gx:39:118
+//line Dashboard.gx:41:118
 				gx.Text(r.Model),
-//line Dashboard.gx:39:170
+//line Dashboard.gx:41:170
 				gx.Text(r.Calls),
-//line Dashboard.gx:39:215
+//line Dashboard.gx:41:215
 				gx.Text(r.Cost),
 			))
 		}
-//line Dashboard.gx:40:10
+//line Dashboard.gx:42:10
 		_b3.Add(_tDashboard9)
-//line Dashboard.gx:37:7
+//line Dashboard.gx:39:7
 		_b2.Add(_tDashboard10.With(
-//line Dashboard.gx:37:7
+//line Dashboard.gx:39:7
 			_b3.Node(),
 		))
-//line Dashboard.gx:35:5
+//line Dashboard.gx:37:5
 		_b1.Add(_tDashboard11.With(
-//line Dashboard.gx:35:5
+//line Dashboard.gx:37:5
 			_b2.Node(),
 		))
 	}
-//line Dashboard.gx:43:4
+//line Dashboard.gx:45:4
 	_b1.Add(_tDashboard12)
-//line Dashboard.gx:26:1
+//line Dashboard.gx:28:1
 	_b.Add(_tDashboard13.With(
-//line Dashboard.gx:26:1
+//line Dashboard.gx:28:1
 		_b1.Node(),
 	))
-//line Dashboard.gx:46:1
+//line Dashboard.gx:48:1
 	var _b4 gx.Builder
-//line Dashboard.gx:46:52
+//line Dashboard.gx:48:52
 	_b4.Add(_tDashboard1.With(
-//line Dashboard.gx:47:3
+//line Dashboard.gx:49:3
 		gx.Open("h2", gx.Attrs{gx.Attr{Key: "class", Value: "label border-b border-foreground pb-quarter", Kind: gx.AttrText}, gx.Attr{Key: "id", Value: "sources", Kind: gx.AttrText}}),
-//line Dashboard.gx:47:72
+//line Dashboard.gx:49:72
 		gx.Text(p.Msg.AdminSources),
 	))
-//line Dashboard.gx:48:3
+//line Dashboard.gx:50:3
 	var _b5 gx.Builder
-//line Dashboard.gx:48:38
+//line Dashboard.gx:50:38
 	_b5.Add(_tDashboard5)
-//line Dashboard.gx:49:5
+//line Dashboard.gx:51:5
 	for _, s := range p.Sources {
-//line Dashboard.gx:49:34
+//line Dashboard.gx:51:34
 		_b5.Add(_tDashboard9)
-//line Dashboard.gx:50:7
+//line Dashboard.gx:52:7
 		var _b6 gx.Builder
-//line Dashboard.gx:50:110
+//line Dashboard.gx:52:110
 		_b6.Add(_tDashboard7)
-//line Dashboard.gx:51:9
+//line Dashboard.gx:53:9
 		var _b7 gx.Builder
-//line Dashboard.gx:51:30
+//line Dashboard.gx:53:30
 		_b7.Add(_tDashboard14.With(
-//line Dashboard.gx:52:36
+//line Dashboard.gx:54:36
 			gx.Text(s.Title),
-//line Dashboard.gx:52:88
+//line Dashboard.gx:54:88
 			gx.Text(s.Kind),
-//line Dashboard.gx:53:75
+//line Dashboard.gx:55:75
 			gx.Text(p.Msg.AdminLastSuccess),
-//line Dashboard.gx:53:107
+//line Dashboard.gx:55:107
 			gx.Text(s.LastSuccess),
 		))
-//line Dashboard.gx:54:11
+//line Dashboard.gx:56:11
 		if s.LastError != "" {
-//line Dashboard.gx:54:33
+//line Dashboard.gx:56:33
 			_b7.Add(_tDashboard15.With(
-//line Dashboard.gx:55:84
+//line Dashboard.gx:57:84
 				gx.Text(p.Msg.AdminLastError),
-//line Dashboard.gx:55:114
+//line Dashboard.gx:57:114
 				gx.Text(s.LastError),
 			))
 		}
-//line Dashboard.gx:56:12
+//line Dashboard.gx:58:12
 		_b7.Add(_tDashboard7)
-//line Dashboard.gx:51:9
+//line Dashboard.gx:53:9
 		_b6.Add(_tDashboard16.With(
-//line Dashboard.gx:51:9
+//line Dashboard.gx:53:9
 			_b7.Node(),
-//line Dashboard.gx:58:9
+//line Dashboard.gx:60:9
 			ToggleButton(ToggleButtonProps{F: s.Toggle.F, Label: s.Toggle.Label}),
 		))
-//line Dashboard.gx:50:7
+//line Dashboard.gx:52:7
 		_b5.Add(_tDashboard17.With(
-//line Dashboard.gx:50:7
+//line Dashboard.gx:52:7
 			gx.Open("li", gx.Attrs{gx.Attr{Key: "class", Value: gx.Classes("flex items-start justify-between gap-half py-half", gx.When("text-muted-foreground", !s.Enabled)), Kind: gx.AttrText}}),
-//line Dashboard.gx:50:7
+//line Dashboard.gx:52:7
 			_b6.Node(),
 		))
 	}
-//line Dashboard.gx:60:6
+//line Dashboard.gx:62:6
 	_b5.Add(_tDashboard18)
-//line Dashboard.gx:48:3
+//line Dashboard.gx:50:3
 	_b4.Add(_tDashboard19.With(
-//line Dashboard.gx:48:3
+//line Dashboard.gx:50:3
 		_b5.Node(),
 	))
-//line Dashboard.gx:46:1
+//line Dashboard.gx:48:1
 	_b.Add(_tDashboard20.With(
-//line Dashboard.gx:46:1
+//line Dashboard.gx:48:1
 		_b4.Node(),
 	))
-//line Dashboard.gx:64:1
+//line Dashboard.gx:66:1
 	var _b8 gx.Builder
-//line Dashboard.gx:64:49
+//line Dashboard.gx:66:49
 	_b8.Add(_tDashboard1.With(
-//line Dashboard.gx:65:3
+//line Dashboard.gx:67:3
 		gx.Open("h2", gx.Attrs{gx.Attr{Key: "class", Value: "label border-b border-foreground pb-quarter", Kind: gx.AttrText}, gx.Attr{Key: "id", Value: "jobs", Kind: gx.AttrText}}),
-//line Dashboard.gx:65:69
+//line Dashboard.gx:67:69
 		gx.Text(p.Msg.AdminJobs),
 	))
-//line Dashboard.gx:66:3
+//line Dashboard.gx:68:3
 	var _b9 gx.Builder
-//line Dashboard.gx:66:57
+//line Dashboard.gx:68:57
 	_b9.Add(_tDashboard21.With(
-//line Dashboard.gx:67:128
+//line Dashboard.gx:69:128
 		gx.Text(p.Msg.AdminJobKind),
-//line Dashboard.gx:67:195
+//line Dashboard.gx:69:195
 		gx.Text(p.Msg.AdminJobState),
-//line Dashboard.gx:67:264
+//line Dashboard.gx:69:264
 		gx.Text(p.Msg.AdminJobCount),
 	))
-//line Dashboard.gx:68:5
+//line Dashboard.gx:70:5
 	var _b10 gx.Builder
-//line Dashboard.gx:68:12
+//line Dashboard.gx:70:12
 	_b10.Add(_tDashboard9)
-//line Dashboard.gx:69:7
+//line Dashboard.gx:71:7
 	for _, j := range p.Jobs {
-//line Dashboard.gx:69:33
+//line Dashboard.gx:71:33
 		_b10.Add(_tDashboard22.With(
-//line Dashboard.gx:70:67
+//line Dashboard.gx:72:67
 			gx.Text(j.Kind),
-//line Dashboard.gx:70:100
+//line Dashboard.gx:72:100
 			gx.Text(j.State),
-//line Dashboard.gx:70:145
+//line Dashboard.gx:72:145
 			gx.Text(j.Count),
 		))
 	}
-//line Dashboard.gx:71:8
+//line Dashboard.gx:73:8
 	_b10.Add(_tDashboard5)
-//line Dashboard.gx:68:5
+//line Dashboard.gx:70:5
 	_b9.Add(_tDashboard23.With(
-//line Dashboard.gx:68:5
+//line Dashboard.gx:70:5
 		_b10.Node(),
 	))
-//line Dashboard.gx:66:3
+//line Dashboard.gx:68:3
 	_b8.Add(_tDashboard24.With(
-//line Dashboard.gx:66:3
+//line Dashboard.gx:68:3
 		_b9.Node(),
-//line Dashboard.gx:74:51
+//line Dashboard.gx:76:51
 		gx.Text(p.Msg.AdminFailures),
 	))
-//line Dashboard.gx:75:3
+//line Dashboard.gx:77:3
 	if len(p.Failures) == 0 {
-//line Dashboard.gx:75:28
+//line Dashboard.gx:77:28
 		_b8.Add(_tDashboard4.With(
-//line Dashboard.gx:76:60
+//line Dashboard.gx:78:60
 			gx.Text(p.Msg.AdminNoFailures),
 		))
 	}
-//line Dashboard.gx:77:4
+//line Dashboard.gx:79:4
 	_b8.Add(_tDashboard18)
-//line Dashboard.gx:78:3
+//line Dashboard.gx:80:3
 	var _b11 gx.Builder
-//line Dashboard.gx:78:26
+//line Dashboard.gx:80:26
 	_b11.Add(_tDashboard5)
-//line Dashboard.gx:79:5
+//line Dashboard.gx:81:5
 	for _, f := range p.Failures {
-//line Dashboard.gx:79:35
+//line Dashboard.gx:81:35
 		_b11.Add(_tDashboard25.With(
-//line Dashboard.gx:80:84
+//line Dashboard.gx:82:84
 			gx.Text(f.Kind),
-//line Dashboard.gx:80:136
+//line Dashboard.gx:82:136
 			gx.Text(f.At),
-//line Dashboard.gx:80:181
+//line Dashboard.gx:82:181
 			gx.Text(f.Error),
 		))
 	}
-//line Dashboard.gx:81:6
+//line Dashboard.gx:83:6
 	_b11.Add(_tDashboard18)
-//line Dashboard.gx:78:3
+//line Dashboard.gx:80:3
 	_b8.Add(_tDashboard26.With(
-//line Dashboard.gx:78:3
+//line Dashboard.gx:80:3
 		_b11.Node(),
 	))
-//line Dashboard.gx:64:1
+//line Dashboard.gx:66:1
 	_b.Add(_tDashboard27.With(
-//line Dashboard.gx:64:1
+//line Dashboard.gx:66:1
 		_b8.Node(),
+	))
+//line Dashboard.gx:87:1
+	var _b12 gx.Builder
+//line Dashboard.gx:87:50
+	_b12.Add(_tDashboard1.With(
+//line Dashboard.gx:88:3
+		gx.Open("h2", gx.Attrs{gx.Attr{Key: "class", Value: "label border-b border-foreground pb-quarter", Kind: gx.AttrText}, gx.Attr{Key: "id", Value: "flags", Kind: gx.AttrText}}),
+//line Dashboard.gx:88:70
+		gx.Text(p.Msg.AdminFlags),
+	))
+//line Dashboard.gx:89:3
+	if len(p.Flags) == 0 {
+//line Dashboard.gx:89:25
+		_b12.Add(_tDashboard4.With(
+//line Dashboard.gx:90:60
+			gx.Text(p.Msg.AdminNoFlags),
+		))
+	} else {
+//line Dashboard.gx:91:11
+		_b12.Add(_tDashboard5)
+//line Dashboard.gx:92:5
+		var _b13 gx.Builder
+//line Dashboard.gx:92:49
+		_b13.Add(_tDashboard28.With(
+//line Dashboard.gx:93:92
+			gx.Text(p.Msg.AdminStory),
+//line Dashboard.gx:93:141
+			gx.Text(p.Msg.AdminReader),
+//line Dashboard.gx:93:191
+			gx.Text(p.Msg.AdminFlaggedAt),
+		))
+//line Dashboard.gx:94:7
+		var _b14 gx.Builder
+//line Dashboard.gx:94:14
+		_b14.Add(_tDashboard7)
+//line Dashboard.gx:95:9
+		for _, f := range p.Flags {
+//line Dashboard.gx:95:36
+			_b14.Add(_tDashboard29.With(
+//line Dashboard.gx:96:69
+				gx.Open("a", gx.Attrs{gx.Attr{Key: "class", Value: "underline underline-offset-2 hover:text-accent", Kind: gx.AttrText}, gx.Attr{Key: "href", Value: string(gx.URL(f.StoryURL)), Kind: gx.AttrURL, Active: "page"}}),
+//line Dashboard.gx:96:153
+				gx.Text(f.Headline),
+//line Dashboard.gx:96:194
+				gx.Text(f.Reader),
+//line Dashboard.gx:96:251
+				gx.Text(f.At),
+			))
+		}
+//line Dashboard.gx:97:10
+		_b14.Add(_tDashboard9)
+//line Dashboard.gx:94:7
+		_b13.Add(_tDashboard10.With(
+//line Dashboard.gx:94:7
+			_b14.Node(),
+		))
+//line Dashboard.gx:92:5
+		_b12.Add(_tDashboard30.With(
+//line Dashboard.gx:92:5
+			_b13.Node(),
+		))
+	}
+//line Dashboard.gx:100:4
+	_b12.Add(_tDashboard12)
+//line Dashboard.gx:87:1
+	_b.Add(_tDashboard31.With(
+//line Dashboard.gx:87:1
+		_b12.Node(),
 	))
 	return _b.Node()
 }
@@ -478,7 +548,35 @@ var _tDashboard26 = gx.NewTemplate(
 )
 
 var _tDashboard27 = gx.NewTemplate(
-	[]string{"<section class=\"mt-line\" aria-labelledby=\"jobs\">", "</section>\n"},
+	[]string{"<section class=\"mt-line\" aria-labelledby=\"jobs\">", "</section>\n\n"},
+	[]int{1},
+	nil,
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "section"}},
+)
+
+var _tDashboard28 = gx.NewTemplate(
+	[]string{"\n      <thead><tr class=\"border-b border-foreground text-left\"><th class=\"label py-quarter\">", "</th><th class=\"label pl-half\">", "</th><th class=\"label pl-half\">", "</th></tr></thead>\n      "},
+	[]int{3, 3, 3},
+	nil,
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "thead"}},
+)
+
+var _tDashboard29 = gx.NewTemplate(
+	[]string{"\n          <tr class=\"border-b border-border\"><td class=\"py-quarter\"><a", ">", "</a></td><td class=\"pl-half\">", "</td><td class=\"pl-half text-muted-foreground\">", "</td></tr>\n        "},
+	[]int{2, 3, 2, 2},
+	[]gx.TemplateEl{{Slot: 0, Start: 69, EndStatic: 2, End: 4}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "tr"}},
+)
+
+var _tDashboard30 = gx.NewTemplate(
+	[]string{"<table class=\"mt-quarter w-full text-small\">", "</table>\n  "},
+	[]int{1},
+	nil,
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "table"}},
+)
+
+var _tDashboard31 = gx.NewTemplate(
+	[]string{"<section class=\"mt-line\" aria-labelledby=\"flags\">", "</section>\n"},
 	[]int{1},
 	nil,
 	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "section"}},

@@ -14,7 +14,7 @@ type FeedbackButtonProps struct {
 	Label string
 	Kind  string
 	From  string
-	// Chosen marks feedback the reader already gave.
+	// Chosen marks feedback the reader already gave; a second click undoes it.
 	Chosen bool
 }
 
@@ -29,24 +29,65 @@ func FeedbackButton(p FeedbackButtonProps) gx.Node {
 			return _n
 		}
 	}
+	var _b gx.Builder
 //line FeedbackButton.gx:16:1
-	return _tFeedbackButton0.With(
-//line FeedbackButton.gx:16:1
-		gx.Open("form", p.F.Attrs()),
+	var _b1 gx.Builder
+//line FeedbackButton.gx:16:24
+	_b1.Add(_tFeedbackButton0.With(
 //line FeedbackButton.gx:17:3
 		gx.Open("input", gx.Attrs{gx.Attr{Key: "type", Value: "hidden", Kind: gx.AttrText}, gx.Attr{Key: "name", Value: p.F.Kind.Name, Kind: gx.AttrText}, gx.Attr{Key: "value", Value: p.Kind, Kind: gx.AttrText}}),
 //line FeedbackButton.gx:18:3
 		gx.Open("input", gx.Attrs{gx.Attr{Key: "type", Value: "hidden", Kind: gx.AttrText}, gx.Attr{Key: "name", Value: p.F.From.Name, Kind: gx.AttrText}, gx.Attr{Key: "value", Value: p.From, Kind: gx.AttrText}}),
+	))
 //line FeedbackButton.gx:19:3
+	if p.Chosen {
+//line FeedbackButton.gx:19:16
+		_b1.Add(_tFeedbackButton1.With(
+//line FeedbackButton.gx:20:5
+			gx.Open("input", gx.Attrs{gx.Attr{Key: "type", Value: "hidden", Kind: gx.AttrText}, gx.Attr{Key: "name", Value: p.F.Undo.Name, Kind: gx.AttrText}, gx.Attr{Key: "value", Value: "true", Kind: gx.AttrText}}),
+		))
+	}
+//line FeedbackButton.gx:21:4
+	_b1.Add(_tFeedbackButton2.With(
+//line FeedbackButton.gx:22:3
 		gx.Open("button", gx.Attrs{gx.Attr{Key: "class", Value: gx.Classes("label min-h-target border border-border px-half text-muted-foreground hover:border-foreground hover:text-foreground", gx.When("border-foreground", p.Chosen), gx.When("bg-foreground", p.Chosen), gx.When("text-background", p.Chosen)), Kind: gx.AttrText}, gx.Attr{Key: "type", Value: "submit", Kind: gx.AttrText}, gx.Attr{Key: "aria-pressed", Value: gx.TextValue(p.Chosen), Kind: gx.AttrText}}),
-//line FeedbackButton.gx:19:272
+//line FeedbackButton.gx:22:272
 		gx.Text(p.Label),
-	)
+	))
+//line FeedbackButton.gx:16:1
+	_b.Add(_tFeedbackButton3.With(
+//line FeedbackButton.gx:16:1
+		gx.Open("form", p.F.Attrs()),
+//line FeedbackButton.gx:16:1
+		_b1.Node(),
+	))
+	return _b.Node()
 }
 
 var _tFeedbackButton0 = gx.NewTemplate(
-	[]string{"<form", ">\n  <input", ">\n  <input", ">\n  <button", ">", "</button>\n</form>\n"},
-	[]int{0, 1, 1, 1, 2},
-	[]gx.TemplateEl{{Slot: 0, Start: 0, EndStatic: 5, End: 17}, {Slot: 1, Start: 4, EndStatic: 2, End: 1}, {Slot: 2, Start: 4, EndStatic: 3, End: 1}, {Slot: 3, Start: 4, EndStatic: 5, End: 9}},
+	[]string{"\n  <input", ">\n  <input", ">\n  "},
+	[]int{0, 0},
+	[]gx.TemplateEl{{Slot: 0, Start: 3, EndStatic: 1, End: 1}, {Slot: 1, Start: 4, EndStatic: 2, End: 1}},
+	[]gx.TemplateRoot{{El: 0, Slot: -1}, {El: 1, Slot: -1}},
+)
+
+var _tFeedbackButton1 = gx.NewTemplate(
+	[]string{"\n    <input", ">\n  "},
+	[]int{0},
+	[]gx.TemplateEl{{Slot: 0, Start: 5, EndStatic: 1, End: 1}},
+	[]gx.TemplateRoot{{El: 0, Slot: -1}},
+)
+
+var _tFeedbackButton2 = gx.NewTemplate(
+	[]string{"\n  <button", ">", "</button>\n"},
+	[]int{0, 1},
+	[]gx.TemplateEl{{Slot: 0, Start: 3, EndStatic: 2, End: 9}},
+	[]gx.TemplateRoot{{El: 0, Slot: -1}},
+)
+
+var _tFeedbackButton3 = gx.NewTemplate(
+	[]string{"<form", ">", "</form>\n"},
+	[]int{0, 1},
+	[]gx.TemplateEl{{Slot: 0, Start: 0, EndStatic: 2, End: 7}},
 	[]gx.TemplateRoot{{El: 0, Slot: -1}},
 )

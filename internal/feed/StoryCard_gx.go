@@ -56,109 +56,148 @@ func StoryCard(p StoryCardProps) gx.Node {
 		gx.Text(p.Card.Headline),
 	))
 //line StoryCard.gx:25:3
-	if p.Card.LinkCard {
-//line StoryCard.gx:25:23
+	if p.Card.Flagged {
+//line StoryCard.gx:25:22
 		_b1.Add(_tStoryCard4.With(
-//line StoryCard.gx:26:60
-			gx.Text(p.Card.Summary),
-//line StoryCard.gx:27:38
-			gx.Text(p.Msg.FeedLinkCard),
-//line StoryCard.gx:27:59
-			gx.Open("a", gx.Attrs{gx.Attr{Key: "class", Value: "text-accent underline underline-offset-2", Kind: gx.AttrText}, gx.Attr{Key: "href", Value: string(p.Card.LinkURL), Kind: gx.AttrURL, Active: "page"}, gx.Attr{Key: "rel", Value: "noopener", Kind: gx.AttrText}}),
-//line StoryCard.gx:27:148
-			gx.Text(p.Card.Sources[0].Domain),
+//line StoryCard.gx:26:76
+			gx.Text(p.Msg.FeedFlagged),
 		))
 	} else {
-//line StoryCard.gx:28:11
-		_b1.Add(_tStoryCard5.With(
-//line StoryCard.gx:29:27
-			gx.Text(p.Card.Summary),
-		))
+//line StoryCard.gx:27:10
+		if p.Card.LinkCard {
+//line StoryCard.gx:27:30
+			_b1.Add(_tStoryCard5.With(
+//line StoryCard.gx:28:60
+				gx.Text(p.Card.Summary),
+//line StoryCard.gx:29:38
+				gx.Text(p.Msg.FeedLinkCard),
+//line StoryCard.gx:29:59
+				gx.Open("a", gx.Attrs{gx.Attr{Key: "class", Value: "text-accent underline underline-offset-2", Kind: gx.AttrText}, gx.Attr{Key: "href", Value: string(p.Card.LinkURL), Kind: gx.AttrURL, Active: "page"}, gx.Attr{Key: "rel", Value: "noopener", Kind: gx.AttrText}}),
+//line StoryCard.gx:29:148
+				gx.Text(p.Card.Sources[0].Domain),
+			))
+		} else {
+//line StoryCard.gx:30:11
+			_b1.Add(_tStoryCard6.With(
+//line StoryCard.gx:31:27
+				gx.Text(p.Card.Summary),
+			))
+		}
 	}
-//line StoryCard.gx:30:4
+//line StoryCard.gx:32:4
 	_b1.Add(_tStoryCard0)
-//line StoryCard.gx:31:3
-	if len(p.Card.Concepts) > 0 {
-//line StoryCard.gx:31:32
-		_b1.Add(_tStoryCard6)
-//line StoryCard.gx:32:5
+//line StoryCard.gx:33:3
+	if len(p.Card.Concepts) > 0 && !p.Card.Flagged {
+//line StoryCard.gx:33:51
+		_b1.Add(_tStoryCard7)
+//line StoryCard.gx:34:5
 		var _b2 gx.Builder
-//line StoryCard.gx:32:74
-		_b2.Add(_tStoryCard7)
-//line StoryCard.gx:33:7
+//line StoryCard.gx:34:74
+		_b2.Add(_tStoryCard8)
+//line StoryCard.gx:35:7
 		for _, name := range p.Card.Concepts {
-//line StoryCard.gx:33:45
-			_b2.Add(_tStoryCard8.With(
-//line StoryCard.gx:34:81
+//line StoryCard.gx:35:45
+			_b2.Add(_tStoryCard9.With(
+//line StoryCard.gx:36:81
 				gx.Text(name),
 			))
 		}
-//line StoryCard.gx:35:8
-		_b2.Add(_tStoryCard6)
-//line StoryCard.gx:32:5
-		_b1.Add(_tStoryCard9.With(
-//line StoryCard.gx:32:5
+//line StoryCard.gx:37:8
+		_b2.Add(_tStoryCard7)
+//line StoryCard.gx:34:5
+		_b1.Add(_tStoryCard10.With(
+//line StoryCard.gx:34:5
 			_b2.Node(),
 		))
 	}
-//line StoryCard.gx:37:4
+//line StoryCard.gx:39:4
 	_b1.Add(_tStoryCard0)
-//line StoryCard.gx:38:3
+//line StoryCard.gx:40:3
 	var _b3 gx.Builder
-//line StoryCard.gx:38:60
-	_b3.Add(_tStoryCard6)
-//line StoryCard.gx:39:5
+//line StoryCard.gx:40:60
+	_b3.Add(_tStoryCard7)
+//line StoryCard.gx:41:5
 	var _b4 gx.Builder
-//line StoryCard.gx:39:56
-	_b4.Add(_tStoryCard7)
-//line StoryCard.gx:40:7
+//line StoryCard.gx:41:56
+	_b4.Add(_tStoryCard8)
+//line StoryCard.gx:42:7
 	for _, s := range p.Card.Sources {
-//line StoryCard.gx:40:41
-		_b4.Add(_tStoryCard10.With(
-//line StoryCard.gx:41:13
+//line StoryCard.gx:42:41
+		_b4.Add(_tStoryCard11.With(
+//line StoryCard.gx:43:13
 			gx.Open("a", gx.Attrs{gx.Attr{Key: "class", Value: "inline-flex min-h-target items-center gap-quarter hover:text-foreground", Kind: gx.AttrText}, gx.Attr{Key: "href", Value: string(s.URL), Kind: gx.AttrURL, Active: "page"}, gx.Attr{Key: "rel", Value: "noopener", Kind: gx.AttrText}, gx.Attr{Key: "title", Value: s.Domain, Kind: gx.AttrText}}),
-//line StoryCard.gx:41:141
+//line StoryCard.gx:43:141
 			gx.Open("img", gx.Attrs{gx.Attr{Key: "class", Value: "size-4", Kind: gx.AttrText}, gx.Attr{Key: "src", Value: string(s.Favicon), Kind: gx.AttrURL, Active: "page"}, gx.Attr{Key: "alt", Value: "", Kind: gx.AttrText}, gx.Attr{Key: "width", Value: "16", Kind: gx.AttrText}, gx.Attr{Key: "height", Value: "16", Kind: gx.AttrText}, gx.Attr{Key: "loading", Value: "lazy", Kind: gx.AttrText}}),
-//line StoryCard.gx:41:224
+//line StoryCard.gx:43:224
 			gx.Text(s.Domain),
 		))
 	}
-//line StoryCard.gx:42:8
-	_b4.Add(_tStoryCard6)
-//line StoryCard.gx:39:5
-	_b3.Add(_tStoryCard11.With(
-//line StoryCard.gx:39:5
+//line StoryCard.gx:44:8
+	_b4.Add(_tStoryCard7)
+//line StoryCard.gx:41:5
+	_b3.Add(_tStoryCard12.With(
+//line StoryCard.gx:41:5
 		_b4.Node(),
 	))
-//line StoryCard.gx:44:5
+//line StoryCard.gx:46:5
 	if len(p.Card.Meta) > 0 {
-//line StoryCard.gx:44:30
-		_b3.Add(_tStoryCard12.With(
-//line StoryCard.gx:45:10
+//line StoryCard.gx:46:30
+		_b3.Add(_tStoryCard13.With(
+//line StoryCard.gx:47:10
 			gx.Text(strings.Join(p.Card.Meta, " · ")),
 		))
 	}
-//line StoryCard.gx:46:6
-	_b3.Add(_tStoryCard6)
-//line StoryCard.gx:47:5
+//line StoryCard.gx:48:6
+	_b3.Add(_tStoryCard7)
+//line StoryCard.gx:49:5
 	if p.Card.Reason != "" {
-//line StoryCard.gx:47:29
-		_b3.Add(_tStoryCard13.With(
-//line StoryCard.gx:48:35
+//line StoryCard.gx:49:29
+		_b3.Add(_tStoryCard14.With(
+//line StoryCard.gx:50:35
 			gx.Text(p.Card.Reason),
 		))
 	}
-//line StoryCard.gx:49:6
+//line StoryCard.gx:51:6
 	_b3.Add(_tStoryCard0)
-//line StoryCard.gx:38:3
-	_b1.Add(_tStoryCard14.With(
-//line StoryCard.gx:38:3
+//line StoryCard.gx:40:3
+	_b1.Add(_tStoryCard15.With(
+//line StoryCard.gx:40:3
 		_b3.Node(),
-//line StoryCard.gx:51:3
+	))
+//line StoryCard.gx:53:3
+	var _b5 gx.Builder
+//line StoryCard.gx:53:68
+	_b5.Add(_tStoryCard16.With(
+//line StoryCard.gx:54:5
 		FeedbackGroup(FeedbackGroupProps{StoryID: p.Card.StoryID, Buttons: p.Card.Feedback, Msg: p.Msg}),
 	))
+//line StoryCard.gx:55:5
+	if p.Card.Place == placeToday {
+//line StoryCard.gx:55:36
+		_b5.Add(_tStoryCard17.With(
+//line StoryCard.gx:56:7
+			DoneButton(DoneButtonProps{F: p.Card.Done.F, Label: p.Card.Done.Label, StoryID: p.Card.StoryID, AllSeen: false}),
+		))
+	}
+//line StoryCard.gx:57:6
+	_b5.Add(_tStoryCard7)
+//line StoryCard.gx:58:5
+	if p.Card.Restore != nil {
+//line StoryCard.gx:58:31
+		_b5.Add(_tStoryCard17.With(
+//line StoryCard.gx:59:7
+			RestoreButton(RestoreButtonProps{F: p.Card.Restore.F, Label: p.Card.Restore.Label, StoryID: p.Card.StoryID}),
+		))
+	}
+//line StoryCard.gx:60:6
+	_b5.Add(_tStoryCard0)
+//line StoryCard.gx:53:3
+	_b1.Add(_tStoryCard18.With(
+//line StoryCard.gx:53:3
+		_b5.Node(),
+	))
 //line StoryCard.gx:17:1
-	_b.Add(_tStoryCard15.With(
+	_b.Add(_tStoryCard19.With(
 //line StoryCard.gx:17:1
 		gx.Open("article", gx.Attrs{gx.Attr{Key: "class", Value: "py-line", Kind: gx.AttrText}, gx.Attr{Key: "id", Value: entryID(p.Card.StoryID), Kind: gx.AttrText}, gx.Attr{Key: "aria-labelledby", Value: "story-" + gx.TextValue(p.Card.StoryID), Kind: gx.AttrText}}),
 //line StoryCard.gx:17:1
@@ -196,83 +235,111 @@ var _tStoryCard3 = gx.NewTemplate(
 )
 
 var _tStoryCard4 = gx.NewTemplate(
+	[]string{"\n    <p class=\"mt-quarter border-l-2 border-destructive pl-half text-small\">", "</p>\n  "},
+	[]int{1},
+	nil,
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "p"}},
+)
+
+var _tStoryCard5 = gx.NewTemplate(
 	[]string{"\n    <p class=\"mt-quarter text-small text-muted-foreground\">", "</p>\n    <p class=\"mt-quarter text-small\">", " <a", ">", "</a></p>\n  "},
 	[]int{1, 1, 1, 2},
 	[]gx.TemplateEl{{Slot: 2, Start: 1, EndStatic: 4, End: 4}},
 	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "p"}, {El: -1, Slot: -1, Name: "p"}},
 )
 
-var _tStoryCard5 = gx.NewTemplate(
+var _tStoryCard6 = gx.NewTemplate(
 	[]string{"\n    <p class=\"mt-quarter\">", "</p>\n  "},
 	[]int{1},
 	nil,
 	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "p"}},
 )
 
-var _tStoryCard6 = gx.NewTemplate(
+var _tStoryCard7 = gx.NewTemplate(
 	[]string{"\n    "},
 	[]int{},
 	nil,
 	[]gx.TemplateRoot{},
 ).With()
 
-var _tStoryCard7 = gx.NewTemplate(
+var _tStoryCard8 = gx.NewTemplate(
 	[]string{"\n      "},
 	[]int{},
 	nil,
 	[]gx.TemplateRoot{},
 ).With()
 
-var _tStoryCard8 = gx.NewTemplate(
+var _tStoryCard9 = gx.NewTemplate(
 	[]string{"\n        <li class=\"label border border-border px-quarter text-muted-foreground\">", "</li>\n      "},
 	[]int{1},
 	nil,
 	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "li"}},
 )
 
-var _tStoryCard9 = gx.NewTemplate(
+var _tStoryCard10 = gx.NewTemplate(
 	[]string{"<ul class=\"mt-half flex flex-wrap gap-quarter\" aria-label=\"concepts\">", "</ul>\n  "},
 	[]int{1},
 	nil,
 	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "ul"}},
 )
 
-var _tStoryCard10 = gx.NewTemplate(
+var _tStoryCard11 = gx.NewTemplate(
 	[]string{"\n        <li><a", "><img", ">", "</a></li>\n      "},
 	[]int{1, 2, 2},
 	[]gx.TemplateEl{{Slot: 0, Start: 13, EndStatic: 3, End: 4}, {Slot: 1, Start: 1, EndStatic: 2, End: 1}},
 	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "li"}},
 )
 
-var _tStoryCard11 = gx.NewTemplate(
+var _tStoryCard12 = gx.NewTemplate(
 	[]string{"<ul class=\"flex flex-wrap items-center gap-x-half\">", "</ul>\n    "},
 	[]int{1},
 	nil,
 	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "ul"}},
 )
 
-var _tStoryCard12 = gx.NewTemplate(
+var _tStoryCard13 = gx.NewTemplate(
 	[]string{"\n      <p>", "</p>\n    "},
 	[]int{1},
 	nil,
 	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "p"}},
 )
 
-var _tStoryCard13 = gx.NewTemplate(
+var _tStoryCard14 = gx.NewTemplate(
 	[]string{"\n      <p class=\"label mt-quarter\">", "</p>\n    "},
 	[]int{1},
 	nil,
 	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "p"}},
 )
 
-var _tStoryCard14 = gx.NewTemplate(
-	[]string{"<footer class=\"mt-half text-small text-muted-foreground\">", "</footer>\n  ", "\n"},
-	[]int{1, 0},
+var _tStoryCard15 = gx.NewTemplate(
+	[]string{"<footer class=\"mt-half text-small text-muted-foreground\">", "</footer>\n  "},
+	[]int{1},
 	nil,
-	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "footer"}, {El: -1, Slot: 1}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "footer"}},
 )
 
-var _tStoryCard15 = gx.NewTemplate(
+var _tStoryCard16 = gx.NewTemplate(
+	[]string{"\n    ", "\n    "},
+	[]int{0},
+	nil,
+	[]gx.TemplateRoot{{El: -1, Slot: 0}},
+)
+
+var _tStoryCard17 = gx.NewTemplate(
+	[]string{"\n      ", "\n    "},
+	[]int{0},
+	nil,
+	[]gx.TemplateRoot{{El: -1, Slot: 0}},
+)
+
+var _tStoryCard18 = gx.NewTemplate(
+	[]string{"<div class=\"flex flex-wrap items-end justify-between gap-x-half\">", "</div>\n"},
+	[]int{1},
+	nil,
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "div"}},
+)
+
+var _tStoryCard19 = gx.NewTemplate(
 	[]string{"<article", ">", "</article>\n"},
 	[]int{0, 1},
 	[]gx.TemplateEl{{Slot: 0, Start: 0, EndStatic: 2, End: 10}},

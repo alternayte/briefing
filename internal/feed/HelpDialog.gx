@@ -1,0 +1,35 @@
+package feed
+
+import (
+  "fmt"
+
+  "github.com/alternayte/briefing/internal/i18n"
+)
+
+props {
+  // Msg is the catalog of the request locale.
+  Msg i18n.Messages
+  // Budget is the reader's daily budget; Zone names their time zone.
+  Budget int
+  Zone string
+}
+
+<span class="contents">
+  <button type="button" commandfor="feed-help" command="show-modal" aria-label={p.Msg.FeedHelpOpen} title={p.Msg.FeedHelpOpen} class="label inline-flex min-h-target min-w-target items-center justify-center border border-border px-half text-muted-foreground hover:border-foreground hover:text-foreground">?</button>
+  <dialog id="feed-help" aria-labelledby="feed-help-title" class="m-auto max-w-column border-2 border-foreground bg-background p-line text-foreground backdrop:bg-foreground/40">
+    <h2 id="feed-help-title" class="text-deck font-semibold">{p.Msg.FeedHelpTitle}</h2>
+    <p class="mt-half">{p.Msg.FeedHelpIntro}</p>
+    <ul class="mt-half grid gap-quarter">
+      <li>{p.Msg.FeedHelpUseful}</li>
+      <li>{p.Msg.FeedHelpKnew}</li>
+      <li>{p.Msg.FeedHelpNot}</li>
+      <li>{p.Msg.FeedHelpFlag}</li>
+    </ul>
+    <p class="mt-half">{p.Msg.FeedHelpUndo}</p>
+    <p class="mt-half">{p.Msg.FeedHelpDone}</p>
+    <p class="mt-half">{fmt.Sprintf(p.Msg.FeedHelpBudget, p.Budget, p.Zone)}</p>
+    <form method="dialog" class="mt-line">
+      <button type="submit" class="label min-h-target border border-foreground px-line hover:bg-foreground hover:text-background">{p.Msg.FeedHelpClose}</button>
+    </form>
+  </dialog>
+</span>

@@ -173,7 +173,8 @@
       "values": [
         "candidate",
         "delivered",
-        "seen"
+        "seen",
+        "done"
       ],
       "baseType": "string"
     }

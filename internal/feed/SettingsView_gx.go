@@ -16,6 +16,7 @@ type SettingsViewProps struct {
 	Notice      string
 	Locale      LocaleFormProps
 	Budget      BudgetFormProps
+	Timezone    accounts.TimezoneFormProps
 	Interests   []InterestView
 	Avoid       []InterestView
 	AddInterest InterestAddFormProps
@@ -37,268 +38,274 @@ func SettingsView(p SettingsViewProps) gx.Node {
 		}
 	}
 	var _b gx.Builder
-//line SettingsView.gx:30:1
+//line SettingsView.gx:31:1
 	_b.Add(_tSettingsView0.With(
-//line SettingsView.gx:30:1
+//line SettingsView.gx:31:1
 		gx.Head(gx.HeadProps{Title: p.Msg.SettingsTitle + " · " + p.Msg.AppName, Meta: nil, Links: nil, Lang: "", HtmlClass: "", BodyClass: ""}),
-//line SettingsView.gx:31:63
+//line SettingsView.gx:32:63
 		gx.Text(p.Msg.SettingsTitle),
 	))
-//line SettingsView.gx:32:1
+//line SettingsView.gx:33:1
 	if p.Notice != "" {
-//line SettingsView.gx:32:20
+//line SettingsView.gx:33:20
 		_b.Add(_tSettingsView1.With(
-//line SettingsView.gx:33:84
+//line SettingsView.gx:34:84
 			gx.Text(p.Notice),
 		))
 	}
-//line SettingsView.gx:34:2
+//line SettingsView.gx:35:2
 	_b.Add(_tSettingsView2.With(
-//line SettingsView.gx:37:3
+//line SettingsView.gx:38:3
 		gx.Open("h2", gx.Attrs{gx.Attr{Key: "class", Value: "label border-b border-foreground pb-quarter", Kind: gx.AttrText}, gx.Attr{Key: "id", Value: "language", Kind: gx.AttrText}}),
-//line SettingsView.gx:37:73
+//line SettingsView.gx:38:73
 		gx.Text(p.Msg.OnboardingLanguage),
-//line SettingsView.gx:38:24
+//line SettingsView.gx:39:24
 		LocaleForm(LocaleFormProps{F: p.Locale.F, Current: p.Locale.Current, Label: p.Locale.Label, Save: p.Locale.Save}),
-//line SettingsView.gx:42:3
+//line SettingsView.gx:43:3
 		gx.Open("h2", gx.Attrs{gx.Attr{Key: "class", Value: "label border-b border-foreground pb-quarter", Kind: gx.AttrText}, gx.Attr{Key: "id", Value: "budget", Kind: gx.AttrText}}),
-//line SettingsView.gx:42:71
+//line SettingsView.gx:43:71
 		gx.Text(p.Msg.SettingsBudget),
-//line SettingsView.gx:43:24
+//line SettingsView.gx:44:24
 		BudgetForm(BudgetFormProps{F: p.Budget.F, Current: p.Budget.Current, Label: p.Budget.Label, Hint: p.Budget.Hint, Save: p.Budget.Save}),
+//line SettingsView.gx:48:3
+		gx.Open("h2", gx.Attrs{gx.Attr{Key: "class", Value: "label border-b border-foreground pb-quarter", Kind: gx.AttrText}, gx.Attr{Key: "id", Value: "timezone", Kind: gx.AttrText}}),
+//line SettingsView.gx:48:73
+		gx.Text(p.Msg.SettingsTimezone),
+//line SettingsView.gx:49:24
+		accounts.TimezoneForm(accounts.TimezoneFormProps{F: p.Timezone.F, Current: p.Timezone.Current, Label: p.Timezone.Label, Hint: p.Timezone.Hint, Save: p.Timezone.Save}),
 	))
-//line SettingsView.gx:46:1
+//line SettingsView.gx:52:1
 	var _b1 gx.Builder
-//line SettingsView.gx:46:54
+//line SettingsView.gx:52:54
 	_b1.Add(_tSettingsView3.With(
-//line SettingsView.gx:47:3
+//line SettingsView.gx:53:3
 		gx.Open("h2", gx.Attrs{gx.Attr{Key: "class", Value: "label border-b border-foreground pb-quarter", Kind: gx.AttrText}, gx.Attr{Key: "id", Value: "interests", Kind: gx.AttrText}}),
-//line SettingsView.gx:47:74
+//line SettingsView.gx:53:74
 		gx.Text(p.Msg.SettingsInterests),
 	))
-//line SettingsView.gx:48:3
+//line SettingsView.gx:54:3
 	var _b2 gx.Builder
-//line SettingsView.gx:48:38
+//line SettingsView.gx:54:38
 	_b2.Add(_tSettingsView4)
-//line SettingsView.gx:49:5
+//line SettingsView.gx:55:5
 	for _, i := range p.Interests {
-//line SettingsView.gx:49:36
+//line SettingsView.gx:55:36
 		_b2.Add(_tSettingsView5.With(
-//line SettingsView.gx:50:79
+//line SettingsView.gx:56:79
 			gx.Text(i.Text),
-//line SettingsView.gx:50:94
+//line SettingsView.gx:56:94
 			InterestRemoveButton(InterestRemoveButtonProps{F: i.Remove.F, Label: i.Remove.Label}),
 		))
 	}
-//line SettingsView.gx:51:6
+//line SettingsView.gx:57:6
 	_b2.Add(_tSettingsView6)
-//line SettingsView.gx:48:3
+//line SettingsView.gx:54:3
 	_b1.Add(_tSettingsView7.With(
-//line SettingsView.gx:48:3
+//line SettingsView.gx:54:3
 		_b2.Node(),
-//line SettingsView.gx:53:3
+//line SettingsView.gx:59:3
 		InterestAddForm(InterestAddFormProps{F: p.AddInterest.F, Negative: false, Label: p.AddInterest.Label, Placeholder: p.AddInterest.Placeholder}),
-//line SettingsView.gx:54:51
+//line SettingsView.gx:60:51
 		gx.Text(p.Msg.SettingsAvoid),
 	))
-//line SettingsView.gx:55:3
+//line SettingsView.gx:61:3
 	var _b3 gx.Builder
-//line SettingsView.gx:55:38
+//line SettingsView.gx:61:38
 	_b3.Add(_tSettingsView4)
-//line SettingsView.gx:56:5
+//line SettingsView.gx:62:5
 	for _, i := range p.Avoid {
-//line SettingsView.gx:56:32
+//line SettingsView.gx:62:32
 		_b3.Add(_tSettingsView5.With(
-//line SettingsView.gx:57:79
+//line SettingsView.gx:63:79
 			gx.Text(i.Text),
-//line SettingsView.gx:57:94
+//line SettingsView.gx:63:94
 			InterestRemoveButton(InterestRemoveButtonProps{F: i.Remove.F, Label: i.Remove.Label}),
 		))
 	}
-//line SettingsView.gx:58:6
+//line SettingsView.gx:64:6
 	_b3.Add(_tSettingsView6)
-//line SettingsView.gx:55:3
+//line SettingsView.gx:61:3
 	_b1.Add(_tSettingsView8.With(
-//line SettingsView.gx:55:3
+//line SettingsView.gx:61:3
 		_b3.Node(),
-//line SettingsView.gx:60:3
+//line SettingsView.gx:66:3
 		InterestAddForm(InterestAddFormProps{F: p.AddAvoid.F, Negative: true, Label: p.AddAvoid.Label, Placeholder: p.AddAvoid.Placeholder}),
 	))
-//line SettingsView.gx:46:1
+//line SettingsView.gx:52:1
 	_b.Add(_tSettingsView9.With(
-//line SettingsView.gx:46:1
+//line SettingsView.gx:52:1
 		_b1.Node(),
 	))
-//line SettingsView.gx:63:1
+//line SettingsView.gx:69:1
 	var _b4 gx.Builder
-//line SettingsView.gx:63:65
+//line SettingsView.gx:69:65
 	_b4.Add(_tSettingsView3.With(
-//line SettingsView.gx:64:3
+//line SettingsView.gx:70:3
 		gx.Open("h2", gx.Attrs{gx.Attr{Key: "class", Value: "label border-b border-foreground pb-quarter", Kind: gx.AttrText}, gx.Attr{Key: "id", Value: "sources-heading", Kind: gx.AttrText}}),
-//line SettingsView.gx:64:80
+//line SettingsView.gx:70:80
 		gx.Text(p.Msg.SettingsSources),
 	))
-//line SettingsView.gx:65:3
+//line SettingsView.gx:71:3
 	if p.FeedNotice != "" {
-//line SettingsView.gx:65:26
+//line SettingsView.gx:71:26
 		_b4.Add(_tSettingsView10.With(
-//line SettingsView.gx:66:86
+//line SettingsView.gx:72:86
 			gx.Text(p.FeedNotice),
 		))
 	}
-//line SettingsView.gx:67:4
+//line SettingsView.gx:73:4
 	_b4.Add(_tSettingsView11.With(
-//line SettingsView.gx:68:3
+//line SettingsView.gx:74:3
 		sources.AddFeedForm(sources.AddFeedFormProps{F: p.AddFeed.F, Label: p.AddFeed.Label, Placeholder: p.AddFeed.Placeholder}),
 	))
-//line SettingsView.gx:69:3
+//line SettingsView.gx:75:3
 	var _b5 gx.Builder
-//line SettingsView.gx:69:46
+//line SettingsView.gx:75:46
 	_b5.Add(_tSettingsView4)
-//line SettingsView.gx:70:5
+//line SettingsView.gx:76:5
 	for _, s := range p.Sources {
-//line SettingsView.gx:70:34
+//line SettingsView.gx:76:34
 		_b5.Add(_tSettingsView12.With(
-//line SettingsView.gx:71:7
+//line SettingsView.gx:77:7
 			gx.Open("li", gx.Attrs{gx.Attr{Key: "class", Value: gx.Classes("flex items-center justify-between gap-half py-quarter", gx.When("text-muted-foreground", !s.Subscribed)), Kind: gx.AttrText}}),
-//line SettingsView.gx:72:31
+//line SettingsView.gx:78:31
 			gx.Text(s.Title),
-//line SettingsView.gx:72:83
+//line SettingsView.gx:78:83
 			gx.Text(s.Kind),
-//line SettingsView.gx:73:9
+//line SettingsView.gx:79:9
 			sources.SubscribeButton(sources.SubscribeButtonProps{F: s.Toggle.F, Label: s.Toggle.Label, On: s.Toggle.On}),
 		))
 	}
-//line SettingsView.gx:75:6
+//line SettingsView.gx:81:6
 	_b5.Add(_tSettingsView6)
-//line SettingsView.gx:69:3
+//line SettingsView.gx:75:3
 	_b4.Add(_tSettingsView13.With(
-//line SettingsView.gx:69:3
+//line SettingsView.gx:75:3
 		_b5.Node(),
 	))
-//line SettingsView.gx:63:1
+//line SettingsView.gx:69:1
 	_b.Add(_tSettingsView14.With(
-//line SettingsView.gx:63:1
+//line SettingsView.gx:69:1
 		gx.Open("section", gx.Attrs{gx.Attr{Key: "class", Value: "mt-line", Kind: gx.AttrText}, gx.Attr{Key: "aria-labelledby", Value: "sources", Kind: gx.AttrText}, gx.Attr{Key: "id", Value: "sources", Kind: gx.AttrText}}),
-//line SettingsView.gx:63:1
+//line SettingsView.gx:69:1
 		_b4.Node(),
 	))
-//line SettingsView.gx:79:1
+//line SettingsView.gx:85:1
 	var _b6 gx.Builder
-//line SettingsView.gx:79:51
+//line SettingsView.gx:85:51
 	_b6.Add(_tSettingsView15.With(
-//line SettingsView.gx:80:3
+//line SettingsView.gx:86:3
 		gx.Open("h2", gx.Attrs{gx.Attr{Key: "class", Value: "label border-b border-foreground pb-quarter", Kind: gx.AttrText}, gx.Attr{Key: "id", Value: "tokens", Kind: gx.AttrText}}),
-//line SettingsView.gx:80:71
+//line SettingsView.gx:86:71
 		gx.Text(p.Msg.SettingsTokens),
-//line SettingsView.gx:81:55
+//line SettingsView.gx:87:55
 		gx.Text(p.Msg.SettingsTokensHint),
 	))
-//line SettingsView.gx:82:3
+//line SettingsView.gx:88:3
 	if p.NewToken != "" {
-//line SettingsView.gx:82:24
+//line SettingsView.gx:88:24
 		_b6.Add(_tSettingsView16.With(
-//line SettingsView.gx:84:29
+//line SettingsView.gx:90:29
 			gx.Text(p.Msg.SettingsTokenNew),
-//line SettingsView.gx:85:71
+//line SettingsView.gx:91:71
 			gx.Text(p.NewToken),
 		))
 	}
-//line SettingsView.gx:87:4
+//line SettingsView.gx:93:4
 	_b6.Add(_tSettingsView17.With(
-//line SettingsView.gx:88:24
+//line SettingsView.gx:94:24
 		accounts.CreateTokenForm(accounts.CreateTokenFormProps{F: p.CreateToken.F, Label: p.CreateToken.Label, Placeholder: p.CreateToken.Placeholder}),
 	))
-//line SettingsView.gx:89:3
+//line SettingsView.gx:95:3
 	if len(p.Tokens) == 0 {
-//line SettingsView.gx:89:26
+//line SettingsView.gx:95:26
 		_b6.Add(_tSettingsView18.With(
-//line SettingsView.gx:90:57
+//line SettingsView.gx:96:57
 			gx.Text(p.Msg.SettingsTokenNone),
 		))
 	}
-//line SettingsView.gx:91:4
+//line SettingsView.gx:97:4
 	_b6.Add(_tSettingsView6)
-//line SettingsView.gx:92:3
+//line SettingsView.gx:98:3
 	var _b7 gx.Builder
-//line SettingsView.gx:92:46
+//line SettingsView.gx:98:46
 	_b7.Add(_tSettingsView4)
-//line SettingsView.gx:93:5
+//line SettingsView.gx:99:5
 	for _, t := range p.Tokens {
-//line SettingsView.gx:93:33
+//line SettingsView.gx:99:33
 		_b7.Add(_tSettingsView19)
-//line SettingsView.gx:94:7
+//line SettingsView.gx:100:7
 		var _b8 gx.Builder
-//line SettingsView.gx:94:73
+//line SettingsView.gx:100:73
 		_b8.Add(_tSettingsView20)
-//line SettingsView.gx:95:9
+//line SettingsView.gx:101:9
 		var _b9 gx.Builder
-//line SettingsView.gx:95:31
+//line SettingsView.gx:101:31
 		_b9.Add(_tSettingsView21.With(
-//line SettingsView.gx:95:37
+//line SettingsView.gx:101:37
 			gx.Text(t.Name),
-//line SettingsView.gx:95:110
+//line SettingsView.gx:101:110
 			gx.Text(t.Start),
 		))
-//line SettingsView.gx:96:17
+//line SettingsView.gx:102:17
 		var _b10 gx.Builder
-//line SettingsView.gx:96:64
+//line SettingsView.gx:102:64
 		_b10.Add(_tSettingsView22.With(
-//line SettingsView.gx:96:64
+//line SettingsView.gx:102:64
 			gx.Text(t.Created),
 		))
-//line SettingsView.gx:97:11
+//line SettingsView.gx:103:11
 		if t.LastUsed != "" {
-//line SettingsView.gx:97:32
+//line SettingsView.gx:103:32
 			_b10.Add(_tSettingsView23.With(
-//line SettingsView.gx:98:16
+//line SettingsView.gx:104:16
 				gx.Text(p.Msg.SettingsTokenLastUse),
-//line SettingsView.gx:98:45
+//line SettingsView.gx:104:45
 				gx.Text(t.LastUsed),
 			))
 		}
-//line SettingsView.gx:99:12
+//line SettingsView.gx:105:12
 		_b10.Add(_tSettingsView24)
-//line SettingsView.gx:96:17
+//line SettingsView.gx:102:17
 		_b9.Add(_tSettingsView25.With(
-//line SettingsView.gx:96:17
+//line SettingsView.gx:102:17
 			_b10.Node(),
 		))
-//line SettingsView.gx:95:9
-		_b8.Add(_tSettingsView26.With(
-//line SettingsView.gx:95:9
-			_b9.Node(),
 //line SettingsView.gx:101:9
+		_b8.Add(_tSettingsView26.With(
+//line SettingsView.gx:101:9
+			_b9.Node(),
+//line SettingsView.gx:107:9
 			accounts.RevokeTokenButton(accounts.RevokeTokenButtonProps{F: t.Revoke.F, Label: t.Revoke.Label}),
 		))
-//line SettingsView.gx:94:7
+//line SettingsView.gx:100:7
 		_b7.Add(_tSettingsView27.With(
-//line SettingsView.gx:94:7
+//line SettingsView.gx:100:7
 			_b8.Node(),
 		))
 	}
-//line SettingsView.gx:103:6
+//line SettingsView.gx:109:6
 	_b7.Add(_tSettingsView6)
-//line SettingsView.gx:92:3
+//line SettingsView.gx:98:3
 	_b6.Add(_tSettingsView13.With(
-//line SettingsView.gx:92:3
+//line SettingsView.gx:98:3
 		_b7.Node(),
 	))
-//line SettingsView.gx:79:1
+//line SettingsView.gx:85:1
 	_b.Add(_tSettingsView28.With(
-//line SettingsView.gx:79:1
+//line SettingsView.gx:85:1
 		_b6.Node(),
-//line SettingsView.gx:108:3
+//line SettingsView.gx:114:3
 		gx.Open("h2", gx.Attrs{gx.Attr{Key: "class", Value: "label border-b border-foreground pb-quarter", Kind: gx.AttrText}, gx.Attr{Key: "id", Value: "mcp", Kind: gx.AttrText}}),
-//line SettingsView.gx:108:68
+//line SettingsView.gx:114:68
 		gx.Text(p.Msg.SettingsMCP),
-//line SettingsView.gx:109:33
+//line SettingsView.gx:115:33
 		gx.Text(p.Msg.SettingsMCPHint),
-//line SettingsView.gx:111:45
+//line SettingsView.gx:117:45
 		gx.Text(p.Msg.SettingsMCPEndpoint),
-//line SettingsView.gx:112:48
+//line SettingsView.gx:118:48
 		gx.Text(p.MCPEndpoint),
-//line SettingsView.gx:113:45
+//line SettingsView.gx:119:45
 		gx.Text(p.Msg.SettingsMCPHeader),
 	))
 	return _b.Node()
@@ -319,10 +326,10 @@ var _tSettingsView1 = gx.NewTemplate(
 )
 
 var _tSettingsView2 = gx.NewTemplate(
-	[]string{"\n\n<section class=\"mt-line\" aria-labelledby=\"language\">\n  <h2", ">", "</h2>\n  <div class=\"mt-half\">", "</div>\n</section>\n\n<section class=\"mt-line\" aria-labelledby=\"budget\">\n  <h2", ">", "</h2>\n  <div class=\"mt-half\">", "</div>\n</section>\n\n"},
-	[]int{1, 2, 2, 1, 2, 2},
-	[]gx.TemplateEl{{Slot: 0, Start: 57, EndStatic: 2, End: 5}, {Slot: 3, Start: 72, EndStatic: 5, End: 5}},
-	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "section"}, {El: -1, Slot: -1, Name: "section"}},
+	[]string{"\n\n<section class=\"mt-line\" aria-labelledby=\"language\">\n  <h2", ">", "</h2>\n  <div class=\"mt-half\">", "</div>\n</section>\n\n<section class=\"mt-line\" aria-labelledby=\"budget\">\n  <h2", ">", "</h2>\n  <div class=\"mt-half\">", "</div>\n</section>\n\n<section class=\"mt-line\" aria-labelledby=\"timezone\">\n  <h2", ">", "</h2>\n  <div class=\"mt-half\">", "</div>\n</section>\n\n"},
+	[]int{1, 2, 2, 1, 2, 2, 1, 2, 2},
+	[]gx.TemplateEl{{Slot: 0, Start: 57, EndStatic: 2, End: 5}, {Slot: 3, Start: 72, EndStatic: 5, End: 5}, {Slot: 6, Start: 74, EndStatic: 8, End: 5}},
+	[]gx.TemplateRoot{{El: -1, Slot: -1, Name: "section"}, {El: -1, Slot: -1, Name: "section"}, {El: -1, Slot: -1, Name: "section"}},
 )
 
 var _tSettingsView3 = gx.NewTemplate(

@@ -12,6 +12,7 @@ import (
 
 	"github.com/alternayte/briefing/internal/accounts"
 	"github.com/alternayte/briefing/internal/embed"
+	"github.com/alternayte/briefing/internal/i18n"
 	"github.com/alternayte/briefing/internal/platform"
 	"github.com/alternayte/briefing/internal/translate"
 	"github.com/alternayte/briefing/internal/write"
@@ -37,6 +38,11 @@ func NewWeb(engine *drel.Engine, e *embed.Embedder, x *write.Explainer, tr *tran
 type webKey struct{}
 
 func webFrom(ctx context.Context) *Web { return ctx.Value(webKey{}).(*Web) }
+
+// viewOf returns how the reader of the request sees cards now.
+func (w *Web) viewOf(ctx context.Context, profile *accounts.Profile) view {
+	return view{locale: i18n.FromContext(ctx), loc: profile.Location(), now: w.now().UTC()}
+}
 
 // Middleware sends signed-out visitors to the sign-in page and puts Web in
 // the request context.

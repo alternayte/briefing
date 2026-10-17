@@ -114,6 +114,40 @@ type Messages struct {
 	FeedbackIrrelevant string
 	FeedbackMisleading string
 
+	FeedDone       string
+	FeedClearRead  string
+	FeedDoneToday  string
+	FeedRestore    string
+	FeedFlagged    string
+	FeedHelpOpen   string
+	FeedHelpTitle  string
+	FeedHelpClose  string
+	FeedHelpIntro  string
+	FeedHelpUseful string
+	FeedHelpKnew   string
+	FeedHelpNot    string
+	FeedHelpFlag   string
+	FeedHelpUndo   string
+	FeedHelpDone   string
+	// FeedHelpBudget takes the daily budget and the time zone name.
+	FeedHelpBudget string
+	AgoJustNow     string
+	// AgoMinutes and AgoHours take a count.
+	AgoMinutes   string
+	AgoHours     string
+	AgoYesterday string
+	// StoryDates takes the first and the latest coverage time.
+	StoryDates string
+
+	SettingsTimezone     string
+	SettingsTimezoneHint string
+
+	AdminFlags     string
+	AdminNoFlags   string
+	AdminStory     string
+	AdminReader    string
+	AdminFlaggedAt string
+
 	ExplainButton  string
 	ExplainHeading string
 	ExplainCap     string
@@ -290,6 +324,34 @@ var en = Messages{
 	FeedbackKnew:               "Knew it",
 	FeedbackIrrelevant:         "Not relevant",
 	FeedbackMisleading:         "Misleading",
+	FeedDone:                   "Done",
+	FeedClearRead:              "Clear read",
+	FeedDoneToday:              "Done today",
+	FeedRestore:                "Restore",
+	FeedFlagged:                "You flagged this summary as misleading. Read the sources instead.",
+	FeedHelpOpen:               "How it works",
+	FeedHelpTitle:              "How your briefing works",
+	FeedHelpClose:              "Close",
+	FeedHelpIntro:              "Each story has four buttons. They change what you see next.",
+	FeedHelpUseful:             "Useful: the story was worth reading. You get review questions about it, and similar stories rank higher.",
+	FeedHelpKnew:               "Knew it: you already knew this. The story moves to “Done today”, and close stories rank lower for 30 days.",
+	FeedHelpNot:                "Not relevant: this is not for you. The story moves to “Done today”, and similar stories rank lower.",
+	FeedHelpFlag:               "Misleading: the summary misstates its sources. The summary is hidden for you, the sources stay, and the flag goes to the operator.",
+	FeedHelpUndo:               "Click a selected button again to undo it.",
+	FeedHelpDone:               "Done moves one story you read to “Done today”. Clear read moves every story you opened or rated. Restore brings a story back. A story you marked done returns when its summary is updated.",
+	FeedHelpBudget:             "Your briefing shows up to %[1]d stories a day; change this in Settings. Stories that do not fit wait under “More”. Today starts again at midnight in your time zone (%[2]s).",
+	AgoJustNow:                 "just now",
+	AgoMinutes:                 "%d min ago",
+	AgoHours:                   "%d h ago",
+	AgoYesterday:               "yesterday",
+	StoryDates:                 "First reported %s · updated %s",
+	SettingsTimezone:           "Time zone",
+	SettingsTimezoneHint:       "Your day starts at midnight in this zone: today’s briefing, its daily count and your daily reviews.",
+	AdminFlags:                 "Summaries flagged misleading",
+	AdminNoFlags:               "No flagged summaries.",
+	AdminStory:                 "Story",
+	AdminReader:                "Reader",
+	AdminFlaggedAt:             "Flagged",
 	ExplainButton:              "Explain it to me",
 	ExplainHeading:             "Explained for you",
 	ExplainCap:                 "Explanations are paused until tomorrow: today's spending cap is reached.",
@@ -458,6 +520,34 @@ var fr = Messages{
 	FeedbackKnew:               "Déjà su",
 	FeedbackIrrelevant:         "Hors sujet",
 	FeedbackMisleading:         "Trompeur",
+	FeedDone:                   "Terminé",
+	FeedClearRead:              "Ranger les lus",
+	FeedDoneToday:              "Terminés aujourd’hui",
+	FeedRestore:                "Remettre",
+	FeedFlagged:                "Vous avez signalé ce résumé comme trompeur. Lisez plutôt les sources.",
+	FeedHelpOpen:               "Comment ça marche",
+	FeedHelpTitle:              "Comment fonctionne votre briefing",
+	FeedHelpClose:              "Fermer",
+	FeedHelpIntro:              "Chaque article a quatre boutons. Ils changent ce que vous voyez ensuite.",
+	FeedHelpUseful:             "Utile : l’article valait la lecture. Vous recevez des questions de révision, et les articles proches remontent.",
+	FeedHelpKnew:               "Déjà su : vous le saviez déjà. L’article passe dans «\u00a0Terminés aujourd’hui\u00a0», et les articles proches descendent pendant 30 jours.",
+	FeedHelpNot:                "Hors sujet : ce n’est pas pour vous. L’article passe dans «\u00a0Terminés aujourd’hui\u00a0», et les articles semblables descendent.",
+	FeedHelpFlag:               "Trompeur : le résumé déforme ses sources. Le résumé est masqué pour vous, les sources restent, et le signalement va à l’exploitant.",
+	FeedHelpUndo:               "Cliquez de nouveau sur un bouton choisi pour l’annuler.",
+	FeedHelpDone:               "Terminé range un article lu dans «\u00a0Terminés aujourd’hui\u00a0». Ranger les lus range tous les articles ouverts ou notés. Remettre ramène un article. Un article terminé revient quand son résumé est mis à jour.",
+	FeedHelpBudget:             "Votre briefing affiche jusqu’à %[1]d articles par jour ; changez ce nombre dans les réglages. Les articles en trop attendent dans «\u00a0Autres articles\u00a0». Aujourd’hui recommence à minuit dans votre fuseau horaire (%[2]s).",
+	AgoJustNow:                 "à l’instant",
+	AgoMinutes:                 "il y a %d min",
+	AgoHours:                   "il y a %d h",
+	AgoYesterday:               "hier",
+	StoryDates:                 "Premier article %s · mis à jour %s",
+	SettingsTimezone:           "Fuseau horaire",
+	SettingsTimezoneHint:       "Votre journée commence à minuit dans ce fuseau : le briefing du jour, son nombre d’articles et vos révisions quotidiennes.",
+	AdminFlags:                 "Résumés signalés comme trompeurs",
+	AdminNoFlags:               "Aucun résumé signalé.",
+	AdminStory:                 "Article",
+	AdminReader:                "Lecteur",
+	AdminFlaggedAt:             "Signalé",
 	ExplainButton:              "Expliquez-moi",
 	ExplainHeading:             "Expliqué pour vous",
 	ExplainCap:                 "Les explications reprennent demain : le plafond de dépenses du jour est atteint.",

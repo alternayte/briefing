@@ -10,9 +10,16 @@ props {
   Msg i18n.Messages
   // LoadedAt is when the page was built, as Unix seconds.
   LoadedAt int64 = 0
-  // Today holds the stories delivered today; More the ones that waited.
+  // Today holds the stories delivered today; Done the ones the reader took
+  // off Today; More the ones that waited.
   Today []Card = nil
+  Done []Card = nil
   More []Card = nil
+  // ClearRead is the form that marks every read story of today done.
+  ClearRead DoneButtonProps
+  // Budget and Zone feed the help: the daily budget and the time zone.
+  Budget int = 0
+  Zone string = ""
   // CaughtUp is true when the reader saw every story of today.
   CaughtUp bool = false
   // ReviewCard words the due questions, or is empty.
@@ -36,27 +43,47 @@ if p.ReviewCard != "" {
     <span class="label text-accent">{p.Msg.ReviewOpen} →</span>
   </a>
 }
-if len(p.Today) == 0 {
-  <p class="pt-line text-muted-foreground italic">{p.Msg.FeedEmpty}</p>
-}
-<ol class="divide-y divide-border">
-  for _, c := range p.Today {
-    <li><StoryCard card={c} msg={p.Msg} /></li>
+<div class="mt-half flex items-center justify-end gap-quarter">
+  <DoneButton f={p.ClearRead.F} label={p.Msg.FeedClearRead} allSeen={true} />
+  <HelpDialog msg={p.Msg} budget={p.Budget} zone={p.Zone} />
+</div>
+today := p.Today
+done := p.Done
+more := p.More
+caughtUp := p.CaughtUp
+<div #feed(today []Card, done []Card, more []Card, caughtUp bool)>
+  if len(today) == 0 && len(done) == 0 {
+    <p class="pt-line text-muted-foreground italic">{p.Msg.FeedEmpty}</p>
   }
-</ol>
-if p.CaughtUp {
-  <section class="mt-line border-t-2 border-foreground pt-half" aria-live="polite">
-    <p class="font-semibold">{p.Msg.FeedCaughtUp}</p>
-    <p class="text-small text-muted-foreground">{p.Msg.FeedCaughtUpHint}</p>
-  </section>
-}
-if len(p.More) > 0 {
-  <details class="mt-line border-t-2 border-foreground">
-    <summary class="label min-h-target cursor-pointer py-half">{p.Msg.FeedMore} ({len(p.More)})</summary>
-    <ol class="divide-y divide-border">
-      for _, c := range p.More {
-        <li><StoryCard card={c} msg={p.Msg} /></li>
-      }
-    </ol>
-  </details>
-}
+  <ol class="divide-y divide-border">
+    for _, c := range today {
+      <li><StoryCard card={c} msg={p.Msg} /></li>
+    }
+  </ol>
+  if caughtUp {
+    <section class="mt-line border-t-2 border-foreground pt-half" aria-live="polite">
+      <p class="font-semibold">{p.Msg.FeedCaughtUp}</p>
+      <p class="text-small text-muted-foreground">{p.Msg.FeedCaughtUpHint}</p>
+    </section>
+  }
+  if len(done) > 0 {
+    <details class="mt-line border-t-2 border-foreground">
+      <summary class="label min-h-target cursor-pointer py-half">{p.Msg.FeedDoneToday} ({len(done)})</summary>
+      <ol class="divide-y divide-border">
+        for _, c := range done {
+          <li><StoryCard card={c} msg={p.Msg} /></li>
+        }
+      </ol>
+    </details>
+  }
+  if len(more) > 0 {
+    <details class="mt-line border-t-2 border-foreground">
+      <summary class="label min-h-target cursor-pointer py-half">{p.Msg.FeedMore} ({len(more)})</summary>
+      <ol class="divide-y divide-border">
+        for _, c := range more {
+          <li><StoryCard card={c} msg={p.Msg} /></li>
+        }
+      </ol>
+    </details>
+  }
+</div>

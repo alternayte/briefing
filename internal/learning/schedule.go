@@ -35,6 +35,15 @@ func ScheduleStory(ctx context.Context, tx *drel.Tx, userID uuid.UUID, storyID i
 	return err
 }
 
+// UnscheduleStory removes the reader's review questions of a story that they
+// have not answered yet. Answered ones keep their history.
+func UnscheduleStory(ctx context.Context, tx *drel.Tx, userID uuid.UUID, storyID int64) error {
+	_, err := tx.Exec(ctx, `
+		DELETE FROM review_schedules rs USING review_items r
+		WHERE rs.review_item_id = r.id AND r.story_id = $2 AND rs.user_id = $1 AND rs.last_result = ''`, userID, storyID)
+	return err
+}
+
 // nextInterval climbs the ladder after a correct answer and returns to the
 // first step after a wrong one.
 func nextInterval(current int, correct bool, ladder []int) int {

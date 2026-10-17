@@ -13,6 +13,7 @@ props {
   Notice string = ""
   Locale LocaleFormProps
   Budget BudgetFormProps
+  Timezone accounts.TimezoneFormProps
   Interests []InterestView = nil
   Avoid []InterestView = nil
   AddInterest InterestAddFormProps
@@ -41,6 +42,11 @@ if p.Notice != "" {
 <section class="mt-line" aria-labelledby="budget">
   <h2 id="budget" class="label border-b border-foreground pb-quarter">{p.Msg.SettingsBudget}</h2>
   <div class="mt-half"><BudgetForm f={p.Budget.F} current={p.Budget.Current} label={p.Budget.Label} hint={p.Budget.Hint} save={p.Budget.Save} /></div>
+</section>
+
+<section class="mt-line" aria-labelledby="timezone">
+  <h2 id="timezone" class="label border-b border-foreground pb-quarter">{p.Msg.SettingsTimezone}</h2>
+  <div class="mt-half"><accounts.TimezoneForm f={p.Timezone.F} current={p.Timezone.Current} label={p.Timezone.Label} hint={p.Timezone.Hint} save={p.Timezone.Save} /></div>
 </section>
 
 <section class="mt-line" aria-labelledby="interests">

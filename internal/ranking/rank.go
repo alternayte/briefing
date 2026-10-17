@@ -11,6 +11,7 @@ import (
 	"github.com/alternayte/drel"
 	"github.com/google/uuid"
 
+	"github.com/alternayte/briefing/internal/accounts"
 	"github.com/alternayte/briefing/internal/decide"
 	"github.com/alternayte/briefing/internal/learning"
 	"github.com/alternayte/briefing/internal/platform"
@@ -58,7 +59,7 @@ type candidate struct {
 func (r *Ranker) Rank(ctx context.Context, userID uuid.UUID) (Result, error) {
 	var res Result
 	now := r.now().UTC()
-	positives, negatives, budget, err := r.reader(ctx, userID)
+	positives, negatives, budget, tz, err := r.reader(ctx, userID)
 	if err != nil || len(positives) == 0 {
 		return res, err
 	}
@@ -75,14 +76,14 @@ func (r *Ranker) Rank(ctx context.Context, userID uuid.UUID) (Result, error) {
 	if err := r.rescore(ctx, userID, now); err != nil {
 		return res, err
 	}
-	res.Delivered, err = r.deliver(ctx, userID, budget, now)
+	res.Delivered, err = r.deliver(ctx, userID, budget, accounts.LocalDay(now, accounts.Location(tz)), now)
 	return res, err
 }
 
-func (r *Ranker) reader(ctx context.Context, userID uuid.UUID) (pos, neg []string, budget int, err error) {
+func (r *Ranker) reader(ctx context.Context, userID uuid.UUID) (pos, neg []string, budget int, tz string, err error) {
 	err = r.engine.WithTx(ctx, func(ctx context.Context) error {
 		tx := drel.MustFromContext(ctx)
-		if err := tx.QueryRow(ctx, `SELECT daily_budget FROM profiles WHERE id = $1`, userID).Scan(&budget); err != nil {
+		if err := tx.QueryRow(ctx, `SELECT daily_budget, timezone FROM profiles WHERE id = $1`, userID).Scan(&budget, &tz); err != nil {
 			return err
 		}
 		rows, err := tx.Query(ctx, `SELECT text, negative FROM interests WHERE user_id = $1 ORDER BY weight DESC, id`, userID)
@@ -104,7 +105,7 @@ func (r *Ranker) reader(ctx context.Context, userID uuid.UUID) (pos, neg []strin
 		}
 		return rows.Err()
 	})
-	return pos, neg, budget, err
+	return pos, neg, budget, tz, err
 }
 
 // prefilter returns the recent stories, seen by a source the reader
@@ -261,9 +262,10 @@ func (r *Ranker) rescore(ctx context.Context, userID uuid.UUID, now time.Time) e
 	})
 }
 
-// deliver moves the best candidates into today's feed until the day's
-// budget is full. Later stories that score well wait under "More".
-func (r *Ranker) deliver(ctx context.Context, userID uuid.UUID, budget int, now time.Time) (int64, error) {
+// deliver moves the best candidates into the feed of day, the reader's local
+// date, until the day's budget is full. Later stories that score well wait
+// under "More". Done entries of the day still count.
+func (r *Ranker) deliver(ctx context.Context, userID uuid.UUID, budget int, day string, now time.Time) (int64, error) {
 	var n int64
 	err := r.engine.WithTx(ctx, func(ctx context.Context) (err error) {
 		n, err = drel.MustFromContext(ctx).Exec(ctx, `
@@ -274,7 +276,7 @@ func (r *Ranker) deliver(ctx context.Context, userID uuid.UUID, budget int, now 
 				WHERE f.user_id = $1 AND f.state = 'candidate' AND st.last_item_at >= $4 AND f.score > 0
 				ORDER BY f.score DESC, f.id
 				LIMIT GREATEST(0, $3 - (SELECT count(*) FROM feed_entries WHERE user_id = $1 AND delivered_on = $2::date))
-			)`, userID, now.Format(time.DateOnly), budget, now.Add(-r.tuning.Cluster.OpenWindow))
+			)`, userID, day, budget, now.Add(-r.tuning.Cluster.OpenWindow))
 		return err
 	})
 	return n, err

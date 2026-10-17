@@ -52,6 +52,8 @@ const shownPerReader = 10
 
 // Missing returns the (story, locale) pairs that non-English readers are
 // shown and that have no translation of the current revision yet.
+// Readers' days follow their time zones, so an entry of "today" is dated
+// within a day of the UTC date.
 func Missing(ctx context.Context, engine *drel.Engine, today time.Time) ([]TranslateArgs, error) {
 	var out []TranslateArgs
 	err := engine.WithTx(ctx, func(ctx context.Context) error {
@@ -64,7 +66,7 @@ func Missing(ctx context.Context, engine *drel.Engine, today time.Time) ([]Trans
 			)
 			SELECT DISTINCT sh.story_id, sh.locale
 			FROM shown sh JOIN stories s ON s.id = sh.story_id
-			WHERE (sh.delivered_on = $1::date OR (sh.state = 'candidate' AND sh.place <= $2))
+			WHERE (sh.delivered_on BETWEEN $1::date - 1 AND $1::date + 1 OR (sh.state = 'candidate' AND sh.place <= $2))
 				AND EXISTS (SELECT 1 FROM summaries m WHERE m.story_id = s.id AND m.revision = s.revision)
 				AND NOT EXISTS (SELECT 1 FROM translations t WHERE t.kind = 'story' AND t.object_id = s.id
 					AND t.revision = s.revision AND t.locale = sh.locale)
