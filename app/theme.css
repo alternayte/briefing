@@ -216,3 +216,46 @@
     color: var(--muted-foreground);
   }
 }
+
+/* Click feedback. A press answers at once (:active); gx marks a click still
+   in flight after 100 ms with aria-busy on the button or link, and on <html>
+   during a page change. Reduced motion keeps the marks and drops the motion. */
+@layer components {
+  button, a {
+    transition: color 120ms ease-out, background-color 120ms ease-out, border-color 120ms ease-out, opacity 120ms ease-out, transform 80ms ease-out;
+  }
+  button:active:not([aria-busy="true"]) {
+    transform: translateY(1px);
+  }
+  button[aria-busy="true"], a[aria-busy="true"] {
+    cursor: progress;
+    opacity: 0.6;
+    animation: busy-pulse 1.2s ease-in-out infinite;
+  }
+  html[aria-busy="true"] {
+    cursor: progress;
+  }
+  html[aria-busy="true"]::before {
+    content: "";
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: 60;
+    height: 3px;
+    background: var(--accent);
+    transform-origin: left;
+    animation: busy-bar 2s cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
+  }
+  @keyframes busy-pulse {
+    50% { opacity: 0.35; }
+  }
+  @keyframes busy-bar {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(0.9); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    button, a { transition: none; }
+    button:active:not([aria-busy="true"]) { transform: none; }
+    button[aria-busy="true"], a[aria-busy="true"] { animation: none; }
+    html[aria-busy="true"]::before { animation: none; transform: scaleX(0.9); }
+  }
+}

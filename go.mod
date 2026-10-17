@@ -8,7 +8,7 @@ require (
 	codeberg.org/readeck/go-readability/v2 v2.1.3
 	github.com/alternayte/auth-all v0.5.1
 	github.com/alternayte/drel v0.10.3
-	github.com/alternayte/gx v0.4.4
+	github.com/alternayte/gx v0.4.5
 	github.com/google/uuid v1.6.0
 	github.com/jackc/pgx/v5 v5.11.0
 	github.com/mmcdole/gofeed v1.5.0
